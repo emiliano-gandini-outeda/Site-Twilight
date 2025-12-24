@@ -25,7 +25,7 @@ export default function Page() {
         <div className="flex items-center gap-4 text-muted-foreground font-sans text-xs md:text-sm tracking-[0.3em] uppercase">
           <div className="px-3 py-1 border border-border bg-card/50 rounded">CLEARANCE LEVEL 5 REQUIRED</div>
           <div className="w-1 h-1 rounded-full bg-muted-foreground" />
-          <div className="px-3 py-1 border border-border bg-card/50 rounded">ACESS DENIED</div>
+          <div className="px-3 py-1 border border-border bg-card/50 rounded">ACCESS DENIED</div>
         </div>
 
         <div className="flex items-center gap-4 text-muted-foreground font-sans text-xs md:text-sm tracking-[0.3em] mt-8">
