@@ -20,7 +20,7 @@ export const metadata: Metadata = {
         media: "(prefers-color-scheme: dark)",
       },
       {
-        url: "/scp-logo.png",
+        url: "/scp-logo.svg",
         type: "image/svg+xml",
       },
     ],
