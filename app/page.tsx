@@ -173,7 +173,18 @@ export default function Page() {
             <div className="w-full max-w-2xl px-8">
               <div className="space-y-4">
                 <div
-                  className="border p-4 font-mono text-base md:text-lg tracking-wider min-h-[3rem] flex items-center"
+                  className="border p-6 font-mono text-base md:text-xl tracking-wider h-[4.5rem] flex items-center"
+                  style={{ borderColor: "#444444", backgroundColor: "#0a0a0a", color: "#cccccc" }}
+                >
+                  {stage1Line >= 0 && (
+                    <span>
+                      {stage1Line === 0 ? typedText : `ALIAS: ${ipData.alias}`}
+                      {stage1Line === 0 && <span className="animate-pulse">_</span>}
+                    </span>
+                  )}
+                </div>
+                <div
+                  className="border p-6 font-mono text-base md:text-xl tracking-wider h-[4.5rem] flex items-center"
                   style={{ borderColor: "#444444", backgroundColor: "#0a0a0a", color: "#cccccc" }}
                 >
                   {stage1Line >= 1 && (
@@ -184,7 +195,7 @@ export default function Page() {
                   )}
                 </div>
                 <div
-                  className="border p-4 font-mono text-base md:text-lg tracking-wider min-h-[3rem] flex items-center"
+                  className="border p-6 font-mono text-base md:text-xl tracking-wider h-[4.5rem] flex items-center"
                   style={{ borderColor: "#444444", backgroundColor: "#0a0a0a", color: "#cccccc" }}
                 >
                   {stage1Line >= 2 && (
