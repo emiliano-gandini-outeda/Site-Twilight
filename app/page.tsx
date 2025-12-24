@@ -14,21 +14,14 @@ function generateAlias(ip: string): string {
   return `SUBJECT-${hashStr}`
 }
 
-function redactText(text: string, percentage = 0.6): string {
-  const chars = text.split("")
-  return chars
-    .map((char, i) => (Math.random() < percentage && char !== "." && char !== "-" && char !== " " ? "█" : char))
-    .join("")
-}
-
 export default function Page() {
   const [loadingStage, setLoadingStage] = useState<"stage1" | "stage2" | "complete">("stage1")
-  const [ipData, setIpData] = useState({ ip: "███.███.███.██", country: "███████", alias: "SUBJECT-███" })
+  const [ipData, setIpData] = useState({ ip: "...", country: "...", alias: "..." })
   const [stage1Line, setStage1Line] = useState(0)
   const [typedText, setTypedText] = useState("")
   const [stage2Progress, setStage2Progress] = useState(0)
   const [spinnerIndex, setSpinnerIndex] = useState(0)
-  const [dots, setDots] = useState("")
+  const [loadingDots, setLoadingDots] = useState(".")
 
   useEffect(() => {
     const fetchIpData = async () => {
@@ -37,8 +30,8 @@ export default function Page() {
         const data = await response.json()
         const alias = generateAlias(data.ip)
         setIpData({
-          ip: data.ip || "███.███.███.██",
-          country: data.country_name || "███████",
+          ip: data.ip || "Unknown",
+          country: data.country_name || "Unknown",
           alias,
         })
       } catch (error) {
@@ -51,11 +44,7 @@ export default function Page() {
   useEffect(() => {
     if (loadingStage !== "stage1") return
 
-    const lines = [
-      `ALIAS: ${redactText(ipData.alias, 0.3)}`,
-      `COUNTRY: ${redactText(ipData.country, 0.4)}`,
-      `IP: ${redactText(ipData.ip, 0.5)}`,
-    ]
+    const lines = [`ALIAS: ${ipData.alias}`, `COUNTRY: ${ipData.country}`, `IP: ${ipData.ip}`]
 
     let charIndex = 0
     const currentLine = lines[stage1Line]
@@ -116,97 +105,126 @@ export default function Page() {
     if (loadingStage !== "stage2") return
 
     const dotsInterval = setInterval(() => {
-      setDots((prev) => {
-        if (prev === "...") return ""
+      setLoadingDots((prev) => {
+        if (prev === "....") return "."
         return prev + "."
       })
-    }, 500)
+    }, 400)
 
     return () => clearInterval(dotsInterval)
   }, [loadingStage])
 
-  if (loadingStage === "stage1") {
-    return (
-      <main className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "#050505" }}>
-        <div className="font-mono text-lg md:text-xl tracking-wider" style={{ color: "#e0e0e0" }}>
-          <div className="border border-gray-700 p-8 md:p-12 bg-black/40">
-            <div className="h-8" style={{ fontFamily: "monospace" }}>
-              {typedText}
-              <span className="animate-pulse">_</span>
-            </div>
+  const spinnerChars = ["|", "/", "-", "\\"]
+  const filledBlocks = Math.floor((stage2Progress / 100) * 20)
+  const emptyBlocks = 20 - filledBlocks
+  const loadingBar = `[${"■".repeat(filledBlocks)}${"□".repeat(emptyBlocks)}]`
+
+  return (
+    <>
+      <main className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
+        <div className="flex flex-col items-center gap-10">
+          {/* SCP Logo */}
+          <div className="relative w-48 h-48 md:w-64 md:h-64">
+            <Image
+              src="/scp-logo.png"
+              alt="SCP Foundation Logo"
+              fill
+              className="object-contain invert brightness-90"
+              priority
+            />
+          </div>
+
+          <h1
+            className="font-sans text-3xl md:text-4xl lg:text-5xl font-semibold animate-glow text-balance text-center tracking-wide"
+            style={{ color: "#ff8800" }}
+          >
+            SITE TWILIGHT
+          </h1>
+
+          <div className="flex items-center gap-4 text-muted-foreground font-sans text-xs md:text-sm tracking-[0.3em] uppercase">
+            <div className="px-3 py-1 border border-border bg-card/50 rounded">CLEARANCE LEVEL 5 REQUIRED</div>
+            <div className="w-1 h-1 rounded-full bg-muted-foreground" />
+            <div className="px-3 py-1 border border-border bg-card/50 rounded">ACCESS DENIED</div>
+          </div>
+
+          <div className="flex items-center gap-4 text-muted-foreground font-sans text-xs md:text-sm tracking-[0.3em] mt-8">
+            <span className="animate-bracket-left">{">--"}</span>
+            <span className="font-bold">LOADING</span>
+            <span className="animate-bracket-right">{"--<"}</span>
+          </div>
+
+          <div className="text-center mt-4 space-y-2">
+            <p className="text-muted-foreground/80 font-sans text-xs md:text-sm tracking-[0.25em] uppercase">
+              Secure · Contain · Protect
+            </p>
+            <p className="text-muted-foreground/50 font-sans text-[10px] md:text-xs tracking-wider">
+              FOUNDATION DATABASE INITIALIZATION IN PROCESS
+            </p>
           </div>
         </div>
       </main>
-    )
-  }
 
-  if (loadingStage === "stage2") {
-    const spinnerChars = ["|", "/", "-", "\\"]
-    const filledBlocks = Math.floor((stage2Progress / 100) * 20)
-    const emptyBlocks = 20 - filledBlocks
-    const loadingBar = `[${"■".repeat(filledBlocks)}${"□".repeat(emptyBlocks)}]`
-
-    return (
-      <main className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "#050505" }}>
+      {loadingStage !== "complete" && (
         <div
-          className="font-mono text-base md:text-lg tracking-wider flex flex-col items-center gap-8"
-          style={{ color: "#e0e0e0" }}
+          className="fixed inset-0 z-50 flex items-center justify-center font-sans"
+          style={{ backgroundColor: "#000000" }}
         >
-          {/* ASCII Spinner */}
-          <div className="text-4xl md:text-5xl font-bold">{spinnerChars[spinnerIndex]}</div>
+          {loadingStage === "stage1" && (
+            <div className="w-full max-w-2xl px-8">
+              <div className="space-y-4">
+                <div
+                  className="border p-4 font-mono text-lg md:text-xl tracking-wider min-h-[3rem] flex items-center"
+                  style={{ borderColor: "#444444", backgroundColor: "#0a0a0a", color: "#cccccc" }}
+                >
+                  {stage1Line >= 0 && (
+                    <span>
+                      {stage1Line === 0 ? typedText : `ALIAS: ${ipData.alias}`}
+                      {stage1Line === 0 && <span className="animate-pulse">_</span>}
+                    </span>
+                  )}
+                </div>
+                <div
+                  className="border p-4 font-mono text-lg md:text-xl tracking-wider min-h-[3rem] flex items-center"
+                  style={{ borderColor: "#444444", backgroundColor: "#0a0a0a", color: "#cccccc" }}
+                >
+                  {stage1Line >= 1 && (
+                    <span>
+                      {stage1Line === 1 ? typedText : `COUNTRY: ${ipData.country}`}
+                      {stage1Line === 1 && <span className="animate-pulse">_</span>}
+                    </span>
+                  )}
+                </div>
+                <div
+                  className="border p-4 font-mono text-lg md:text-xl tracking-wider min-h-[3rem] flex items-center"
+                  style={{ borderColor: "#444444", backgroundColor: "#0a0a0a", color: "#cccccc" }}
+                >
+                  {stage1Line >= 2 && (
+                    <span>
+                      {stage1Line === 2 ? typedText : `IP: ${ipData.ip}`}
+                      {stage1Line === 2 && <span className="animate-pulse">_</span>}
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
 
-          {/* Loading Bar */}
-          <div className="text-xl md:text-2xl tracking-widest">{loadingBar}</div>
+          {loadingStage === "stage2" && (
+            <div className="flex flex-col items-center gap-8" style={{ color: "#cccccc" }}>
+              {/* ASCII Spinner */}
+              <div className="font-mono text-4xl md:text-5xl font-bold">{spinnerChars[spinnerIndex]}</div>
 
-          {/* Initializing Database text */}
-          <div className="text-sm md:text-base">Initializing Database{dots}</div>
+              {/* Loading Bar */}
+              <div className="font-mono text-xl md:text-2xl tracking-widest">{loadingBar}</div>
+
+              <div className="font-mono text-sm md:text-base flex items-center gap-1">
+                <span>Initializing Database</span>
+                <span className="inline-block w-8">{loadingDots}</span>
+              </div>
+            </div>
+          )}
         </div>
-      </main>
-    )
-  }
-
-  return (
-    <main className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
-      <div className="flex flex-col items-center gap-10">
-        {/* SCP Logo */}
-        <div className="relative w-48 h-48 md:w-64 md:h-64">
-          <Image
-            src="/scp-logo.png"
-            alt="SCP Foundation Logo"
-            fill
-            className="object-contain invert brightness-90"
-            priority
-          />
-        </div>
-
-        <h1
-          className="font-sans text-3xl md:text-4xl lg:text-5xl font-semibold animate-glow text-balance text-center tracking-wide"
-          style={{ color: "#ff8800" }}
-        >
-          SITE TWILIGHT
-        </h1>
-
-        <div className="flex items-center gap-4 text-muted-foreground font-sans text-xs md:text-sm tracking-[0.3em] uppercase">
-          <div className="px-3 py-1 border border-border bg-card/50 rounded">CLEARANCE LEVEL 5 REQUIRED</div>
-          <div className="w-1 h-1 rounded-full bg-muted-foreground" />
-          <div className="px-3 py-1 border border-border bg-card/50 rounded">ACCESS DENIED</div>
-        </div>
-
-        <div className="flex items-center gap-4 text-muted-foreground font-sans text-xs md:text-sm tracking-[0.3em] mt-8">
-          <span className="animate-bracket-left">{">--"}</span>
-          <span className="font-bold">LOADING</span>
-          <span className="animate-bracket-right">{"--<"}</span>
-        </div>
-
-        <div className="text-center mt-4 space-y-2">
-          <p className="text-muted-foreground/80 font-sans text-xs md:text-sm tracking-[0.25em] uppercase">
-            Secure · Contain · Protect
-          </p>
-          <p className="text-muted-foreground/50 font-sans text-[10px] md:text-xs tracking-wider">
-            FOUNDATION DATABASE INITIALIZATION IN PROCESS
-          </p>
-        </div>
-      </div>
-    </main>
+      )}
+    </>
   )
 }
