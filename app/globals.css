@@ -173,17 +173,3 @@
 .animate-bracket-right {
   animation: slideInOutRight 2s ease-in-out infinite;
 }
-
-/* Added scanline animation for CRT terminal effect */
-@keyframes scanline {
-  0% {
-    transform: translateY(-100%);
-  }
-  100% {
-    transform: translateY(100%);
-  }
-}
-
-.animate-scanline {
-  animation: scanline 8s linear infinite;
-}
