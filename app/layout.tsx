@@ -8,7 +8,7 @@ const inter = Inter({ subsets: ["latin"] })
 const azonix = localFont({
   src: [
     {
-      path: "/fonts/Azonix.woff2",
+      path: "./fonts/Azonix.woff2",
       weight: "400",
       style: "normal",
     },
