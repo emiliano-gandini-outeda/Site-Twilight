@@ -1,7 +1,6 @@
 import type React from "react"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
-import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
 
 const inter = Inter({ subsets: ["latin"] })
@@ -9,23 +8,23 @@ const inter = Inter({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "Site Twilight - SCP Foundation",
   description: "Secure, Contain, Protect",
-  generator: "v0.app",
+  generator: "Site Twilight",
   icons: {
     icon: [
       {
-        url: "/icon-light-32x32.png",
+        url: "/scp-logo.png",
         media: "(prefers-color-scheme: light)",
       },
       {
-        url: "/icon-dark-32x32.png",
+        url: "/scp-logo.png",
         media: "(prefers-color-scheme: dark)",
       },
       {
-        url: "/icon.svg",
+        url: "/scp-logo.png",
         type: "image/svg+xml",
       },
     ],
-    apple: "/apple-icon.png",
+    apple: "/scp-logo.png",
   },
 }
 
@@ -38,7 +37,6 @@ export default function RootLayout({
     <html lang="en" className="dark">
       <body className={`${inter.className} antialiased`}>
         {children}
-        <Analytics />
       </body>
     </html>
   )
