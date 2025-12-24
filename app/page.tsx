@@ -135,8 +135,8 @@ export default function Page() {
           </div>
 
           <h1
-            className="font-sans text-3xl md:text-4xl lg:text-5xl font-semibold animate-glow text-balance text-center tracking-wide"
-            style={{ color: "#ff8800" }}
+            className="text-3xl md:text-4xl lg:text-5xl font-semibold animate-glow text-balance text-center tracking-wide"
+            style={{ fontFamily: "var(--font-azonix)", color: "#ff8800" }}
           >
             SITE TWILIGHT
           </h1>
@@ -166,14 +166,14 @@ export default function Page() {
 
       {loadingStage !== "complete" && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center font-sans"
-          style={{ backgroundColor: "#000000" }}
+          className="fixed inset-0 z-50 flex items-center justify-center"
+          style={{ backgroundColor: "#000000", fontFamily: "var(--font-azonix)" }}
         >
           {loadingStage === "stage1" && (
             <div className="w-full max-w-2xl px-8">
               <div className="space-y-4">
                 <div
-                  className="border p-6 font-mono text-base md:text-xl tracking-wider h-[4.5rem] flex items-center"
+                  className="border p-4 text-lg md:text-xl tracking-wider min-h-[3rem] flex items-center"
                   style={{ borderColor: "#444444", backgroundColor: "#0a0a0a", color: "#cccccc" }}
                 >
                   {stage1Line >= 0 && (
@@ -184,7 +184,7 @@ export default function Page() {
                   )}
                 </div>
                 <div
-                  className="border p-6 font-mono text-base md:text-xl tracking-wider h-[4.5rem] flex items-center"
+                  className="border p-4 text-lg md:text-xl tracking-wider min-h-[3rem] flex items-center"
                   style={{ borderColor: "#444444", backgroundColor: "#0a0a0a", color: "#cccccc" }}
                 >
                   {stage1Line >= 1 && (
@@ -195,7 +195,7 @@ export default function Page() {
                   )}
                 </div>
                 <div
-                  className="border p-6 font-mono text-base md:text-xl tracking-wider h-[4.5rem] flex items-center"
+                  className="border p-4 text-lg md:text-xl tracking-wider min-h-[3rem] flex items-center"
                   style={{ borderColor: "#444444", backgroundColor: "#0a0a0a", color: "#cccccc" }}
                 >
                   {stage1Line >= 2 && (
@@ -212,12 +212,12 @@ export default function Page() {
           {loadingStage === "stage2" && (
             <div className="flex flex-col items-center gap-8" style={{ color: "#cccccc" }}>
               {/* ASCII Spinner */}
-              <div className="font-mono text-4xl md:text-5xl font-bold">{spinnerChars[spinnerIndex]}</div>
+              <div className="text-4xl md:text-5xl font-bold">{spinnerChars[spinnerIndex]}</div>
 
               {/* Loading Bar */}
-              <div className="font-mono text-xl md:text-2xl tracking-widest">{loadingBar}</div>
+              <div className="text-xl md:text-2xl tracking-widest">{loadingBar}</div>
 
-              <div className="font-mono text-sm md:text-base flex items-center gap-1">
+              <div className="text-sm md:text-base flex items-center gap-1">
                 <span>Initializing Database</span>
                 <span className="inline-block w-8">{loadingDots}</span>
               </div>
