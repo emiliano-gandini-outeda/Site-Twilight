@@ -7,7 +7,7 @@ from django.conf import settings
 import requests
 from django.contrib.auth import login, logout
 from django.http import HttpResponseForbidden
-from .models import User
+from ..models import User
 
 def roblox_login(request):
     state = secrets.token_urlsafe(32)
