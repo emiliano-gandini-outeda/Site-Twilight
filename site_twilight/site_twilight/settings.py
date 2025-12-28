@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-t7m-&&4$ofey9_w2%ike&@%i4t3e(haum^xcm4joxu-lis*sls
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["testing-production-a0e6.up.railway.app", "www.site-twilight.com"]
 
 
 # Application definition
@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+
     # Site Twilight Modules
     'site_twilight',
     "users",
