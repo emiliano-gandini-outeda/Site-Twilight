@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router"
 import Landing from "@/views/Landing.vue"
 import Privacy from "@/views/Privacy.vue"
 import TermsOfService from "@/views/TermsOfService.vue"
+import LoginSignup from "@/views/LoginSignup.vue"
 
 const routes = [
   { path: "/", name: "Landing", component: Landing },
@@ -12,7 +13,7 @@ const routes = [
     name: 'LoginSignup',
     component: LoginSignup,
   },
-  // Important! add a catch-all 404 page later
+// Important! add a catch-all 404 page later
   {
     path: '/:pathMatch(.*)*',
     redirect: '/',
