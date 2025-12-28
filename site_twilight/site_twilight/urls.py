@@ -21,5 +21,5 @@ from . import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("accounts/", include("users.urls")),
-    re_path(r"^(?!admin|accounts).*$", views.landing_page),
+    re_path(r"^(?!admin|accounts).*$", views.landingPage),
 ]
