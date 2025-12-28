@@ -1,7 +1,6 @@
 <script setup>
 import { ref, onMounted } from "vue"
-import { RouterView } from "vue-router"
-
+import Header from "./components/Header.vue"
 const ssuStatus = ref(false)
 
 async function fetchSSU() {
@@ -18,18 +17,11 @@ onMounted(() => {
 <template>
   <div id="app" class="flex flex-col h-screen">
     <!-- HEADER FIXED -->
-    <header class="bg-gray-800 text-white p-4 flex justify-between items-center fixed top-0 left-0 right-0 z-50 shadow-md">
-      <h1 class="text-xl font-bold">Site Twilight</h1>
-      <div>
-        SSU Status:
-        <span v-if="ssuStatus" class="text-green-400 font-semibold">ON</span>
-        <span v-else class="text-red-400 font-semibold">OFF</span>
-      </div>
-    </header>
+      <Header />
 
     <!-- MAIN CONTENT -->
     <main class="flex-1 pt-4 pb-4 overflow-auto">
-      <RouterView />
+      <router-view /> 
     </main>
 
     <!-- FOOTER FIXED -->

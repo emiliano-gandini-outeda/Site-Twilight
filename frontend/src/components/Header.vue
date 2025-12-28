@@ -7,20 +7,25 @@
 
       <div class="nav-links">
         <a href="/">Home</a>
-        <a href="/terms">Terms</a>
+        <a href="/terms-of-service">Terms</a>
 
         <div class="user-menu" @click="toggleDropdown">
-          <span v-if="user">{{ user.roblox_username }}</span>
+          <!-- Always show "Account" when not logged in -->
+          <span v-if="user && user.is_authenticated">
+            {{ user.roblox_username }}
+          </span>
           <span v-else>Account</span>
+          
           <div v-show="dropdownOpen" class="dropdown">
-            <template v-if="user">
+            <!-- Show menu for authenticated users -->
+            <template v-if="user && user.is_authenticated">
               <a href="#">Placeholder</a>
               <a href="#">Placeholder</a>
               <a href="/accounts/logout">Logout</a>
             </template>
+            <!-- Show login/signup for non-authenticated users -->
             <template v-else>
-              <a href="/accounts/login">Login</a>
-              <a href="/accounts/signup">Signup</a>
+              <a href="/accounts/login/roblox">Login / Signup</a>
             </template>
           </div>
         </div>
@@ -30,18 +35,54 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted, watch } from 'vue'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const dropdownOpen = ref(false)
 const user = ref(null)
+
+// Check authentication status
+const checkAuth = async () => {
+  try {
+    const response = await fetch('/api/auth/user/')
+    if (response.ok) {
+      const data = await response.json()
+      user.value = data
+    } else {
+      // If response is not OK, set user to null/not authenticated
+      user.value = { is_authenticated: false }
+    }
+  } catch (error) {
+    console.error('Auth check failed:', error)
+    // On error, assume not authenticated
+    user.value = { is_authenticated: false }
+  }
+}
+
+onMounted(() => {
+  checkAuth()
+  
+  // Check auth on route changes
+  router.afterEach(() => {
+    checkAuth()
+  })
+  
+  document.addEventListener('click', handleClickOutside)
+})
 
 // Toggle menu
 const toggleDropdown = () => {
   dropdownOpen.value = !dropdownOpen.value
 }
 
-// In production, fetch user info from Django API
-// Example: user.value = { roblox_username: 'Emiliano' }
+// Close dropdown when clicking outside
+const handleClickOutside = (event) => {
+  const userMenu = document.querySelector('.user-menu')
+  if (userMenu && !userMenu.contains(event.target)) {
+    dropdownOpen.value = false
+  }
+}
 </script>
 
 <style scoped>
@@ -79,6 +120,7 @@ const toggleDropdown = () => {
   flex-direction: column;
   min-width: 150px;
   padding: 0.5rem 0;
+  z-index: 1000; /* Ensure dropdown is above other elements */
 }
 
 .dropdown a {
