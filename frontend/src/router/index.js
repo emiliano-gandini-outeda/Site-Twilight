@@ -7,6 +7,16 @@ const routes = [
   { path: "/", name: "Landing", component: Landing },
   { path: "/privacy", name: "Privacy", component: Privacy },
   { path: "/terms-of-service", name: "TermsOfService", component: TermsOfService },
+  {
+    path: '/login',
+    name: 'LoginSignup',
+    component: LoginSignup,
+  },
+  // Important! add a catch-all 404 page later
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: '/',
+  },
 ]
 
 const router = createRouter({
