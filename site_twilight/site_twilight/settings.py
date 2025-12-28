@@ -17,7 +17,7 @@ from dotenv import load_dotenv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-load_dotenv(BASE_DIR / ".env")
+load_dotenv(dotenv_path=BASE_DIR.parent / ".env")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -26,9 +26,11 @@ load_dotenv(BASE_DIR / ".env")
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True #os.environ.get('DEBUG', 'False').lower() == 'true'
+DEBUG = True # os.environ.get('DEBUG', 'False').lower() == 'true'
 
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
 # Application definition
 
@@ -150,7 +152,7 @@ ROBLOX_CLIENT_ID = os.getenv("ROBLOX_CLIENT_ID")
 ROBLOX_CLIENT_SECRET = os.getenv("ROBLOX_CLIENT_SECRET")
 
 # For prod:
-# ROBLOX_REDIRECT_URI = "https://site-twilight/login/roblox/callback/"
+# ROBLOX_REDIRECT_URI = "https://site-twilight.com/login/roblox/callback/"
 
 # For dev:
-ROBLOX_REDIRECT_URI = "http://localhost:8000/login/roblox/callback/"
+ROBLOX_REDIRECT_URI = "http://localhost:8000/accounts/login/roblox/callback/"
