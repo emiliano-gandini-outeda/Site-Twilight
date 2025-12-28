@@ -21,5 +21,7 @@ from . import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("accounts/", include("users.urls")),
-    re_path(r"^(?!admin|accounts).*$", views.landingPage),
+    path("check/", views.check_login),
+    path('api/auth/user/', views.get_current_user, name='get_current_user'),
+    re_path(r"^(?!admin|accounts|check).*$", views.landingPage),
 ]
