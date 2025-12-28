@@ -14,7 +14,7 @@ class User(AbstractUser):
     roblox_username = models.CharField(max_length=100, blank=True)
 
     REQUIRED_FIELDS = []
-    USERNAME_FIELD = "id"
+    USERNAME_FIELD = "roblox_id"
 
     first_login = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(auto_now=True)
