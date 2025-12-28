@@ -30,7 +30,6 @@ def roblox_callback(request):
     if not code or state != request.session.get("oauth_state"):
         return HttpResponseForbidden("OAuth inválido")
 
-    # intercambiar code por token
     token_res = requests.post(
         "https://apis.roblox.com/oauth/v1/token",
         data={
@@ -42,9 +41,10 @@ def roblox_callback(request):
         },
     ).json()
 
-    access_token = token_res["access_token"]
+    access_token = token_res.get("access_token")
+    if not access_token:
+        return HttpResponseForbidden("Error obteniendo access token")
 
-    # obtener perfil
     profile = requests.get(
         "https://apis.roblox.com/oauth/v1/userinfo",
         headers={"Authorization": f"Bearer {access_token}"},
@@ -62,8 +62,11 @@ def roblox_callback(request):
         user.set_unusable_password()
         user.save()
 
+    # Ensure Django knows the backend
     login(request, user)
+
     return redirect("/")
+
 
 def logout_view(request):
     logout(request)
