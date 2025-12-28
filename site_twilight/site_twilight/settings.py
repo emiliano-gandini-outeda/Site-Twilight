@@ -38,9 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    
     # Site Twilight Modules
-
+    'site_twilight',
     "users",
     "characters",
 ]
@@ -60,7 +60,7 @@ ROOT_URLCONF = 'site_twilight.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / "frontend" / "dist"],
+        'DIRS': [BASE_DIR.parent / "frontend" / "dist"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -124,7 +124,7 @@ USE_TZ = True
 STATIC_URL = "/static/"
 
 STATICFILES_DIRS = [
-    BASE_DIR / "frontend" / "dist" / "assets",
+    BASE_DIR.parent / "frontend" / "dist",
 ]
 
 STATIC_ROOT = BASE_DIR / "staticfiles"  # prod
@@ -134,14 +134,16 @@ STATIC_ROOT = BASE_DIR / "staticfiles"  # prod
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = "accounts.User"
+AUTH_USER_MODEL = "users.User"
 LOGIN_URL = "/login/roblox/"
 LOGOUT_REDIRECT_URL = "/"
 LOGIN_REDIRECT_URL = "/"
 
 ROBLOX_CLIENT_ID = os.getenv("ROBLOX_CLIENT_ID")
 ROBLOX_CLIENT_SECRET = os.getenv("ROBLOX_CLIENT_SECRET")
-ROBLOX_REDIRECT_URI = "https://site-twilight/login/roblox/callback/"
+
+# For prod:
+# ROBLOX_REDIRECT_URI = "https://site-twilight/login/roblox/callback/"
 
 # For dev:
-# ROBLOX_REDIRECT_URI = "http://localhost:8000/login/roblox/callback/"
+ROBLOX_REDIRECT_URI = "http://localhost:8000/login/roblox/callback/"
