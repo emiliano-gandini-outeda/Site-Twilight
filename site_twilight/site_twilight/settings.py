@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'site_twilight',
     "users",
     "characters",
+    "core",
 ]
 
 MIDDLEWARE = [
@@ -152,7 +153,7 @@ ROBLOX_CLIENT_ID = os.getenv("ROBLOX_CLIENT_ID")
 ROBLOX_CLIENT_SECRET = os.getenv("ROBLOX_CLIENT_SECRET")
 
 # For prod:
-# ROBLOX_REDIRECT_URI = "https://site-twilight.com/login/roblox/callback/"
+# ROBLOX_REDIRECT_URI = os.getenv("ROBLOX_REDIRECT_URI")
 
 # For dev:
 ROBLOX_REDIRECT_URI = "http://localhost:8000/accounts/login/roblox/callback/"
