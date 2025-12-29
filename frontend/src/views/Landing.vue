@@ -47,6 +47,11 @@
               Especializado en entidades de clase Euclid y Keter con propiedades temporales o dimensionales atenuadas. 
               La instalación mantiene protocolos de cuarentena extendida y sistemas de monitoreo de realidad en tiempo real.
             </p>
+            <p class="card-text extra-text">
+              La infraestructura principal incluye 12 cámaras de contención de nivel 4, 3 laboratorios de investigación temporal 
+              y un sistema de redundancia dimensional que opera las 24 horas del día. Todo el personal debe someterse a evaluaciones 
+              de realidad cada 72 horas y llevar dispositivos de anclaje dimensional en todo momento.
+            </p>
           </div>
           <div class="card-footer">
             <div class="status-indicators">
@@ -78,6 +83,11 @@
               Site Twilight es una plataforma de roleplay dedicada a la recreación de experiencias dentro del universo SCP. 
               Ofrecemos un entorno inmersivo donde los usuarios pueden participar en narrativas colaborativas, desarrollar personajes 
               únicos y explorar escenarios inspirados en la Fundación SCP.
+            </p>
+            <p class="card-text extra-text">
+              Nuestra plataforma utiliza tecnología moderna para proporcionar una experiencia fluida y accesible desde cualquier dispositivo. 
+              Con integración de Discord para comunicación en tiempo real, sistema de personajes personalizables y eventos regulares 
+              organizados por nuestro equipo de administración.
             </p>
           </div>
           <div class="card-footer">
@@ -1090,6 +1100,10 @@ onMounted(() => {
   
   /* Ocultar emoji y descripción en mobile */
   .function-card .card-icon {
+    display: none;
+  }
+
+  .extra-text {
     display: none;
   }
   
