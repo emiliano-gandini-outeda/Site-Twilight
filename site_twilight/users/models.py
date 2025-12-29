@@ -1,8 +1,29 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, BaseUserManager
 from .permissions import STAFF_PERMISSIONS
 
 # Create your models here.
+
+class UserManager(BaseUserManager):
+    use_in_migrations = True
+
+    def create_user(self, roblox_id, password=None, **extra_fields):
+        if not roblox_id:
+            raise ValueError("El usuario debe tener roblox_id")
+
+        user = self.model(
+            roblox_id=roblox_id,
+            **extra_fields
+        )
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, roblox_id, password=None, **extra_fields):
+        extra_fields.setdefault("is_staff", True)
+        extra_fields.setdefault("is_superuser", True)
+
+        return self.create_user(roblox_id, password, **extra_fields)
 
 class User(AbstractUser):
     
@@ -15,6 +36,8 @@ class User(AbstractUser):
 
     REQUIRED_FIELDS = []
     USERNAME_FIELD = "roblox_id"
+
+    objects = UserManager()
 
     first_login = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(auto_now=True)
