@@ -31,11 +31,10 @@ WORKDIR /app/site_twilight
 # Create emergency admin
 RUN .venv/bin/python manage.py ensure_admin
 
-# Apply migrations (PostgreSQL)
-RUN .venv/bin/python manage.py migrate --noinput
 
 # Collect static files
 RUN .venv/bin/python manage.py collectstatic --noinput
 
 EXPOSE $PORT
-CMD .venv/bin/gunicorn site_twilight.wsgi:application --bind 0.0.0.0:$PORT
+CMD .venv/bin/python manage.py migrate --noinput && \
+    .venv/bin/python gunicorn site_twilight.wsgi:application --bind 0.0.0.0:$PORT
