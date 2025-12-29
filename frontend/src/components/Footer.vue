@@ -14,7 +14,6 @@
         <!-- Información del Sitio -->
         <div class="footer-section">
           <div class="section-header">
-            <span class="section-emoji">🔒</span>
             <div class="section-icon-svg">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
@@ -44,7 +43,6 @@
         <!-- Enlaces Rápidos -->
         <div class="footer-section">
           <div class="section-header">
-            <span class="section-emoji">📄</span>
             <div class="section-icon-svg">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
@@ -59,7 +57,6 @@
           <div class="section-content">
             <div class="document-links">
               <a href="/privacy" class="document-link">
-                <span class="link-emoji">📋</span>
                 <div class="link-icon-svg">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
@@ -71,7 +68,6 @@
                 <span class="link-text">Protocolo de Privacidad</span>
               </a>
               <a href="/terms-of-service" class="document-link">
-                <span class="link-emoji">⚖</span>
                 <div class="link-icon-svg">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M12 15v2"></path>
@@ -88,7 +84,6 @@
         <!-- Enlaces del Sistema -->
         <div class="footer-section">
           <div class="section-header">
-            <span class="section-emoji">🔗</span>
             <div class="section-icon-svg">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
@@ -100,7 +95,6 @@
           <div class="section-content">
             <div class="system-links">
               <a href="#" class="system-link">
-                <span class="link-emoji">📊</span>
                 <div class="link-icon-svg">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                     <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
@@ -111,7 +105,6 @@
                 <span class="link-text">Marcador 1</span>
               </a>
               <a href="#" class="system-link">
-                <span class="link-emoji">🔧</span>
                 <div class="link-icon-svg">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
@@ -120,7 +113,6 @@
                 <span class="link-text">Marcador 2</span>
               </a>
               <a href="#" class="system-link">
-                <span class="link-emoji">📈</span>
                 <div class="link-icon-svg">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="18" y1="20" x2="18" y2="10"></line>
@@ -131,7 +123,6 @@
                 <span class="link-text">Marcador 3</span>
               </a>
               <a href="#" class="system-link">
-                <span class="link-emoji">📁</span>
                 <div class="link-icon-svg">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
@@ -146,7 +137,6 @@
         <!-- Contacto -->
         <div class="footer-section">
           <div class="section-header">
-            <span class="section-emoji">📞</span>
             <div class="section-icon-svg">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
@@ -157,7 +147,6 @@
           <div class="section-content">
             <div class="contact-info">
               <a href="https://discord.com/invite/37BrVa6b8E" target="_blank" class="contact-link">
-                <span class="contact-emoji">🎮</span>
                 <div class="contact-icon-svg">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
@@ -166,7 +155,6 @@
                 <span class="contact-text">Canal de Discord</span>
               </a>
               <div class="security-notice">
-                <span class="notice-emoji">⚠</span>
                 <div class="notice-icon-svg">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
@@ -190,7 +178,6 @@
             <span class="copyright-text">2025 SITE TWILIGHT. TODOS LOS DERECHOS RESERVADOS.</span>
           </div>
           <div class="security-level">
-            <span class="level-emoji">🛡</span>
             <div class="level-icon-svg">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
@@ -209,7 +196,7 @@
 </script>
 
 <style scoped>
-/* Base mobile styles - mobile first */
+/* Base mobile styles - mobile first - AHORA SOLO SVG */
 .site-footer {
   background: rgba(10, 10, 10, 0.95);
   border-top: 1px solid #333;
@@ -244,26 +231,35 @@
   overflow: hidden;
 }
 
-/* Iconos SVG - ocultos por defecto en mobile, visibles en desktop */
+/* Iconos SVG - SIEMPRE VISIBLES, NUNCA EMOJIS */
 .section-icon-svg,
 .link-icon-svg,
 .contact-icon-svg,
 .notice-icon-svg,
 .level-icon-svg {
-  display: none;
-  width: 16px;
-  height: 16px;
+  display: block;
+  width: 18px;
+  height: 18px;
   color: currentColor;
   flex-shrink: 0;
 }
 
-.section-emoji,
-.link-emoji,
-.contact-emoji,
-.notice-emoji,
-.level-emoji {
-  display: block;
-  font-size: 1rem;
+.section-icon-svg {
+  color: #aaa;
+}
+
+.link-icon-svg,
+.contact-icon-svg {
+  color: #d8d8d8;
+  opacity: 0.9;
+}
+
+.notice-icon-svg {
+  color: #ffcc00;
+}
+
+.level-icon-svg {
+  color: #aaa;
 }
 
 /* Banner de Clasificación */
@@ -319,7 +315,7 @@
 .section-header {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.6rem;
   margin-bottom: 0.8rem;
   padding-bottom: 0.5rem;
   border-bottom: 1px solid #333;
@@ -367,8 +363,8 @@
   align-items: center;
   gap: 0.8rem;
   width: 100%;
-  min-height: 40px;
-  padding: 0.6rem 0.8rem;
+  min-height: 42px;
+  padding: 0.7rem 0.8rem;
   background: rgba(30, 30, 30, 0.5);
   border: 1px solid #444;
   border-radius: 2px;
@@ -410,7 +406,7 @@
   display: flex;
   align-items: center;
   gap: 0.8rem;
-  padding: 0.8rem 1rem;
+  padding: 0.7rem 0.9rem;
   background: rgba(30, 30, 30, 0.6);
   border: 1px solid #444;
   border-radius: 2px;
@@ -420,7 +416,7 @@
   width: 100%;
   box-sizing: border-box;
   overflow: hidden;
-  min-height: 48px;
+  min-height: 42px;
 }
 
 .document-link:hover {
@@ -449,7 +445,7 @@
   display: flex;
   align-items: center;
   gap: 0.8rem;
-  padding: 0.8rem 1rem;
+  padding: 0.7rem 0.9rem;
   background: rgba(30, 30, 30, 0.6);
   border: 1px solid #444;
   border-radius: 2px;
@@ -459,7 +455,7 @@
   width: 100%;
   box-sizing: border-box;
   overflow: hidden;
-  min-height: 48px;
+  min-height: 42px;
 }
 
 .system-link:hover {
@@ -480,7 +476,7 @@
   display: flex;
   align-items: center;
   gap: 0.8rem;
-  padding: 0.8rem 1rem;
+  padding: 0.7rem 0.9rem;
   background: rgba(30, 30, 30, 0.6);
   border: 1px solid #444;
   border-radius: 2px;
@@ -490,7 +486,7 @@
   width: 100%;
   box-sizing: border-box;
   overflow: hidden;
-  min-height: 48px;
+  min-height: 42px;
 }
 
 .contact-link:hover {
@@ -511,14 +507,14 @@
   display: flex;
   align-items: center;
   gap: 0.8rem;
-  padding: 0.8rem 1rem;
+  padding: 0.7rem 0.9rem;
   background: rgba(40, 30, 0, 0.3);
   border: 1px solid #aa8800;
   border-radius: 2px;
   width: 100%;
   box-sizing: border-box;
   overflow: hidden;
-  min-height: 48px;
+  min-height: 42px;
 }
 
 .notice-text {
@@ -580,7 +576,7 @@
   align-items: center;
   justify-content: center;
   gap: 0.8rem;
-  padding: 0.8rem 1rem;
+  padding: 0.7rem 1rem;
   background: rgba(30, 30, 30, 0.6);
   border: 1px solid #444;
   border-radius: 2px;
@@ -588,7 +584,7 @@
   max-width: 300px;
   width: 100%;
   box-sizing: border-box;
-  min-height: 48px;
+  min-height: 42px;
 }
 
 .level-text {
@@ -641,14 +637,27 @@
   }
   
   /* Ajustes de tamaño en tablet */
+  .section-icon-svg {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .link-icon-svg,
+  .contact-icon-svg,
+  .notice-icon-svg,
+  .level-icon-svg {
+    width: 18px;
+    height: 18px;
+  }
+  
   .protocol-item,
   .document-link,
   .system-link,
   .contact-link,
   .security-notice,
   .security-level {
-    min-height: 44px;
-    padding: 0.7rem 0.9rem;
+    min-height: 46px;
+    padding: 0.8rem 1rem;
   }
   
   .protocol-text,
@@ -705,45 +714,28 @@
     flex-wrap: nowrap;
   }
   
-  /* Mostrar SVG y ocultar emojis en desktop */
-  .section-emoji,
-  .link-emoji,
-  .contact-emoji,
-  .notice-emoji,
-  .level-emoji {
-    display: none;
+  /* Ajustes de tamaño en desktop */
+  .section-icon-svg {
+    width: 22px;
+    height: 22px;
   }
   
-  .section-icon-svg,
   .link-icon-svg,
   .contact-icon-svg,
   .notice-icon-svg,
   .level-icon-svg {
-    display: block;
+    width: 20px;
+    height: 20px;
   }
   
-  /* Ajustes de tamaño en desktop */
   .protocol-item,
   .document-link,
   .system-link,
   .contact-link,
   .security-notice,
   .security-level {
-    min-height: 48px;
-    padding: 0.8rem 1rem;
-  }
-  
-  .section-icon-svg {
-    width: 18px;
-    height: 18px;
-  }
-  
-  .link-icon-svg,
-  .contact-icon-svg,
-  .notice-icon-svg,
-  .level-icon-svg {
-    width: 16px;
-    height: 16px;
+    min-height: 50px;
+    padding: 0.9rem 1.1rem;
   }
 }
 
@@ -759,34 +751,56 @@
   .contact-link,
   .security-notice,
   .security-level {
-    min-height: 52px;
-    padding: 0.9rem 1.1rem;
+    min-height: 54px;
+    padding: 1rem 1.2rem;
   }
   
   .section-icon-svg {
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
+  }
+  
+  .link-icon-svg,
+  .contact-icon-svg,
+  .notice-icon-svg,
+  .level-icon-svg {
+    width: 22px;
+    height: 22px;
   }
 }
 
-/* Mobile optimizations */
-@media (max-width: 639px) {
+/* Mobile optimizations para pantallas muy pequeñas */
+@media (max-width: 374px) {
+  .footer-container {
+    padding: 1.2rem 0.8rem;
+  }
+  
   .protocol-item,
   .document-link,
   .system-link,
   .contact-link,
   .security-notice,
   .security-level {
-    min-height: 42px;
-    padding: 0.6rem 0.8rem;
+    min-height: 40px;
+    padding: 0.6rem 0.7rem;
+    gap: 0.6rem;
   }
   
-  .section-header {
-    gap: 0.4rem;
+  .section-icon-svg,
+  .link-icon-svg,
+  .contact-icon-svg,
+  .notice-icon-svg,
+  .level-icon-svg {
+    width: 16px;
+    height: 16px;
   }
   
-  .section-emoji {
-    font-size: 0.9rem;
+  .protocol-text,
+  .link-text,
+  .contact-text,
+  .notice-text,
+  .level-text {
+    font-size: 0.8rem;
   }
 }
 </style>
