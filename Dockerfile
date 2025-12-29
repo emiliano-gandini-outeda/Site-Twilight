@@ -19,7 +19,7 @@ COPY --from=frontend /app/frontend/dist /app/frontend/dist
 # Install Python dependencies
 COPY site_twilight/requirements.txt ./site_twilight/
 RUN python -m pip install --upgrade pip uv && \
-    uv pip install --system -r site_twilight/requirements.txt
+    uv sync --freeze
 
 # Copy application
 COPY site_twilight/ ./site_twilight/
