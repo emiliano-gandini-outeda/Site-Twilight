@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 from ..decorators import require_staff_permission
-from site_twilight.services.ssu import toggle_ssu
+from core.api.ssu import toggle_ssu
 
 @require_staff_permission("change_ssu_status")
 def api_change_ssu_status(request):
