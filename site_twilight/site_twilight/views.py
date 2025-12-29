@@ -2,8 +2,11 @@ from django.shortcuts import render
 from django.http import HttpResponse
 
 
-def landingPage(request):
-    return render(request, "index.html")
+from django.views.decorators.csrf import ensure_csrf_cookie
+
+@ensure_csrf_cookie
+def spa_view(request):
+    return render(request, 'index.html')
 
 
 def check_login(request):
