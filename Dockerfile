@@ -17,9 +17,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY --from=frontend /app/frontend/dist /app/frontend/dist
 
 # Install Python dependencies
-COPY site_twilight/requirements.txt ./site_twilight/
-RUN python -m pip install --upgrade pip uv && \
-    uv sync --freeze
+COPY site_twilight/pyproject.toml site_twilight/uv.lock ./site_twilight/
+
+RUN python -m pip install --upgrade pip uv \
+ && cd site_twilight \
+ && uv sync --frozen
 
 # Copy application
 COPY site_twilight/ ./site_twilight/
