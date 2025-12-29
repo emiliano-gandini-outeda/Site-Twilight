@@ -35,4 +35,4 @@ RUN .venv/bin/python manage.py ensure_admin
 RUN .venv/bin/python manage.py collectstatic --noinput
 
 EXPOSE $PORT
-CMD [".venv/bin/gunicorn", "site_twilight.wsgi:application", "--bind", "0.0.0.0:$PORT"]
+CMD .venv/bin/gunicorn site_twilight.wsgi:application --bind 0.0.0.0:$PORT
