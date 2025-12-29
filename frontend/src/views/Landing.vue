@@ -119,6 +119,12 @@
           <!-- Card 1 -->
           <div class="function-card">
             <div class="card-icon">👤</div>
+            <div class="card-icon-svg">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+            </div>
             <h3 class="card-title">SISTEMA DE PERSONAJES</h3>
             <p class="card-description">
               Crea y gestiona múltiples personajes con perfiles detallados, historias personalizadas y estadísticas únicas.
@@ -132,6 +138,11 @@
           <!-- Card 2 -->
           <div class="function-card">
             <div class="card-icon">💬</div>
+            <div class="card-icon-svg">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+              </svg>
+            </div>
             <h3 class="card-title">ROLEPLAY EN TIEMPO REAL</h3>
             <p class="card-description">
               Participa en sesiones de roleplay sincronizadas con otros usuarios en canales temáticos organizados.
@@ -145,6 +156,12 @@
           <!-- Card 3 -->
           <div class="function-card">
             <div class="card-icon">📖</div>
+            <div class="card-icon-svg">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+              </svg>
+            </div>
             <h3 class="card-title">BIBLIOTECA SCP</h3>
             <p class="card-description">
               Accede a una base de datos extensa de artículos SCP, historias canónicas y documentación de la Fundación.
@@ -158,6 +175,14 @@
           <!-- Card 4 -->
           <div class="function-card">
             <div class="card-icon">🎭</div>
+            <div class="card-icon-svg">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+                <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                <line x1="15" y1="9" x2="15.01" y2="9"></line>
+              </svg>
+            </div>
             <h3 class="card-title">EVENTOS PROGRAMADOS</h3>
             <p class="card-description">
               Participa en eventos especiales, misiones grupales y narrativas organizadas por el equipo de administración.
@@ -171,6 +196,12 @@
           <!-- Card 5 -->
           <div class="function-card">
             <div class="card-icon">⚙️</div>
+            <div class="card-icon-svg">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+            </div>
             <h3 class="card-title">SISTEMA DE RANGOS</h3>
             <p class="card-description">
               Progresión estructurada con rangos de la Fundación, permisos escalonados y responsabilidades asignadas.
@@ -184,6 +215,11 @@
           <!-- Card 6 -->
           <div class="function-card">
             <div class="card-icon">🔧</div>
+            <div class="card-icon-svg">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+              </svg>
+            </div>
             <h3 class="card-title">HERRAMIENTAS DE CREACIÓN</h3>
             <p class="card-description">
               Conjunto de herramientas para crear artículos SCP originales, historias colaborativas y contenido canónico.
@@ -197,6 +233,13 @@
           <!-- Card 7 -->
           <div class="function-card">
             <div class="card-icon">📊</div>
+            <div class="card-icon-svg">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="3" y1="9" x2="21" y2="9"></line>
+                <line x1="9" y1="21" x2="9" y2="9"></line>
+              </svg>
+            </div>
             <h3 class="card-title">PANEL DE CONTROL</h3>
             <p class="card-description">
               Interfaz personalizable para gestionar personajes, seguir progreso y acceder a funciones avanzadas.
@@ -210,6 +253,11 @@
           <!-- Card 8 -->
           <div class="function-card">
             <div class="card-icon">🛡️</div>
+            <div class="card-icon-svg">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+              </svg>
+            </div>
             <h3 class="card-title">SISTEMA DE SEGURIDAD</h3>
             <p class="card-description">
               Protocolos de moderación avanzados, verificación de contenido y protección contra conducta inapropiada.
@@ -224,6 +272,12 @@
         <div class="section-footer">
           <div class="footer-note">
             <span class="note-icon">📌</span>
+            <div class="note-icon-svg">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                <circle cx="12" cy="10" r="3"></circle>
+              </svg>
+            </div>
             <span class="note-text">TODAS LAS FUNCIONES SUJETAS A ACTUALIZACIONES PERIÓDICAS</span>
           </div>
         </div>
@@ -549,10 +603,27 @@ onMounted(() => {
   width: 100%;
 }
 
+/* Iconos SVG - reemplazo de emojis */
 .card-icon {
-  font-size: 2.2rem;
-  color: #aaa;
-  margin-bottom: 0.5rem;
+  display: none; /* Ocultamos los emojis en desktop */
+}
+
+.card-icon-svg {
+  display: none; /* Oculto por defecto, se muestra en desktop */
+  width: 48px;
+  height: 48px;
+  margin-bottom: 1.5rem;
+  color: #ddd;
+  opacity: 0.8;
+}
+
+.note-icon-svg {
+  display: none;
+  width: 20px;
+  height: 20px;
+  color: #ffcc00;
+  opacity: 0.8;
+  flex-shrink: 0;
 }
 
 .card-title {
@@ -710,12 +781,14 @@ onMounted(() => {
   padding: 3rem 0;
 }
 
+/* CORRECCIÓN PARA EL GRID EN DESKTOP - NO SE CORTEN */
 .functions-grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 1.8rem;
   margin: 2.5rem 0;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .function-card {
@@ -742,6 +815,7 @@ onMounted(() => {
 }
 
 .function-card .card-icon {
+  display: block; /* Mostramos emojis solo en mobile */
   font-size: 2.8rem;
   margin-bottom: 1.5rem;
   color: #ddd;
@@ -819,6 +893,7 @@ onMounted(() => {
 }
 
 .note-icon {
+  display: block;
   color: #ffcc00;
   font-size: 1.2rem;
   flex-shrink: 0;
@@ -964,7 +1039,7 @@ onMounted(() => {
   }
 }
 
-/* Desktop styles */
+/* Desktop styles - CORRECCIONES PRINCIPALES */
 @media (min-width: 1024px) {
   .section-content {
     max-width: 1200px;
@@ -1016,19 +1091,51 @@ onMounted(() => {
     font-size: 1.1rem;
   }
   
+  /* CORRECCIÓN CRÍTICA: Grid de 4 columnas que no se corta */
   .functions-grid {
     grid-template-columns: repeat(4, 1fr);
-    gap: 2.5rem;
+    gap: 2rem; /* Reducido ligeramente para mejor ajuste */
+    width: 100%;
+    max-width: 100%;
+    margin: 2.5rem auto;
+    box-sizing: border-box;
   }
   
+  /* Asegurar que las tarjetas se ajusten correctamente */
   .function-card {
-    padding: 2.5rem;
+    padding: 1.8rem; /* Reducido ligeramente */
     min-height: 320px;
+    width: 100%;
+    box-sizing: border-box;
+    max-width: 100%;
+  }
+  
+  /* Mostrar iconos SVG en desktop, ocultar emojis */
+  .function-card .card-icon {
+    display: none;
+  }
+  
+  .card-icon-svg {
+    display: block;
+  }
+  
+  .note-icon {
+    display: none;
+  }
+  
+  .note-icon-svg {
+    display: block;
   }
   
   .function-card .card-title {
-    font-size: 1.5rem;
-    min-height: 4.5rem;
+    font-size: 1.3rem; /* Ligeramente más pequeño para 4 columnas */
+    min-height: 4rem;
+    line-height: 1.3;
+  }
+  
+  .card-description {
+    font-size: 0.95rem; /* Tamaño ligeramente reducido */
+    line-height: 1.5;
   }
   
   .action-buttons {
@@ -1065,8 +1172,23 @@ onMounted(() => {
     max-width: 1200px;
   }
   
+  /* Ajuste fino para pantallas muy grandes */
   .functions-grid {
     max-width: 1400px;
+    gap: 2.5rem;
+  }
+  
+  .function-card {
+    padding: 2rem;
+    min-height: 340px;
+  }
+  
+  .function-card .card-title {
+    font-size: 1.4rem;
+  }
+  
+  .card-description {
+    font-size: 1rem;
   }
 }
 
@@ -1098,11 +1220,24 @@ onMounted(() => {
     min-height: auto;
   }
   
-  /* Ocultar emoji y descripción en mobile */
-  .function-card .card-icon {
+  /* Ocultar SVG y mostrar emoji en mobile */
+  .card-icon-svg {
     display: none;
   }
-
+  
+  .function-card .card-icon {
+    display: block;
+    font-size: 2.2rem;
+  }
+  
+  .note-icon-svg {
+    display: none;
+  }
+  
+  .note-icon {
+    display: block;
+  }
+  
   .extra-text {
     display: none;
   }
@@ -1139,8 +1274,31 @@ onMounted(() => {
   .content-section.secondary {
     padding-left: 0;
     padding-right: 0;
-        align-items: stretch;
+    align-items: stretch;
   }
 }
 
+/* Ajuste adicional para evitar que se corte en desktop */
+@media (min-width: 1024px) and (max-width: 1399px) {
+  .functions-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.8rem;
+  }
+  
+  .function-card {
+    padding: 1.5rem;
+    min-height: 300px;
+  }
+  
+  .function-card .card-title {
+    font-size: 1.2rem;
+  }
+}
+
+/* Animación para el pulso de status */
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
 </style>
