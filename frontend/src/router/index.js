@@ -3,6 +3,8 @@ import Landing from "@/views/Landing.vue"
 import Privacy from "@/views/Privacy.vue"
 import TermsOfService from "@/views/TermsOfService.vue"
 import LoginSignup from "@/views/LoginSignup.vue"
+/* import Information from "@/views/Information.vue"
+ */import Error_404 from "@/views/Error_404.vue"
 
 const routes = [
   { path: "/", name: "Landing", component: Landing },
@@ -13,10 +15,21 @@ const routes = [
     name: 'LoginSignup',
     component: LoginSignup,
   },
-// Important! add a catch-all 404 page later
+/*   {
+    path: "/information",
+    name: "Information",
+    component: Information,
+  }, */
+  {
+    path: "/404",
+    name: "Error404",
+    component: Error_404,
+  },
+  // IMPORTANTE: El catch-all debe ser la ÚLTIMA ruta
   {
     path: '/:pathMatch(.*)*',
-    redirect: '/',
+    name: "NotFound",
+    component: Error_404,
   },
 ]
 
