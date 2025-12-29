@@ -10,9 +10,8 @@ import Footer from "./components/Footer.vue"
 
     <!-- MAIN CONTENT -->
     <main class="main-content">
-      <div class="content-wrapper">
-        <router-view />
-      </div>
+      <!-- REMOVEMOS el content-wrapper y dejamos router-view directamente -->
+      <router-view />
     </main>
 
     <!-- FOOTER -->
@@ -33,17 +32,8 @@ import Footer from "./components/Footer.vue"
 .main-content {
   flex: 1;
   padding-top: 64px; /* Espacio para header fixed */
-  padding-bottom: 0;
   width: 100%;
   overflow-x: hidden; /* Previene scroll horizontal */
-}
-
-.content-wrapper {
-  max-width: 100%;
-  width: 100%;
-  margin: 0 auto;
-  padding: 1rem;
-  box-sizing: border-box;
 }
 </style>
 
@@ -54,7 +44,7 @@ html, body {
   padding: 0;
   min-height: 100vh;
   background: #0a0a0a;
-  overflow-x: hidden; /* Previene scroll horizontal global */
+  overflow-x: hidden;
 }
 
 * {

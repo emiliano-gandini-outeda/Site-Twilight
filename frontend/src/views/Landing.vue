@@ -9,7 +9,7 @@
 
     <!-- Hero Section -->
     <section class="hero-section">
-      <div class="hero-container">
+      <div class="section-content">
         <div class="logo-container">
           <div class="logo-shadow"></div>
           <img src="/logo.png" alt="SCP Foundation Logo" class="scp-logo" />
@@ -34,40 +34,29 @@
 
     <!-- Site 81 In-Role Section -->
     <section class="content-section">
-      <div class="section-container">
+      <div class="section-content">
         <div class="section-header">
           <div class="section-number">01</div>
           <h2 class="section-title">SITE 81 - PROTOCOLO DE OPERACIONES</h2>
           <div class="section-classification">CLASIFICADO - NIVEL 3</div>
         </div>
-        <div class="section-content">
-          <div class="text-card">
-            <div class="card-header">
-              <div class="card-icon">📋</div>
-              <h3 class="card-title">DESCRIPCIÓN OPERATIVA</h3>
-            </div>
-            <div class="card-content">
-              <p class="card-text">
-                Site 81 opera como una instalación de contención secundaria bajo la jurisdicción del Sector-28. 
-                Especializado en entidades de clase Euclid y Keter con propiedades temporales o dimensionales atenuadas. 
-                La instalación mantiene protocolos de cuarentena extendida y sistemas de monitoreo de realidad en tiempo real.
-              </p>
-              <p class="card-text">
-                La infraestructura principal incluye 12 cámaras de contención de nivel 4, 3 laboratorios de investigación temporal 
-                y un sistema de redundancia dimensional que opera las 24 horas del día. Todo el personal debe someterse a evaluaciones 
-                de realidad cada 72 horas y llevar dispositivos de anclaje dimensional en todo momento.
-              </p>
-            </div>
-            <div class="card-footer">
-              <div class="status-indicators">
-                <div class="status-item">
-                  <div class="status-light active"></div>
-                  <span class="status-text">CONTENCIÓN: ESTABLE</span>
-                </div>
-                <div class="status-item">
-                  <div class="status-light active"></div>
-                  <span class="status-text">REALIDAD: ANCLADA</span>
-                </div>
+        <div class="text-card">
+          <div class="card-body">
+            <p class="card-text">
+              Site 81 opera como una instalación de contención secundaria bajo la jurisdicción del Sector-28. 
+              Especializado en entidades de clase Euclid y Keter con propiedades temporales o dimensionales atenuadas. 
+              La instalación mantiene protocolos de cuarentena extendida y sistemas de monitoreo de realidad en tiempo real.
+            </p>
+          </div>
+          <div class="card-footer">
+            <div class="status-indicators">
+              <div class="status-item">
+                <div class="status-light active"></div>
+                <span class="status-text">CONTENCIÓN: ESTABLE</span>
+              </div>
+              <div class="status-item">
+                <div class="status-light active"></div>
+                <span class="status-text">REALIDAD: ANCLADA</span>
               </div>
             </div>
           </div>
@@ -77,41 +66,30 @@
 
     <!-- Site Twilight Off-Role Section -->
     <section class="content-section secondary">
-      <div class="section-container">
+      <div class="section-content">
         <div class="section-header">
           <div class="section-number">02</div>
           <h2 class="section-title">SITE TWILIGHT - INFRAESTRUCTURA</h2>
           <div class="section-classification">RESTRINGIDO - NIVEL 2</div>
         </div>
-        <div class="section-content">
-          <div class="text-card">
-            <div class="card-header">
-              <div class="card-icon">🏢</div>
-              <h3 class="card-title">PLATAFORMA DE ROLEPLAY</h3>
-            </div>
-            <div class="card-content">
-              <p class="card-text">
-                Site Twilight es una plataforma de roleplay dedicada a la recreación de experiencias dentro del universo SCP. 
-                Ofrecemos un entorno inmersivo donde los usuarios pueden participar en narrativas colaborativas, desarrollar personajes 
-                únicos y explorar escenarios inspirados en la Fundación SCP.
-              </p>
-              <p class="card-text">
-                Nuestra plataforma utiliza tecnología moderna para proporcionar una experiencia fluida y accesible desde cualquier dispositivo. 
-                Con integración de Discord para comunicación en tiempo real, sistema de personajes personalizables y eventos regulares 
-                organizados por nuestro equipo de administración.
-              </p>
-            </div>
-            <div class="card-footer">
-              <div class="action-buttons">
-                <a href="https://discord.com/invite/37BrVa6b8E" target="_blank" class="discord-button">
-                  <span class="button-icon">🎮</span>
-                  <span class="button-text">UNIRSE AL DISCORD</span>
-                </a>
-                <button class="info-button">
-                  <span class="button-icon">ℹ</span>
-                  <span class="button-text">MÁS INFORMACIÓN</span>
-                </button>
-              </div>
+        <div class="text-card">
+          <div class="card-body">
+            <p class="card-text">
+              Site Twilight es una plataforma de roleplay dedicada a la recreación de experiencias dentro del universo SCP. 
+              Ofrecemos un entorno inmersivo donde los usuarios pueden participar en narrativas colaborativas, desarrollar personajes 
+              únicos y explorar escenarios inspirados en la Fundación SCP.
+            </p>
+          </div>
+          <div class="card-footer">
+            <div class="action-buttons">
+              <a href="https://discord.com/invite/37BrVa6b8E" target="_blank" class="discord-button">
+                <span class="button-icon">🎮</span>
+                <span class="button-text">UNIRSE AL DISCORD</span>
+              </a>
+              <button class="info-button">
+                <span class="button-icon">ℹ</span>
+                <span class="button-text">MÁS INFORMACIÓN</span>
+              </button>
             </div>
           </div>
         </div>
@@ -120,7 +98,7 @@
 
     <!-- Site Functions Section -->
     <section class="functions-section">
-      <div class="section-container">
+      <div class="section-content">
         <div class="section-header">
           <div class="section-number">03</div>
           <h2 class="section-title">FUNCIONES DEL SITIO</h2>
@@ -264,19 +242,20 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* Base mobile styles - mobile first */
+/* Reset y base mobile */
 .landing-page {
   position: relative;
   min-height: 100vh;
-  padding: 1rem;
   color: #d8d8d8;
   background: #0a0a0a;
   overflow-x: hidden;
   font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
   line-height: 1.6;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-/* Site Background (mismo que Privacy.vue) */
+/* Fondo SCP */
 .site-background {
   position: fixed;
   top: 0;
@@ -342,24 +321,49 @@ onMounted(() => {
   100% { transform: translateY(60px); }
 }
 
-/* Hero Section */
-.hero-section {
+/* Secciones comunes - CENTRADAS EN PARTICLES */
+.hero-section,
+.content-section,
+.functions-section {
   position: relative;
-  padding: 4rem 1rem 2rem;
-  text-align: center;
   z-index: 1;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 2rem 0; /* Padding vertical solo */
 }
 
-.hero-container {
-  max-width: 800px;
+.content-section.secondary {
+  background: rgba(15, 15, 15, 0.5);
+  border-top: 1px solid #333;
+  border-bottom: 1px solid #333;
+}
+
+/* Contenedor común para todo el contenido - CENTRADO */
+.section-content {
+  width: 100%;
+  max-width: calc(100vw - 1rem); /* 100% del viewport menos 2rem de margen */
   margin: 0 auto;
+  padding: 0 0.5rem; /* Padding horizontal interno */
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Hero Section - Mobile First */
+.hero-section {
+  padding: 4rem 0 3rem;
 }
 
 .logo-container {
   position: relative;
-  margin: 0 auto 2rem;
-  width: 200px;
-  height: 200px;
+  margin: 0 auto 1.5rem;
+  width: 180px;
+  height: 180px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .scp-logo {
@@ -389,157 +393,183 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
+  width: 100%;
+  align-items: center;
 }
 
 .motto-word {
-  font-size: 1.8rem;
+  font-size: 1.5rem;
   font-weight: 700;
-  letter-spacing: 3px;
+  letter-spacing: 2px;
   color: #ffffff;
   text-transform: uppercase;
   text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
   font-family: 'Courier New', monospace;
+  display: block;
+  text-align: center;
 }
 
 .site-designation {
   margin-bottom: 1.5rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .designation-line {
   height: 1px;
   background: linear-gradient(90deg, transparent, #555, transparent);
-  margin: 1rem auto;
-  width: 80%;
+  margin: 0.8rem 0;
+  width: 90%;
+  max-width: 300px;
 }
 
 .site-title {
-  font-size: 2rem;
+  font-size: 1.8rem;
   font-weight: 300;
-  letter-spacing: 2px;
+  letter-spacing: 1.5px;
   color: #ffffff;
   text-transform: uppercase;
-  margin: 1rem 0;
+  margin: 0.5rem 0;
+  text-align: center;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .security-clearance {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 0.8rem 1.5rem;
+  justify-content: center;
+  gap: 0.8rem;
+  padding: 0.7rem 1.2rem;
   background: rgba(30, 30, 30, 0.7);
   border: 1px solid #444;
   border-radius: 2px;
+  max-width: 300px;
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
 }
 
 .clearance-icon {
-  font-size: 1rem;
+  font-size: 0.9rem;
   color: #aaa;
+  flex-shrink: 0;
 }
 
 .clearance-text {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: #ddd;
-  letter-spacing: 1px;
+  letter-spacing: 0.8px;
   text-transform: uppercase;
+  text-align: center;
+  white-space: nowrap;
 }
 
-/* Content Sections */
-.content-section {
-  position: relative;
-  padding: 2rem 1rem;
-  z-index: 1;
-}
-
-.content-section.secondary {
-  background: rgba(15, 15, 15, 0.5);
-  border-top: 1px solid #333;
-  border-bottom: 1px solid #333;
-}
-
-.section-container {
-  max-width: 900px;
-  margin: 0 auto;
-}
-
+/* Section Header común */
 .section-header {
   text-align: center;
   margin-bottom: 2rem;
   padding-bottom: 1rem;
   border-bottom: 1px solid #333;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .section-number {
-  font-size: 3rem;
+  font-size: 2.5rem;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.1);
   margin-bottom: 0.5rem;
   font-family: 'Courier New', monospace;
+  line-height: 1;
 }
 
 .section-title {
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   font-weight: 600;
   color: #e0e0e0;
-  letter-spacing: 1px;
+  letter-spacing: 0.8px;
   text-transform: uppercase;
   margin: 0.5rem 0;
+  text-align: center;
+  width: 100%;
+  box-sizing: border-box;
+  line-height: 1.3;
 }
 
 .section-classification {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: #888;
   letter-spacing: 0.5px;
   text-transform: uppercase;
   margin-top: 0.5rem;
-}
-
-.section-content {
+  text-align: center;
   width: 100%;
 }
 
-/* Text Cards */
+/* Text Cards - MUY ANCHAS Y BIEN CENTRADAS */
 .text-card {
   background: rgba(25, 25, 25, 0.7);
   border: 1px solid #444;
-  border-radius: 2px;
-  padding: 1.5rem;
-  width: 100%;
+  border-radius: 6px;
+  padding: 2rem;
+  width: 100%; /* 100% del section-content */
+  max-width: 100%; /* Sin restricción */
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 auto;
 }
 
 .card-header {
   display: flex;
+  flex-direction: column;
   align-items: center;
   gap: 1rem;
-  margin-bottom: 1.5rem;
-  padding-bottom: 0.8rem;
+  margin-bottom: 1.8rem;
+  padding-bottom: 1rem;
   border-bottom: 1px solid #333;
+  text-align: center;
+  width: 100%;
 }
 
 .card-icon {
-  font-size: 1.5rem;
+  font-size: 2.2rem;
   color: #aaa;
+  margin-bottom: 0.5rem;
 }
 
 .card-title {
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   font-weight: 600;
   color: #ddd;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.8px;
   margin: 0;
+  text-align: center;
+  width: 100%;
+  line-height: 1.3;
 }
 
-.card-content {
-  margin-bottom: 1.5rem;
+.card-body {
+  margin-bottom: 2rem;
+  width: 100%;
 }
 
 .card-text {
   color: #ccc;
-  line-height: 1.6;
-  margin-bottom: 1rem;
-  text-align: justify;
+  line-height: 1.7;
+  margin-bottom: 1.2rem;
+  text-align: center;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 1rem;
 }
 
 .card-text:last-child {
@@ -550,18 +580,27 @@ onMounted(() => {
 .status-indicators {
   display: flex;
   flex-direction: column;
-  gap: 0.8rem;
+  gap: 1rem;
+  width: 100%;
+  align-items: center;
+  margin-top: 1rem;
 }
 
 .status-item {
   display: flex;
   align-items: center;
-  gap: 0.8rem;
+  justify-content: center;
+  gap: 1rem;
+  width: 100%;
+  max-width: 280px;
+  padding: 0.8rem 1.2rem;
+  background: rgba(30, 30, 30, 0.5);
+  border-radius: 4px;
 }
 
 .status-light {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   background: #333;
   flex-shrink: 0;
@@ -574,301 +613,520 @@ onMounted(() => {
 }
 
 .status-text {
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   color: #aaa;
   font-family: 'Consolas', monospace;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.8px;
+  text-align: center;
+  font-weight: 500;
 }
 
 /* Action Buttons */
 .action-buttons {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.2rem;
+  width: 100%;
+  align-items: center;
+  margin-top: 1.5rem;
 }
 
 .discord-button {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.8rem;
-  padding: 1rem 1.5rem;
-  background: rgba(114, 137, 218, 0.2);
-  border: 1px solid rgba(114, 137, 218, 0.4);
+  gap: 1rem;
+  padding: 1.2rem 1.8rem;
+  background: rgba(114, 137, 218, 0.25);
+  border: 1px solid rgba(114, 137, 218, 0.5);
   color: #d8d8d8;
   text-decoration: none;
-  border-radius: 2px;
+  border-radius: 4px;
   transition: all 0.3s ease;
-  font-size: 0.95rem;
-  font-weight: 500;
-  letter-spacing: 0.5px;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  width: 100%;
+  max-width: 320px;
+  box-sizing: border-box;
 }
 
 .discord-button:hover {
-  background: rgba(114, 137, 218, 0.3);
-  border-color: rgba(114, 137, 218, 0.6);
-  transform: translateY(-2px);
+  background: rgba(114, 137, 218, 0.35);
+  border-color: rgba(114, 137, 218, 0.7);
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(114, 137, 218, 0.2);
 }
 
 .info-button {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.8rem;
-  padding: 1rem 1.5rem;
-  background: rgba(60, 60, 60, 0.3);
-  border: 1px solid #555;
+  gap: 1rem;
+  padding: 1.2rem 1.8rem;
+  background: rgba(60, 60, 60, 0.4);
+  border: 1px solid #666;
   color: #d8d8d8;
-  border-radius: 2px;
+  border-radius: 4px;
   transition: all 0.3s ease;
-  font-size: 0.95rem;
-  font-weight: 500;
-  letter-spacing: 0.5px;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.8px;
   cursor: pointer;
   width: 100%;
+  max-width: 320px;
+  box-sizing: border-box;
 }
 
 .info-button:hover {
-  background: rgba(70, 70, 70, 0.4);
-  border-color: #666;
-  transform: translateY(-2px);
+  background: rgba(80, 80, 80, 0.5);
+  border-color: #777;
+  transform: translateY(-3px);
 }
 
 .button-icon {
-  font-size: 1.1rem;
+  font-size: 1.3rem;
+  flex-shrink: 0;
 }
 
 .button-text {
   text-transform: uppercase;
+  text-align: center;
+  font-weight: 600;
 }
 
-/* Functions Section */
+/* Functions Section - TARJETAS ANCHAS Y CENTRADAS */
 .functions-section {
-  position: relative;
-  padding: 2rem 1rem;
-  z-index: 1;
+  padding: 3rem 0;
 }
 
 .functions-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1.5rem;
-  margin: 2rem 0;
+  gap: 1.8rem;
+  margin: 2.5rem 0;
+  width: 100%;
 }
 
 .function-card {
-  background: rgba(30, 30, 30, 0.6);
-  border: 1px solid #444;
-  border-radius: 2px;
-  padding: 1.5rem;
+  background: rgba(30, 30, 30, 0.7);
+  border: 1px solid #555;
+  border-radius: 8px;
+  padding: 2rem;
   transition: all 0.3s ease;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 280px;
+  justify-content: space-between;
 }
 
 .function-card:hover {
-  background: rgba(40, 40, 40, 0.7);
-  border-color: #666;
-  transform: translateY(-3px);
+  background: rgba(40, 40, 40, 0.8);
+  border-color: #777;
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
 }
 
 .function-card .card-icon {
-  font-size: 2rem;
-  margin-bottom: 1rem;
-}
-
-.function-card .card-title {
-  font-size: 1rem;
-  margin-bottom: 1rem;
+  font-size: 2.8rem;
+  margin-bottom: 1.5rem;
   color: #ddd;
 }
 
+.function-card .card-title {
+  font-size: 1.3rem;
+  margin-bottom: 1.2rem;
+  color: #eee;
+  width: 100%;
+  font-weight: 600;
+  line-height: 1.4;
+  min-height: 3.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .card-description {
-  color: #bbb;
-  font-size: 0.9rem;
-  line-height: 1.5;
-  margin-bottom: 1.5rem;
+  color: #ccc;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  margin-bottom: 1.8rem;
   flex: 1;
+  width: 100%;
+  text-align: center;
 }
 
 .card-status {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  background: rgba(20, 20, 20, 0.7);
-  border-radius: 2px;
-  width: 100%;
   justify-content: center;
+  gap: 0.8rem;
+  padding: 0.8rem 1.2rem;
+  background: rgba(20, 20, 20, 0.8);
+  border-radius: 4px;
+  width: 100%;
+  max-width: 220px;
+  box-sizing: border-box;
+  border: 1px solid #444;
+}
+
+.card-status .status-light {
+  width: 10px;
+  height: 10px;
+}
+
+.card-status .status-text {
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
 }
 
 /* Section Footer */
 .section-footer {
-  margin-top: 2rem;
+  margin-top: 3rem;
   text-align: center;
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 .footer-note {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.8rem 1.5rem;
-  background: rgba(40, 30, 0, 0.3);
+  justify-content: center;
+  gap: 0.8rem;
+  padding: 1rem 1.5rem;
+  background: rgba(40, 30, 0, 0.4);
   border: 1px solid #aa8800;
-  border-radius: 2px;
+  border-radius: 4px;
+  max-width: 100%;
+  width: fit-content;
+  flex-wrap: wrap;
 }
 
 .note-icon {
   color: #ffcc00;
-  font-size: 1rem;
+  font-size: 1.2rem;
+  flex-shrink: 0;
 }
 
 .note-text {
-  font-size: 0.8rem;
-  color: #ddd;
-  letter-spacing: 0.5px;
+  font-size: 0.85rem;
+  color: #eee;
+  letter-spacing: 0.6px;
   text-transform: uppercase;
+  text-align: center;
+  font-weight: 500;
+  line-height: 1.4;
 }
 
 /* Document Footer */
 .document-footer {
   position: relative;
-  margin-top: 3rem;
-  padding-top: 2rem;
+  margin-top: 4rem;
+  padding: 2.5rem 0 1.5rem;
   text-align: center;
   z-index: 1;
   border-top: 1px solid #333;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(15, 15, 15, 0.8);
 }
 
 .footer-line {
   height: 1px;
-  background: linear-gradient(90deg, transparent, #555, transparent);
-  margin-bottom: 1.2rem;
+  background: linear-gradient(90deg, transparent, #666, transparent);
+  margin-bottom: 1.5rem;
+  width: 100%;
+  max-width: 600px;
 }
 
 .footer-text {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  font-size: 0.8rem;
-  color: #777;
-  letter-spacing: 0.5px;
+  gap: 1rem;
+  font-size: 0.85rem;
+  color: #888;
+  letter-spacing: 0.8px;
   text-transform: uppercase;
+  width: 100%;
+  max-width: 600px;
+  align-items: center;
+}
+
+.footer-text span {
+  text-align: center;
+  width: 100%;
+  font-weight: 500;
+  line-height: 1.5;
 }
 
 /* Tablet styles */
 @media (min-width: 640px) {
-  .landing-page {
-    padding: 1.5rem;
+  .section-content {
+    max-width: calc(100vw - 4rem);
+    padding: 0 2rem;
   }
   
   .hero-section {
-    padding: 5rem 2rem 3rem;
+    padding: 5rem 0 4rem;
   }
   
   .logo-container {
-    width: 250px;
-    height: 250px;
+    width: 220px;
+    height: 220px;
   }
   
   .motto-word {
-    font-size: 2.2rem;
+    font-size: 1.8rem;
   }
   
   .site-title {
-    font-size: 2.5rem;
+    font-size: 2.2rem;
   }
   
   .section-title {
     font-size: 1.6rem;
   }
   
+  .text-card {
+    padding: 2.5rem;
+    border-radius: 8px;
+  }
+  
+  .card-title {
+    font-size: 1.6rem;
+  }
+  
+  .card-text {
+    font-size: 1.05rem;
+  }
+  
   .action-buttons {
     flex-direction: row;
     justify-content: center;
+    flex-wrap: wrap;
   }
   
   .discord-button,
   .info-button {
-    min-width: 200px;
+    min-width: 240px;
+    max-width: 280px;
+    padding: 1.3rem 2rem;
   }
   
   .functions-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+  
+  .function-card {
+    padding: 2.2rem;
+    min-height: 300px;
+  }
+  
+  .function-card .card-title {
+    font-size: 1.4rem;
+    min-height: 4rem;
+  }
+  
+  .card-description {
+    font-size: 1.1rem;
   }
   
   .footer-text {
     flex-direction: row;
     justify-content: space-between;
+    max-width: 800px;
+    gap: 1.5rem;
+  }
+  
+  .footer-text span {
+    text-align: center;
+    flex: 1;
   }
 }
 
 /* Desktop styles */
 @media (min-width: 1024px) {
-  .landing-page {
-    padding: 2rem;
+  .section-content {
+    max-width: 1200px;
+    padding: 0 2rem;
   }
   
   .hero-section {
-    padding: 6rem 2rem 4rem;
+    padding: 6rem 0 5rem;
   }
   
   .logo-container {
-    width: 300px;
-    height: 300px;
+    width: 280px;
+    height: 280px;
   }
   
   .motto-word {
-    font-size: 2.8rem;
+    font-size: 2.2rem;
   }
   
   .hero-motto {
     flex-direction: row;
     justify-content: center;
-    gap: 2rem;
+    gap: 2.5rem;
   }
   
   .site-title {
-    font-size: 3rem;
+    font-size: 2.8rem;
   }
   
   .content-section,
   .functions-section {
-    padding: 3rem 2rem;
+    padding: 4rem 0;
   }
   
   .section-title {
-    font-size: 1.8rem;
+    font-size: 1.9rem;
   }
   
   .text-card {
-    padding: 2rem;
+    padding: 3rem;
+    border-radius: 10px;
+  }
+  
+  .card-title {
+    font-size: 1.8rem;
+  }
+  
+  .card-text {
+    font-size: 1.1rem;
   }
   
   .functions-grid {
     grid-template-columns: repeat(4, 1fr);
+    gap: 2.5rem;
   }
   
   .function-card {
-    padding: 2rem;
+    padding: 2.5rem;
+    min-height: 320px;
+  }
+  
+  .function-card .card-title {
+    font-size: 1.5rem;
+    min-height: 4.5rem;
+  }
+  
+  .action-buttons {
+    max-width: 900px;
+  }
+  
+  .discord-button,
+  .info-button {
+    max-width: 300px;
+    padding: 1.5rem 2.2rem;
+    font-size: 1.1rem;
   }
 }
 
 /* Large Desktop styles */
 @media (min-width: 1400px) {
-  .hero-container,
-  .section-container {
-    max-width: 1200px;
+  .section-content {
+    max-width: 1400px;
+  }
+  
+  .hero-section {
+    padding: 7rem 0 6rem;
   }
   
   .motto-word {
-    font-size: 3.2rem;
+    font-size: 2.5rem;
   }
   
   .site-title {
-    font-size: 3.5rem;
+    font-size: 3.2rem;
+  }
+  
+  .text-card {
+    max-width: 1200px;
+  }
+  
+  .functions-grid {
+    max-width: 1400px;
   }
 }
+
+/* Asegurar que todo esté centrado en mobile */
+@media (max-width: 639px) {
+  .text-card,
+  .function-card {
+    width: 100%;
+    max-width: 100%;
+    padding: 1.5rem 1rem;
+    margin: 0;
+  }
+  
+  .functions-grid {
+    width: 100%;
+    justify-items: center;
+  }
+
+  .content-section,
+  .functions-section,
+  .hero-section {
+    display: block; /* rompe el centrado flex */
+  }
+  .function-card {
+    width: 100%;
+    max-width: 100%;
+    padding: 1.5rem 1rem;
+    margin: 0;
+    min-height: auto;
+  }
+  
+  /* Ocultar emoji y descripción en mobile */
+  .function-card .card-icon {
+    display: none;
+  }
+  
+  .function-card .card-description {
+    display: none;
+  }
+  
+  /* Ajustar título de función en mobile */
+  .function-card .card-title {
+    font-size: 1.1rem;
+    min-height: auto;
+    margin-bottom: 1rem;
+  }
+  
+  .functions-grid {
+    width: 100%;
+    gap: 1.2rem;
+  }
+
+}
+
+@media (max-width: 639px) {
+  .section-content {
+    max-width: none;
+    width: 100%;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+}
+
+@media (max-width: 639px) {
+  .content-section,
+  .content-section.secondary {
+    padding-left: 0;
+    padding-right: 0;
+        align-items: stretch;
+  }
+}
+
 </style>
