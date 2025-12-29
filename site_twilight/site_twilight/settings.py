@@ -31,6 +31,8 @@ DEBUG = True # os.environ.get('DEBUG', 'False').lower() == 'true'
 
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
+CSRF_TRUSTED_ORIGINS = os.environ.get('CSRF_TRUSTED_ORIGINS', 'localhost,127.0.0.1').split(',')
+
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
 # Application definition
