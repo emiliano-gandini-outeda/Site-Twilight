@@ -35,23 +35,48 @@
         </div>
 
         <button class="nav-button" @click="openDiscord">
-          <span class="button-icon">🎮</span>
+          <span class="button-emoji">🎮</span>
+          <div class="button-icon-svg">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+            </svg>
+          </div>
           <span class="button-text">Discord</span>
         </button>
         
         <button class="nav-button secondary" @click="goToInfo">
-          <span class="button-icon">ℹ</span>
+          <span class="button-emoji">ℹ</span>
+          <div class="button-icon-svg">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+          </div>
           <span class="button-text">Info</span>
         </button>
         
         <button class="nav-button secondary" @click="goToDashboard">
-          <span class="button-icon">📊</span>
+          <span class="button-emoji">📊</span>
+          <div class="button-icon-svg">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="3" y1="9" x2="21" y2="9"></line>
+              <line x1="9" y1="21" x2="9" y2="9"></line>
+            </svg>
+          </div>
           <span class="button-text">Dashboard</span>
         </button>
 
         <div class="user-menu" @click="toggleDropdown">
           <div class="account-display">
-            <span class="account-icon">👤</span>
+            <span class="account-emoji">👤</span>
+            <div class="account-icon-svg">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+            </div>
             <span class="account-text">
               <template v-if="user && user.is_authenticated">
                 {{ user.roblox_username }}
@@ -75,21 +100,45 @@
             
             <template v-if="user && user.is_authenticated">
               <a href="#" class="dropdown-item">
-                <span class="item-icon">⚙</span>
+                <span class="item-emoji">⚙</span>
+                <div class="item-icon-svg">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                  </svg>
+                </div>
                 <span class="item-text">Settings</span>
               </a>
               <a href="#" class="dropdown-item">
-                <span class="item-icon">📁</span>
+                <span class="item-emoji">📁</span>
+                <div class="item-icon-svg">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                  </svg>
+                </div>
                 <span class="item-text">Profile</span>
               </a>
               <a href="/accounts/logout" class="dropdown-item logout">
-                <span class="item-icon">⎋</span>
+                <span class="item-emoji">⎋</span>
+                <div class="item-icon-svg">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                    <polyline points="16 17 21 12 16 7"></polyline>
+                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                  </svg>
+                </div>
                 <span class="item-text">Logout</span>
               </a>
             </template>
             <template v-else>
               <a href="/accounts/login/roblox" class="dropdown-item login">
-                <span class="item-icon">🔑</span>
+                <span class="item-emoji">🔑</span>
+                <div class="item-icon-svg">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                  </svg>
+                </div>
                 <span class="item-text">Login / Signup</span>
               </a>
             </template>
@@ -101,11 +150,17 @@
         </div>
       </div>
 
-      <!-- Mobile Navigation Menu -->
+      <!-- Mobile Navigation Menu - ACTUALIZADO CON SVG -->
       <div v-if="mobileMenuOpen" class="mobile-nav">
         <div class="mobile-nav-header">
           <div class="mobile-user-info">
-            <span class="mobile-account-icon">👤</span>
+            <span class="mobile-account-emoji">👤</span>
+            <div class="mobile-account-icon-svg">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+            </div>
             <div>
               <div class="mobile-account-name">
                 <template v-if="user && user.is_authenticated">
@@ -128,17 +183,36 @@
 
         <div class="mobile-nav-items">
           <button class="mobile-nav-item" @click="openDiscord">
-            <span class="mobile-nav-icon">🎮</span>
+            <span class="mobile-nav-emoji">🎮</span>
+            <div class="mobile-nav-icon-svg">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+              </svg>
+            </div>
             <span class="mobile-nav-text">Discord Server</span>
           </button>
           
           <button class="mobile-nav-item" @click="goToInfo">
-            <span class="mobile-nav-icon">ℹ</span>
+            <span class="mobile-nav-emoji">ℹ</span>
+            <div class="mobile-nav-icon-svg">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+              </svg>
+            </div>
             <span class="mobile-nav-text">Site Information</span>
           </button>
           
           <button class="mobile-nav-item" @click="goToDashboard">
-            <span class="mobile-nav-icon">📊</span>
+            <span class="mobile-nav-emoji">📊</span>
+            <div class="mobile-nav-icon-svg">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="3" y1="9" x2="21" y2="9"></line>
+                <line x1="9" y1="21" x2="9" y2="9"></line>
+              </svg>
+            </div>
             <span class="mobile-nav-text">Dashboard</span>
           </button>
           
@@ -146,21 +220,45 @@
           
           <template v-if="user && user.is_authenticated">
             <a href="#" class="mobile-nav-item">
-              <span class="mobile-nav-icon">⚙</span>
+              <span class="mobile-nav-emoji">⚙</span>
+              <div class="mobile-nav-icon-svg">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="3"></circle>
+                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
+              </div>
               <span class="mobile-nav-text">Settings</span>
             </a>
             <a href="#" class="mobile-nav-item">
-              <span class="mobile-nav-icon">📁</span>
+              <span class="mobile-nav-emoji">📁</span>
+              <div class="mobile-nav-icon-svg">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                </svg>
+              </div>
               <span class="mobile-nav-text">Profile</span>
             </a>
             <a href="/accounts/logout" class="mobile-nav-item logout">
-              <span class="mobile-nav-icon">⎋</span>
+              <span class="mobile-nav-emoji">⎋</span>
+              <div class="mobile-nav-icon-svg">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                  <polyline points="16 17 21 12 16 7"></polyline>
+                  <line x1="21" y1="12" x2="9" y2="12"></line>
+                </svg>
+              </div>
               <span class="mobile-nav-text">Logout</span>
             </a>
           </template>
           <template v-else>
             <a href="/accounts/login/roblox" class="mobile-nav-item login">
-              <span class="mobile-nav-icon">🔑</span>
+              <span class="mobile-nav-emoji">🔑</span>
+              <div class="mobile-nav-icon-svg">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+              </div>
               <span class="mobile-nav-text">Login with Roblox</span>
             </a>
           </template>
@@ -168,7 +266,13 @@
 
         <div class="mobile-nav-footer">
           <button class="mobile-close-btn" @click="closeMobileMenu">
-            <span class="close-icon">✕</span>
+            <span class="close-emoji">✕</span>
+            <div class="close-icon-svg">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </div>
             <span class="close-text">CLOSE MENU</span>
           </button>
           <span class="mobile-footer-text">SITE TWILIGHT SECURED FACILITY</span>
@@ -349,13 +453,13 @@ onUnmounted(() => {
   gap: 0.5rem;
 }
 
-/* Mobile Menu Button */
+/* Mobile Menu Button - NORMALIZADO */
 .mobile-menu-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   background: rgba(30, 30, 30, 0.8);
   border: 1px solid #444;
   border-radius: 2px;
@@ -363,6 +467,7 @@ onUnmounted(() => {
   padding: 0;
   z-index: 1002;
   transition: all 0.3s ease;
+  box-sizing: border-box;
 }
 
 .mobile-menu-btn:hover {
@@ -401,7 +506,7 @@ onUnmounted(() => {
   transform: rotate(-45deg) translate(5px, -5px);
 }
 
-/* Logo Section */
+/* Logo Section - AUMENTADO */
 .logo-section {
   display: flex;
   align-items: center;
@@ -411,8 +516,8 @@ onUnmounted(() => {
 }
 
 .logo-img {
-  height: 32px;
-  width: 32px;
+  height: 40px;
+  width: 40px;
   object-fit: contain;
   filter: grayscale(0.3) brightness(1.2);
 }
@@ -424,7 +529,7 @@ onUnmounted(() => {
 }
 
 .site-title {
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-weight: 700;
   letter-spacing: 1px;
   color: #fff;
@@ -439,12 +544,13 @@ onUnmounted(() => {
   text-transform: uppercase;
 }
 
-/* Mobile SSU Indicator */
+/* Mobile SSU Indicator - NORMALIZADO */
 .mobile-ssu {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.4rem;
-  padding: 0.4rem 0.6rem;
+  padding: 0 0.8rem;
   background: rgba(30, 30, 30, 0.8);
   border: 1px solid #444;
   border-radius: 2px;
@@ -452,6 +558,9 @@ onUnmounted(() => {
   z-index: 1001;
   transition: all 0.3s ease;
   cursor: pointer;
+  height: 44px;
+  min-width: 80px;
+  box-sizing: border-box;
 }
 
 .mobile-ssu:hover {
@@ -481,6 +590,7 @@ onUnmounted(() => {
   border-radius: 50%;
   background: #333;
   transition: all 0.3s ease;
+  flex-shrink: 0;
 }
 
 .ssu-light.active {
@@ -495,12 +605,40 @@ onUnmounted(() => {
   100% { opacity: 0.6; }
 }
 
+/* Iconos SVG para mobile - AHORA VISIBLES */
+.mobile-nav-icon-svg,
+.mobile-account-icon-svg,
+.close-icon-svg {
+  display: block;
+  width: 22px;
+  height: 22px;
+  color: #d8d8d8;
+  opacity: 0.9;
+  flex-shrink: 0;
+}
+
+.mobile-account-icon-svg {
+  color: #aaa;
+}
+
+.close-icon-svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Emojis para mobile - OCULTOS */
+.mobile-nav-emoji,
+.mobile-account-emoji,
+.close-emoji {
+  display: none;
+}
+
 /* Desktop Navigation - Hidden on mobile */
 .desktop-nav {
   display: none;
 }
 
-/* Mobile Navigation Menu */
+/* Mobile Navigation Menu - ACTUALIZADO */
 .mobile-nav {
   position: fixed;
   top: 0;
@@ -540,9 +678,8 @@ onUnmounted(() => {
   margin-bottom: 1rem;
 }
 
-.mobile-account-icon {
-  font-size: 1.5rem;
-  color: #aaa;
+.mobile-account-emoji {
+  display: none;
 }
 
 .mobile-account-name {
@@ -619,6 +756,8 @@ onUnmounted(() => {
   cursor: pointer;
   transition: all 0.2s ease;
   border-left: 3px solid transparent;
+  height: 56px;
+  box-sizing: border-box;
 }
 
 .mobile-nav-item:hover {
@@ -632,13 +771,6 @@ onUnmounted(() => {
 
 .mobile-nav-item.logout:hover {
   border-left-color: #cc0000;
-}
-
-.mobile-nav-icon {
-  font-size: 1.1rem;
-  opacity: 0.9;
-  width: 24px;
-  text-align: center;
 }
 
 .mobile-nav-text {
@@ -676,6 +808,8 @@ onUnmounted(() => {
   transition: all 0.3s ease;
   font-family: inherit;
   font-size: 0.9rem;
+  height: 44px;
+  box-sizing: border-box;
 }
 
 .mobile-close-btn:hover {
@@ -683,10 +817,8 @@ onUnmounted(() => {
   border-color: #666;
 }
 
-.close-icon {
-  font-size: 1.2rem;
-  font-weight: normal;
-  line-height: 1;
+.close-emoji {
+  display: none;
 }
 
 .close-text {
@@ -734,21 +866,33 @@ onUnmounted(() => {
   }
   
   .logo-img {
-    height: 36px;
-    width: 36px;
+    height: 44px;
+    width: 44px;
   }
   
   .site-title {
-    font-size: 1rem;
+    font-size: 1.1rem;
   }
   
   .mobile-ssu {
-    padding: 0.5rem 0.8rem;
+    padding: 0 1rem;
+    min-width: 90px;
   }
   
   .mobile-nav {
     width: 70%;
     max-width: 380px;
+  }
+  
+  .mobile-nav-item {
+    height: 60px;
+    padding: 1rem 1.5rem;
+  }
+  
+  .mobile-nav-icon-svg,
+  .mobile-account-icon-svg {
+    width: 24px;
+    height: 24px;
   }
 }
 
@@ -776,29 +920,33 @@ onUnmounted(() => {
   }
   
   .logo-img {
-    height: 40px;
-    width: 40px;
+    height: 50px;
+    width: 50px;
   }
   
   .site-title {
-    font-size: 1.2rem;
+    font-size: 1.3rem;
   }
   
   .site-subtitle {
-    font-size: 0.7rem;
+    font-size: 0.75rem;
   }
   
   /* Desktop SSU Indicator */
   .ssu-indicator {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 0.5rem;
-    padding: 0.5rem 0.8rem;
+    padding: 0 0.8rem;
     background: rgba(30, 30, 30, 0.8);
     border: 1px solid #444;
     border-radius: 2px;
     font-family: 'Consolas', monospace;
     transition: all 0.3s ease;
+    min-width: 100px;
+    height: 44px;
+    box-sizing: border-box;
   }
   
   .ssu-indicator:hover {
@@ -833,7 +981,11 @@ onUnmounted(() => {
   
   /* Desktop Navigation Buttons */
   .nav-button {
-    padding: 0.6rem 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0 1.2rem;
     background: rgba(30, 30, 30, 0.9);
     border: 1px solid #444;
     color: #d8d8d8;
@@ -841,11 +993,12 @@ onUnmounted(() => {
     font-size: 0.9rem;
     cursor: pointer;
     transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
     border-radius: 2px;
     letter-spacing: 0.5px;
+    height: 44px;
+    min-width: 100px;
+    box-sizing: border-box;
+    position: relative;
   }
   
   .nav-button:hover {
@@ -859,9 +1012,38 @@ onUnmounted(() => {
     border-color: #555;
   }
   
-  .button-icon {
-    font-size: 1rem;
+  /* Mostrar SVG y ocultar emojis en desktop */
+  .button-emoji,
+  .account-emoji,
+  .item-emoji {
+    display: none;
+  }
+  
+  .button-icon-svg,
+  .account-icon-svg,
+  .item-icon-svg {
+    display: block;
+  }
+  
+  /* Estilos para iconos SVG desktop */
+  .button-icon-svg {
+    width: 18px;
+    height: 18px;
+    color: #d8d8d8;
     opacity: 0.9;
+  }
+  
+  .account-icon-svg {
+    width: 18px;
+    height: 18px;
+    color: #aaa;
+  }
+  
+  .item-icon-svg {
+    width: 16px;
+    height: 16px;
+    color: #d8d8d8;
+    opacity: 0.8;
   }
   
   /* Desktop User Menu */
@@ -873,23 +1055,21 @@ onUnmounted(() => {
   .account-display {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 0.8rem;
-    padding: 0.7rem 1rem;
+    padding: 0 1rem;
     background: rgba(25, 25, 25, 0.9);
     border: 1px solid #444;
     border-radius: 2px;
     transition: all 0.3s ease;
     min-width: 160px;
+    height: 44px;
+    box-sizing: border-box;
   }
   
   .account-display:hover {
     background: rgba(35, 35, 35, 0.95);
     border-color: #666;
-  }
-  
-  .account-icon {
-    font-size: 1.1rem;
-    color: #aaa;
   }
   
   .account-text {
@@ -903,6 +1083,7 @@ onUnmounted(() => {
     text-overflow: ellipsis;
     white-space: nowrap;
     max-width: 120px;
+    text-align: left;
   }
   
   .dropdown-arrow {
@@ -993,13 +1174,6 @@ onUnmounted(() => {
     color: #66ff66;
   }
   
-  .item-icon {
-    font-size: 0.9rem;
-    opacity: 0.8;
-    width: 20px;
-    text-align: center;
-  }
-  
   .item-text {
     font-size: 0.9rem;
     flex: 1;
@@ -1019,6 +1193,26 @@ onUnmounted(() => {
     text-transform: uppercase;
     text-align: center;
     display: block;
+  }
+}
+
+/* Ajustes adicionales para pantallas grandes */
+@media (min-width: 1200px) {
+  .logo-img {
+    height: 55px;
+    width: 55px;
+  }
+  
+  .site-title {
+    font-size: 1.4rem;
+  }
+  
+  .nav-button,
+  .ssu-indicator,
+  .account-display,
+  .mobile-menu-btn,
+  .mobile-ssu {
+    height: 46px;
   }
 }
 </style>
