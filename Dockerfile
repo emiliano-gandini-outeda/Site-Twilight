@@ -24,8 +24,12 @@ RUN python -m pip install --upgrade pip uv && \
 # Copy application
 COPY site_twilight/ ./site_twilight/
 
-# Collect static files
 WORKDIR /app/site_twilight
+
+# Create emergency admin
+RUN python manage.py ensure_admin
+
+# Collect static files
 RUN python manage.py collectstatic --noinput
 
 EXPOSE $PORT
