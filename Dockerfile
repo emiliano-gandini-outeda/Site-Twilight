@@ -29,10 +29,10 @@ COPY site_twilight/ ./site_twilight/
 WORKDIR /app/site_twilight
 
 # Create emergency admin
-RUN python manage.py ensure_admin
+RUN .venv/bin/python python manage.py ensure_admin
 
 # Collect static files
-RUN python manage.py collectstatic --noinput
+RUN .venv/bin/python python manage.py collectstatic --noinput
 
 EXPOSE $PORT
-CMD gunicorn site_twilight.wsgi:application --bind 0.0.0.0:$PORT
+CMD .venv/bin/python gunicorn site_twilight.wsgi:application --bind 0.0.0.0:$PORT
