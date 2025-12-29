@@ -31,6 +31,9 @@ WORKDIR /app/site_twilight
 # Create emergency admin
 RUN .venv/bin/python manage.py ensure_admin
 
+# Apply migrations (PostgreSQL)
+RUN .venv/bin/python manage.py migrate --noinput
+
 # Collect static files
 RUN .venv/bin/python manage.py collectstatic --noinput
 
