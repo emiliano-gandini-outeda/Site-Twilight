@@ -22,14 +22,14 @@
 
       <!-- Mobile SSU Indicator -->
       <div class="mobile-ssu" :class="{'on': ssuStatus, 'off': !ssuStatus}" @click="toggleSSUInfo">
-        <span class="ssu-label">SSU</span>
+        <span class="ssu-label" translate="no">SSU</span>
         <div class="ssu-light" :class="{'active': ssuStatus}"></div>
       </div>
 
       <!-- Desktop Navigation -->
       <div class="desktop-nav">
         <div class="ssu-indicator" :class="{'on': ssuStatus, 'off': !ssuStatus}">
-          <span class="ssu-label">SSU</span>
+          <span class="ssu-label" translate="no">SSU</span>
           <span class="ssu-status">{{ ssuStatus ? 'ON' : 'OFF' }}</span>
           <div class="ssu-light" :class="{'active': ssuStatus}"></div>
         </div>

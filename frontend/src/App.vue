@@ -1,45 +1,63 @@
 <script setup>
-import { ref, onMounted } from "vue"
 import Header from "./components/Header.vue"
-
-// No necesitamos ssuStatus aquí ya que ahora está en Header
+import Footer from "./components/Footer.vue"
 </script>
 
 <template>
-  <div id="app" class="flex flex-col min-h-screen">
-    <!-- HEADER FIXED - El header ahora es fixed y cubre todo el ancho -->
+  <div id="app">
+    <!-- HEADER FIXED -->
     <Header />
 
-    <!-- MAIN CONTENT - Se ajusta automáticamente debajo del header -->
-    <main class="flex-1 overflow-auto pt-16"> <!-- pt-16 para dejar espacio para el header -->
-      <router-view />
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+      <div class="content-wrapper">
+        <router-view />
+      </div>
     </main>
 
-    <!-- FOOTER FIXED -->
-    <footer class="bg-gray-900 text-white p-4 text-center z-40 shadow-inner">
-      <div class="max-w-7xl mx-auto">
-        <span class="text-sm opacity-80">&copy; 2025 Site Twilight. All rights reserved.</span>
-        <span class="text-xs opacity-60 ml-4">CLASSIFIED SYSTEM</span>
-      </div>
-    </footer>
+    <!-- FOOTER -->
+    <Footer />
   </div>
 </template>
 
 <style scoped>
-
-main {
-  /* El padding-top se maneja con la clase pt-16 de Tailwind */
-  padding-bottom: 0;
-}
-
 #app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   background: #0a0a0a;
   color: #d8d8d8;
+  position: relative;
 }
 
-footer {
-  background: rgba(15, 15, 15, 0.95);
-  border-top: 1px solid #333;
-  backdrop-filter: blur(10px);
+.main-content {
+  flex: 1;
+  padding-top: 64px; /* Espacio para header fixed */
+  padding-bottom: 0;
+  width: 100%;
+  overflow-x: hidden; /* Previene scroll horizontal */
+}
+
+.content-wrapper {
+  max-width: 100%;
+  width: 100%;
+  margin: 0 auto;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+</style>
+
+<style>
+/* Estilos globales */
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background: #0a0a0a;
+  overflow-x: hidden; /* Previene scroll horizontal global */
+}
+
+* {
+  box-sizing: border-box;
 }
 </style>

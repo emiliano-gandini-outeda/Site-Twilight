@@ -3,8 +3,10 @@ import "./style.css"
 import App from "./App.vue"
 import router from "./router"
 import Header from './components/Header.vue'
+import Footer from "./components/Footer.vue"
 
 createApp(App)
   .use(router)
   .mount("#app")
   .component("Header", Header)
+  .component("Footer", Footer)
