@@ -517,22 +517,158 @@
               <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
             </svg>
           </div>
-          <h2 class="off-role-title">MODO OFF ROL ACTIVADO</h2>
-          <p class="off-role-text">
-            Esta sección contiene información fuera del rol (meta-información) sobre la plataforma Site Twilight. 
-            Aquí encontrarás detalles técnicos, guías de uso, y documentación relacionada con la plataforma de roleplay.
-          </p>
-          <p class="off-role-text">
-            Site Twilight es una plataforma dedicada al roleplay dentro del universo SCP, ofreciendo herramientas 
-            para creación de personajes, narrativas colaborativas y participación en eventos organizados.
-          </p>
-          <p class="off-role-text">
-            El contenido de rol (ON ROL) representa la ficción dentro del universo SCP Foundation, mientras que 
-            esta sección (OFF ROL) proporciona información sobre cómo utilizar la plataforma efectivamente.
-          </p>
-          <div class="off-role-note">
-            <div class="note-icon">ℹ</div>
-            <div class="note-text">Esta sección está en desarrollo. Próximamente se añadirá más contenido OFF ROL.</div>
+          <h2 class="off-role-title">EXPLICACIÓN DEL SITIO OFF-RP</h2>
+          
+          <div class="off-role-intro">
+            <p>En <strong>Site Twilight</strong> implementamos diversos sistemas diseñados para garantizar que el roleplay sea justo, inmersivo y entretenido para todos los participantes. Nuestra metodología se divide en dos modalidades principales:</p>
+          </div>
+
+          <div class="off-role-section">
+            <div class="off-role-section-header">
+              <div class="off-role-section-icon">📜</div>
+              <h3 class="off-role-section-title">ROL SEMI-GUIONIZADO</h3>
+            </div>
+            <div class="off-role-section-content">
+              <p>Esta modalidad combina la estructura de un guion predeterminado con la flexibilidad creativa de los participantes. <strong>El rol es parcialmente guionizado</strong> para dirigir la narrativa hacia puntos específicos, manteniendo la característica esencial de que los <strong>roleplayers puedan alterar la trama establecida</strong> si presentan razones narrativas sólidas y justificadas.</p>
+              
+              <div class="off-role-highlight">
+                <p><strong>Proceso de aprobación:</strong> Cada borrador de trama y planificación de eventos se presenta a los directores de equipo antes de su implementación, requiriendo la <strong>aprobación unánime de los cuatro directores principales</strong> para proceder.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="off-role-section">
+            <div class="off-role-section-header">
+              <div class="off-role-section-icon">🎭</div>
+              <h3 class="off-role-section-title">ROL SEMI-SERIO</h3>
+            </div>
+            <div class="off-role-section-content">
+              <p>La modalidad predilecta para mantener la coherencia del universo SCP. Esta modalidad <strong>no permite la inclusión de elementos pertenecientes a franquicias de entretenimiento ajenas al universo SCP</strong>, como:</p>
+              
+              <div class="off-role-examples">
+                <div class="off-role-example-item">• Warhammer 40K</div>
+                <div class="off-role-example-item">• Five Nights at Freddy's</div>
+                <div class="off-role-example-item">• Fortnite</div>
+                <div class="off-role-example-item">• Otras franquicias similares</div>
+              </div>
+              
+              <p>Tampoco se aceptan narrativas que desentonen con la estética del sitio o que carezcan de realismo contextual. <strong>Nota importante:</strong> Nos referimos específicamente a situaciones que violen flagrantemente la coherencia interna de la Fundación SCP, como la aparición injustificada de elementos cuyo único propósito sea obstaculizar la narrativa sin fundamento lógico.</p>
+              
+              <div class="off-role-note">
+                <div class="note-icon">⚠️</div>
+                <div class="note-text">Estos equipos mantienen autoridad total en sus áreas correspondientes, con la excepción extraordinaria de que el Subdirector o Director de la CMR puedan invalidar decisiones cuando lo consideren necesario.</div>
+              </div>
+            </div>
+          </div>
+          <div class="off-role-section">
+            <div class="off-role-section-header">
+              <div class="off-role-section-icon">🏛️</div>
+              <h3 class="off-role-section-title">CENTRAL DE MODERACIÓN DE ROL (CMR)</h3>
+            </div>
+            <div class="off-role-section-content">
+              <p>Twilight cuenta con un sistema integral de moderación compuesto por cinco equipos especializados que operan bajo la Central de Moderación de Rol:</p>
+              
+              <div class="off-role-teams-cmr">
+                <!-- Fila superior: 3 tarjetas -->
+                <div class="cmr-top-row">
+                  <div class="off-role-team-card">
+                    <div class="team-icon">📖</div>
+                    <div class="team-info">
+                      <h4 class="team-title">Equipo de Lore y Narración</h4>
+                      <p class="team-description">Encargado del desarrollo y supervisión de la trama principal.</p>
+                    </div>
+                  </div>
+                  
+                  <div class="off-role-team-card">
+                    <div class="team-icon">⚖️</div>
+                    <div class="team-info">
+                      <h4 class="team-title">Equipo de Moderación de Rol</h4>
+                      <p class="team-description">Supervisa la calidad y coherencia del roleplay en general.</p>
+                    </div>
+                  </div>
+                  
+                  <div class="off-role-team-card">
+                    <div class="team-icon">👥</div>
+                    <div class="team-info">
+                      <h4 class="team-title">Equipo de Moderación de Facciones</h4>
+                      <p class="team-description">Regula y supervisa las interacciones entre diferentes facciones.</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Fila inferior: 2 tarjetas más anchas -->
+                <div class="cmr-bottom-row">
+                  <div class="off-role-team-card wide">
+                    <div class="team-icon">🔍</div>
+                    <div class="team-info">
+                      <h4 class="team-title">Equipo de Supervisión de Actores</h4>
+                      <p class="team-description">Monitorea el desempeño y coherencia de personajes y anomalías.</p>
+                    </div>
+                  </div>
+                  
+                  <div class="off-role-team-card wide">
+                    <div class="team-icon">🎪</div>
+                    <div class="team-info">
+                      <h4 class="team-title">Equipo de Organización de Eventos</h4>
+                      <p class="team-description">Planifica y coordina eventos especiales dentro del sitio.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="off-role-section">
+            <div class="off-role-section-header">
+              <div class="off-role-section-icon">🌟</div>
+              <h3 class="off-role-section-title">PARTICIPACIÓN DE LOS ROLEPLAYERS</h3>
+            </div>
+            <div class="off-role-section-content">
+              <p>En <strong>Site Twilight</strong>, cada participante tiene la oportunidad de convertirse en protagonista de las tramas si demuestra dedicación y se destaca dentro de la comunidad. Nuestro sistema permite una amplia gama de roles:</p>
+              
+              <div class="off-role-roles">
+                <div class="off-role-role-column">
+                  <div class="role-item">
+                    <div class="role-icon">🛡️</div>
+                    <span class="role-name">Guardia de Seguridad</span>
+                  </div>
+                  <div class="role-item">
+                    <div class="role-icon">🔬</div>
+                    <span class="role-name">Científico Investigador</span>
+                  </div>
+                  <div class="role-item">
+                    <div class="role-icon">⚕️</div>
+                    <span class="role-name">Médico del Sitio</span>
+                  </div>
+                  <div class="role-item">
+                    <div class="role-icon">💼</div>
+                    <span class="role-name">Administrador</span>
+                  </div>
+                </div>
+                
+                <div class="off-role-role-column">
+                  <div class="role-item">
+                    <div class="role-icon">🔫</div>
+                    <span class="role-name">Combatiente Táctico</span>
+                  </div>
+                  <div class="role-item">
+                    <div class="role-icon">👤</div>
+                    <span class="role-name">Miembro de GOI Hostil</span>
+                  </div>
+                  <div class="role-item">
+                    <div class="role-icon">🎭</div>
+                    <span class="role-name">Agente Encubierto</span>
+                  </div>
+                  <div class="role-item">
+                    <div class="role-icon">🔮</div>
+                    <span class="role-name">Portador Anómalo</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="off-role-highlight final">
+                <p><strong>La decisión recae en ti:</strong> Puedes elegir entre defender la normalidad como parte de la Fundación, o desafiar los límites de la realidad desde el otro lado. En Twilight, tu creatividad es el único límite.</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -1804,7 +1940,7 @@ const closeModal = () => {
   width: 100%;
 }
 
-/* Off Role Content */
+/* Estilos específicos para OFF ROLE CONTENT */
 .off-role-content {
   width: 100%;
   padding: 40px 0;
@@ -1812,7 +1948,7 @@ const closeModal = () => {
 
 .off-role-container {
   width: 100%;
-  max-width: 600px;
+  max-width: 900px;
   margin: 0 auto;
   text-align: left;
   padding: 40px 20px;
@@ -1842,49 +1978,266 @@ const closeModal = () => {
 }
 
 .off-role-title {
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 700;
   color: #fc6f03;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  margin: 0 0 24px 0;
+  margin: 0 0 32px 0;
   text-shadow: 0 0 10px rgba(252, 111, 3, 0.2);
+  text-align: center;
 }
 
-.off-role-text {
+.off-role-intro {
+  margin-bottom: 40px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid rgba(252, 111, 3, 0.2);
+}
+
+.off-role-intro p {
   font-size: 16px;
   color: #ccc;
   line-height: 1.6;
-  margin: 0 0 20px 0;
+  margin: 0;
 }
 
-.off-role-text:last-child {
+.off-role-intro strong {
+  color: #fc6f03;
+}
+
+/* Secciones OFF ROLE */
+.off-role-section {
+  background: rgba(30, 30, 30, 0.6);
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 30px;
+  transition: all 0.3s ease;
+}
+
+.off-role-section:hover {
+  border-color: #555;
+  background: rgba(35, 35, 35, 0.7);
+}
+
+.off-role-section-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(252, 111, 3, 0.2);
+}
+
+.off-role-section-icon {
+  font-size: 28px;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(252, 111, 3, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(252, 111, 3, 0.3);
+}
+
+.off-role-section-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #fc6f03;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.off-role-section-content p {
+  font-size: 15px;
+  color: #ccc;
+  line-height: 1.6;
+  margin: 0 0 16px 0;
+}
+
+.off-role-section-content p:last-child {
   margin-bottom: 0;
 }
 
+.off-role-highlight {
+  background: rgba(252, 111, 3, 0.1);
+  border-left: 4px solid #fc6f03;
+  padding: 16px;
+  margin: 20px 0;
+  border-radius: 0 6px 6px 0;
+}
+
+.off-role-highlight p {
+  font-size: 15px;
+  color: #ddd;
+  margin: 0;
+}
+
+.off-role-highlight.final {
+  background: rgba(30, 60, 30, 0.2);
+  border-left: 4px solid #4CAF50;
+  margin-top: 30px;
+}
+
+.off-role-highlight.final p {
+  color: #ddd;
+  font-size: 16px;
+}
+
+/* Ejemplos */
+.off-role-examples {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin: 20px 0;
+  padding: 16px;
+  background: rgba(40, 40, 40, 0.6);
+  border-radius: 6px;
+  border: 1px solid #444;
+}
+
+.off-role-example-item {
+  font-size: 14px;
+  color: #aaa;
+  padding: 8px 12px;
+  background: rgba(50, 50, 50, 0.6);
+  border-radius: 4px;
+  border: 1px solid #555;
+}
+
+/* Nota OFF ROLE */
 .off-role-note {
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  margin-top: 32px;
+  margin: 24px 0;
   padding: 20px;
   background: rgba(40, 30, 0, 0.2);
   border: 1px solid #aa8800;
   border-radius: 8px;
 }
 
-.note-icon {
+.off-role-note .note-icon {
   font-size: 20px;
   color: #ffcc00;
   flex-shrink: 0;
   margin-top: 2px;
 }
 
-.note-text {
+.off-role-note .note-text {
   font-size: 15px;
   color: #ffdd88;
   line-height: 1.5;
   flex: 1;
+}
+
+/* Equipos OFF ROLE */
+.off-role-teams {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin: 24px 0;
+}
+
+.off-role-team-card {
+  background: rgba(40, 40, 40, 0.6);
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  transition: all 0.3s ease;
+}
+
+.off-role-team-card:hover {
+  background: rgba(50, 50, 50, 0.7);
+  border-color: #555;
+  transform: translateY(-2px);
+}
+
+.team-icon {
+  font-size: 20px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(252, 111, 3, 0.1);
+  border-radius: 6px;
+  border: 1px solid rgba(252, 111, 3, 0.3);
+  flex-shrink: 0;
+}
+
+.team-info {
+  flex: 1;
+}
+
+.team-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #fc6f03;
+  margin: 0 0 8px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.team-description {
+  font-size: 14px;
+  color: #aaa;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Roles OFF ROLE */
+.off-role-roles {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  margin: 24px 0;
+}
+
+.off-role-role-column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.role-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: rgba(40, 40, 40, 0.6);
+  border: 1px solid #444;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.role-item:hover {
+  background: rgba(50, 50, 50, 0.7);
+  border-color: #555;
+}
+
+.role-icon {
+  font-size: 18px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(252, 111, 3, 0.1);
+  border-radius: 6px;
+  border: 1px solid rgba(252, 111, 3, 0.3);
+  flex-shrink: 0;
+}
+
+.role-name {
+  font-size: 15px;
+  color: #ddd;
+  font-weight: 500;
 }
 
 /* Responsive - Tablet */
@@ -2013,7 +2366,15 @@ const closeModal = () => {
   }
   
   .off-role-title {
-    font-size: 28px;
+    font-size: 32px;
+  }
+  
+  .off-role-teams {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .off-role-roles {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -2117,6 +2478,28 @@ const closeModal = () => {
   .mixed-text p {
     font-size: 16px;
   }
+  
+  /* OFF ROLE desktop */
+  .off-role-container {
+    max-width: 1000px;
+    padding: 60px 50px;
+  }
+  
+  .off-role-section {
+    padding: 30px;
+  }
+  
+  .off-role-section-title {
+    font-size: 24px;
+  }
+  
+  .off-role-teams {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .off-role-examples {
+    grid-template-columns: repeat(4, 1fr);
+  }
 }
 
 /* Responsive - Pantallas grandes */
@@ -2172,6 +2555,200 @@ const closeModal = () => {
   
   .wings-container {
     grid-template-columns: repeat(4, 1fr);
+  }
+  
+  /* OFF ROLE pantallas grandes */
+  .off-role-container {
+    max-width: 1200px;
+    padding: 70px 60px;
+  }
+  
+  .off-role-title {
+    font-size: 36px;
+  }
+  
+  .off-role-section {
+    padding: 35px;
+  }
+  
+  .off-role-teams {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 20px;
+  }
+  
+  .off-role-roles {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+  }
+}
+
+/* Responsive para móviles - OFF ROLE */
+@media (max-width: 767px) {
+  .off-role-teams {
+    grid-template-columns: 1fr;
+  }
+  
+  .off-role-examples {
+    grid-template-columns: 1fr;
+  }
+  
+  .off-role-roles {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .off-role-section {
+    padding: 20px;
+  }
+  
+  .off-role-section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .off-role-section-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+  }
+  
+  .off-role-section-title {
+    font-size: 18px;
+  }
+  
+  .team-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+  }
+  
+  .team-title {
+    font-size: 15px;
+  }
+  
+  .team-description {
+    font-size: 13px;
+  }
+  
+  .role-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+  }
+  
+  .role-name {
+    font-size: 14px;
+  }
+}
+
+/* ESTILOS PARA LA SECCIÓN CMR CORREGIDA */
+.off-role-teams-cmr {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin: 24px 0;
+}
+
+/* Fila superior con 3 tarjetas */
+.cmr-top-row {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Fila inferior con 2 tarjetas más anchas */
+.cmr-bottom-row {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Estilo base para todas las tarjetas CMR */
+.off-role-team-card {
+  background: rgba(40, 40, 40, 0.6);
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  transition: all 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.off-role-team-card:hover {
+  background: rgba(50, 50, 50, 0.7);
+  border-color: #555;
+  transform: translateY(-2px);
+}
+
+.team-icon {
+  font-size: 20px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(252, 111, 3, 0.1);
+  border-radius: 6px;
+  border: 1px solid rgba(252, 111, 3, 0.3);
+  flex-shrink: 0;
+}
+
+.team-info {
+  flex: 1;
+}
+
+.team-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #fc6f03;
+  margin: 0 0 8px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.team-description {
+  font-size: 14px;
+  color: #aaa;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Para tablet (768px+): 3 arriba, 2 abajo */
+@media (min-width: 768px) {
+  .off-role-teams-cmr {
+    gap: 24px;
+  }
+  
+  .cmr-top-row {
+    flex-direction: row;
+    gap: 20px;
+  }
+  
+  .cmr-top-row .off-role-team-card {
+    flex: 1; /* Cada tarjeta ocupa el mismo espacio */
+  }
+  
+  .cmr-bottom-row {
+    flex-direction: row;
+    gap: 20px;
+  }
+  
+  .cmr-bottom-row .off-role-team-card.wide {
+    flex: 1; /* Las 2 tarjetas inferiores también iguales */
+  }
+}
+
+/* Para móvil: todas en columna única */
+@media (max-width: 767px) {
+  .off-role-team-card {
+    width: 100%;
   }
 }
 </style>
