@@ -1,0 +1,11 @@
+from django import forms
+from .models import Character
+
+
+class CharacterForm(forms.ModelForm):
+    class Meta:
+        model = Character
+        exclude = ("owner",)
+        widgets = {
+            "birth_date": forms.DateInput(attrs={"type": "date"}),
+        }

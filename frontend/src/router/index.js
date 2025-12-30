@@ -5,6 +5,9 @@ import TermsOfService from "@/views/TermsOfService.vue"
 import LoginSignup from "@/views/LoginSignup.vue"
 import Information from "@/views/Information.vue"
 import Error_404 from "@/views/Error_404.vue"
+/* import CharacterCreate from "@/views/CharacterCreate.vue"
+import CharacterList from "@/views/CharacterList.vue"
+import CharacterDetail from "@/views/CharacterDetail.vue" */
 
 const routes = [
   { path: "/", name: "Landing", component: Landing },
@@ -25,6 +28,22 @@ const routes = [
     name: "Error404",
     component: Error_404,
   },
+/*   {
+    path: "/characters",
+    name: "CharacterList",
+    component: CharacterList,
+  },
+  {
+    path: "/characters/new",
+    name: "CharacterCreate",
+    component: CharacterCreate,
+  },
+  {
+    path: "/characters/:id",
+    name: "CharacterDetail",
+    component: CharacterDetail,
+    props: true,
+  }, */
   // IMPORTANTE: El catch-all debe ser la ÚLTIMA ruta
   {
     path: '/:pathMatch(.*)*',
