@@ -58,11 +58,11 @@
           </div>
         </div>
 
-        <!-- Información General (MODIFICADA) -->
+        <!-- Información General -->
         <div class="section-block">
           <h3 class="section-title">INFORMACIÓN GENERAL</h3>
           <div class="general-info">
-            <!-- Texto de información - Ahora con el mismo estilo que la imagen -->
+            <!-- Texto de información -->
             <div class="info-text-container">
               <div class="scp-data-grid">
                 <div class="data-item">
@@ -96,11 +96,10 @@
               </div>
             </div>
             
-            <!-- Imagen rectangular modificada -->
+            <!-- Imagen -->
             <div class="info-image-container">
               <div class="image-container">
                 <div class="cortes-island-map">
-                  <!-- Imagen rectangular sin overlay -->
                   <img 
                     src="/Cortes-Island-Map.jpg" 
                     alt="Parte estructural de SCP-2955"
@@ -115,15 +114,15 @@
           </div>
         </div>
 
-        <!-- Poblados -->
+        <!-- Poblados - AHORA CON GRID 2x2 -->
         <div class="section-block">
           <h3 class="section-title">POBLADOS</h3>
-          <div class="poblados-grid">
+          <div class="poblados-grid grid-2x2">
             <div 
               class="poblado-card" 
               :class="{ 'expanded': expandedPoblado === 'whaletown' || (hoveredPoblado === 'whaletown' && !isMobile) }"
               @mouseenter="hoverPoblado('whaletown')"
-              @mouseleave="unhoverPoblado('whaletown')"
+              @mouseleave="unhoverPoblado()"
               @click="togglePoblado('whaletown')"
             >
               <div class="poblado-header">
@@ -143,7 +142,7 @@
               class="poblado-card" 
               :class="{ 'expanded': expandedPoblado === 'mansons' || (hoveredPoblado === 'mansons' && !isMobile) }"
               @mouseenter="hoverPoblado('mansons')"
-              @mouseleave="unhoverPoblado('mansons')"
+              @mouseleave="unhoverPoblado()"
               @click="togglePoblado('mansons')"
             >
               <div class="poblado-header">
@@ -163,7 +162,7 @@
               class="poblado-card" 
               :class="{ 'expanded': expandedPoblado === 'cortes' || (hoveredPoblado === 'cortes' && !isMobile) }"
               @mouseenter="hoverPoblado('cortes')"
-              @mouseleave="unhoverPoblado('cortes')"
+              @mouseleave="unhoverPoblado()"
               @click="togglePoblado('cortes')"
             >
               <div class="poblado-header">
@@ -183,7 +182,7 @@
               class="poblado-card" 
               :class="{ 'expanded': expandedPoblado === 'squirrel' || (hoveredPoblado === 'squirrel' && !isMobile) }"
               @mouseenter="hoverPoblado('squirrel')"
-              @mouseleave="unhoverPoblado('squirrel')"
+              @mouseleave="unhoverPoblado()"
               @click="togglePoblado('squirrel')"
             >
               <div class="poblado-header">
@@ -201,9 +200,9 @@
           </div>
         </div>
 
-        <!-- Instalaciones - Únicas instalaciones exteriores -->
+        <!-- Instalaciones Exteriores -->
         <div class="section-block">
-          <h3 class="section-title">INSTALACIONES EXTERIORES (FACHADAS)</h3>
+          <h3 class="section-title">INSTALACIONES EXTERIORES</h3>
           <p class="installations-note">Estas son las únicas instalaciones que están por fuera de la tierra, funcionando como fachadas para el Sitio-81.</p>
           
           <div class="facilities-grid">
@@ -212,7 +211,7 @@
                 <h4 class="facility-title">CORTES ISLAND POWER STATION PLANT</h4>
                 <div class="facility-wing">Ala A</div>
               </div>
-              <p class="facility-text">Planta eléctrica principal que alimenta toda el área del Sitio-81. Click para más información...</p>
+              <p class="facility-text">Planta eléctrica principal que alimenta toda el área del Sitio-81. <br><br><span class="data-label">Ver más</span></p>
             </div>
 
             <div class="facility-card" @click="openModal('water')">
@@ -220,7 +219,7 @@
                 <h4 class="facility-title">CORTES ISLAND WATER TREATMENT STATION</h4>
                 <div class="facility-wing">Ala B</div>
               </div>
-              <p class="facility-text">Estación de tratamiento de agua para los poblados satélite. Click para más información...</p>
+              <p class="facility-text">Estación de tratamiento de agua para los poblados satélite. <br><br><span class="data-label">Ver más</span></p>
             </div>
 
             <div class="facility-card" @click="openModal('military')">
@@ -228,7 +227,7 @@
                 <h4 class="facility-title">CORTES ISLAND MILITARY BASE</h4>
                 <div class="facility-wing">Ala C</div>
               </div>
-              <p class="facility-text">Base militar operada por personal de seguridad y Destacamentos Móviles. Click para más información...</p>
+              <p class="facility-text">Base militar operada por personal de seguridad y Destacamentos Móviles. <br><br><span class="data-label">Ver más</span></p>
             </div>
           </div>
         </div>
@@ -358,6 +357,90 @@
           </div>
         </div>
 
+        <!-- NUEVA SECCIÓN: Información del Personal -->
+        <div class="section-block">
+          <h3 class="section-title">INFORMACIÓN DEL PERSONAL</h3>
+          <div class="personnel-info">
+            <!-- Directores -->
+            <div class="directors-grid">
+              <div class="director-card">
+                <h4 class="director-title">Director del Sitio</h4>
+                <p class="director-name">Friedrich Eisenberg</p>
+                <div class="director-badge">Alta Administración</div>
+              </div>
+              
+              <div class="director-card">
+                <h4 class="director-title">Subdirector del Sitio</h4>
+                <p class="director-name">Bálint Kovács</p>
+                <div class="director-badge">Alta Administración</div>
+              </div>
+              
+              <div class="director-card">
+                <h4 class="director-title">Director de Seguridad</h4>
+                <p class="director-name">Agente Johann Müller</p>
+                <div class="director-badge">Seguridad</div>
+              </div>
+              
+              <div class="director-card">
+                <h4 class="director-title">Director de Ética</h4>
+                <p class="director-name">-</p>
+                <div class="director-badge">Comité de Ética</div>
+              </div>
+              
+              <div class="director-card">
+                <h4 class="director-title">Director de Investigación</h4>
+                <p class="director-name">Dr. Octavius Arendt</p>
+                <div class="director-badge">Investigación</div>
+              </div>
+              
+              <div class="director-card">
+                <h4 class="director-title">Director de Destacamentos Móviles</h4>
+                <p class="director-name">Agente</p>
+                <div class="director-badge">Operaciones</div>
+              </div>
+            </div>
+
+            <!-- Personal de Sitio -->
+            <div class="staff-section">
+              <h4 class="staff-title">Personal de Sitio</h4>
+              <div class="staff-grid">
+                <div class="staff-item">
+                  <span class="staff-label">Jefes de Departamento:</span>
+                  <span class="staff-value">8</span>
+                </div>
+                <div class="staff-item">
+                  <span class="staff-label">Doctores:</span>
+                  <span class="staff-value">65</span>
+                </div>
+                <div class="staff-item">
+                  <span class="staff-label">Investigadores:</span>
+                  <span class="staff-value">127</span>
+                </div>
+                <div class="staff-item">
+                  <span class="staff-label">Personal Administrativo:</span>
+                  <span class="staff-value">32</span>
+                </div>
+                <div class="staff-item">
+                  <span class="staff-label">Personal de Mantenimiento y Limpieza:</span>
+                  <span class="staff-value">56</span>
+                </div>
+                <div class="staff-item classified">
+                  <span class="staff-label">Personal de Seguridad:</span>
+                  <span class="staff-value">████</span>
+                </div>
+                <div class="staff-item">
+                  <span class="staff-label">Clase-D:</span>
+                  <span class="staff-value">541</span>
+                </div>
+                <div class="staff-item">
+                  <span class="staff-label">Otro Personal:</span>
+                  <span class="staff-value">19</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- Información Adicional -->
         <div class="section-block">
           <h3 class="section-title">INFORMACIÓN ADICIONAL</h3>
@@ -425,7 +508,7 @@
         </div>
       </div>
 
-      <!-- Contenido OFF ROL (sin cambios) -->
+      <!-- Contenido OFF ROL -->
       <div v-else class="off-role-content">
         <div class="off-role-container">
           <div class="off-role-icon">
@@ -469,28 +552,17 @@ const isMobile = ref(false)
 
 const wings = ref([
   { id: 1, name: 'Ala A', fullName: 'Sector Administrativo-Científico', subterranean: false, function: 'Gestión y análisis científico', capacity: '120 agentes' },
-
   { id: 2, name: 'Ala B', fullName: 'Sector de Dirección y Servicios', subterranean: true, function: 'Dirección, ética y salud', capacity: '150 agentes' },
-
   { id: 3, name: 'Ala C', fullName: 'Sector de Alojamiento', subterranean: false, function: 'Residencia del Personal', capacity: '█████ agentes' },
-
   { id: 4, name: 'Ala D', fullName: 'Sector de Servicios Generales', subterranean: true, function: 'Servicios y tránsito interno', capacity: '320 agentes' },
-
   { id: 5, name: 'Ala E', fullName: 'Sector de █████████████', subterranean: false, function: 'Operaciones clasificadas', capacity: '█████ agentes' },
-
   { id: 6, name: 'Ala F', fullName: 'Sector de Seguridad', subterranean: true, function: 'Respuesta y control táctico', capacity: '████ agentes' },
-
   { id: 7, name: 'Ala G', fullName: 'Sector de Detención Clase-D', subterranean: false, function: 'Confinamiento personal Clase-D', capacity: '170 agentes' },
-
   { id: 8, name: 'Ala H', fullName: 'Sector de Contención Clase-Safe', subterranean: true, function: 'Contención', capacity: '250 agentes' },
-
   { id: 9, name: 'Ala I', fullName: 'Sector de Contención Clase-Euclid', subterranean: true, function: 'Contención', capacity: '███ agentes' },
-
   { id: 10, name: 'Ala J', fullName: 'Sector de Contención Clase-Keter', subterranean: true, function: 'Contención', capacity: '████ agentes' },
-
   { id: 11, name: 'Ala K', fullName: '█████ ██ SCP-████', subterranean: true, function: '██████ ██ █████-████', capacity: '████ agentes' }
 ])
-
 
 const checkMobile = () => {
   isMobile.value = window.innerWidth < 768
@@ -509,6 +581,7 @@ const setActiveRole = (role) => {
   activeRole.value = role
   expandedWing.value = null
   expandedPoblado.value = null
+  hoveredPoblado.value = null
   activeModal.value = null
 }
 
@@ -517,9 +590,7 @@ const toggleWing = (wingId) => {
 }
 
 const togglePoblado = (pobladoId) => {
-  if (isMobile.value) {
-    expandedPoblado.value = expandedPoblado.value === pobladoId ? null : pobladoId
-  }
+  expandedPoblado.value = expandedPoblado.value === pobladoId ? null : pobladoId
 }
 
 const hoverPoblado = (pobladoId) => {
@@ -924,6 +995,7 @@ const closeModal = () => {
   flex: 1; 
   padding-left: 0; 
 }
+
 /* Estilos para la imagen */
 .cortes-island-map {
   width: 100%;
@@ -964,11 +1036,10 @@ const closeModal = () => {
   flex: 1;
 }
 
-/* Poblados - Nuevo diseño */
-.poblados-grid {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
+/* Poblados - GRID 2x2 */
+.poblados-grid.grid-2x2 {
+  display: grid;
+  grid-template-columns: 1fr;
   gap: 16px;
 }
 
@@ -984,6 +1055,7 @@ const closeModal = () => {
   min-height: 60px;
 }
 
+/* IMPORTANTE: Solo la tarjeta hovereada cambia de altura */
 .poblado-card:hover {
   background: rgba(40, 40, 40, 0.7);
   border-color: #555;
@@ -1041,7 +1113,7 @@ const closeModal = () => {
 }
 
 .poblado-card.expanded .poblado-content {
-  max-height: 200px;
+  max-height: 500px;
   margin-top: 16px;
   opacity: 1;
 }
@@ -1054,6 +1126,141 @@ const closeModal = () => {
   text-align: left;
 }
 
+/* Nueva sección: Información del Personal */
+.personnel-info {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.directors-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.director-card {
+  background: rgba(25, 25, 25, 0.8);
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.director-card:hover {
+  transform: translateY(-2px);
+  border-color: #fc6f03;
+  box-shadow: 0 4px 12px rgba(252, 111, 3, 0.1);
+}
+
+.director-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: #fc6f03;
+  opacity: 0.6;
+}
+
+.director-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  margin: 0 0 8px 0;
+}
+
+.director-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 12px 0;
+  min-height: 24px;
+}
+
+.director-badge {
+  display: inline-block;
+  font-size: 12px;
+  color: #fc6f03;
+  background: rgba(252, 111, 3, 0.1);
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(252, 111, 3, 0.3);
+  font-family: 'Consolas', monospace;
+  letter-spacing: 0.3px;
+}
+
+.staff-section {
+  background: rgba(25, 25, 25, 0.8);
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 24px;
+  width: 100%;
+}
+
+.staff-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #fc6f03;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0 0 20px 0;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(252, 111, 3, 0.3);
+}
+
+.staff-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.staff-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: rgba(40, 40, 40, 0.6);
+  border: 1px solid #444;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.staff-item:hover {
+  background: rgba(50, 50, 50, 0.7);
+  border-color: #555;
+}
+
+.staff-item.classified {
+  background: rgba(50, 30, 30, 0.6);
+  border-color: #aa2222;
+}
+
+.staff-item.classified:hover {
+  background: rgba(60, 40, 40, 0.7);
+}
+
+.staff-label {
+  font-size: 14px;
+  color: #ccc;
+  font-weight: 500;
+}
+
+.staff-value {
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  font-family: 'Consolas', monospace;
+}
+
+/* Para móvil */
 @media (max-width: 767px) {
   .data-item {
     flex-direction: column;
@@ -1063,25 +1270,79 @@ const closeModal = () => {
   .data-label {
     min-width: 100%;
     width: 100%;
-    text-align: left; /* En móvil, alinear a la izquierda */
+    text-align: left;
     padding-right: 0;
   }
   
   .data-value {
     padding-left: 0;
   }
+  
+  .directors-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .staff-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
-/* Ajustes para tablet */
+/* Para desktop - GRID 2x2 */
 @media (min-width: 768px) {
+  .poblados-grid.grid-2x2 {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  
+  .poblado-card {
+    min-height: 60px;
+    padding: 20px;
+  }
+  
+  .poblado-content {
+    display: block !important;
+    max-height: 0;
+    opacity: 0;
+  }
+  
+  /* Solo para desktop: hover effect */
+  .poblado-card:hover .poblado-content {
+    max-height: 200px;
+    margin-top: 16px;
+    opacity: 1;
+  }
+  
+  /* Ajustes para tablet */
   .data-label {
     min-width: 180px;
     width: 180px;
   }
+  
+  .directors-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
-/* Ajustes para desktop */
+/* Para desktop - GRID 2x2 mantiene 2 columnas */
 @media (min-width: 1024px) {
+  .poblados-grid.grid-2x2 {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+  
+  .poblado-card {
+    min-height: 60px;
+    padding: 24px;
+  }
+  
+  .poblado-title {
+    font-size: 18px;
+  }
+  
+  .poblado-text {
+    font-size: 15px;
+  }
+  
   .data-label {
     min-width: 200px;
     width: 200px;
@@ -1091,31 +1352,61 @@ const closeModal = () => {
   .data-value {
     font-size: 16px;
   }
+  
+  .directors-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  
+  .director-card {
+    padding: 24px;
+  }
+  
+  .director-title {
+    font-size: 15px;
+  }
+  
+  .director-name {
+    font-size: 20px;
+  }
+  
+  .staff-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+  
+  .staff-item {
+    padding: 16px;
+  }
+  
+  .staff-label {
+    font-size: 15px;
+  }
+  
+  .staff-value {
+    font-size: 18px;
+  }
 }
 
-/* Para desktop - hover effect */
-@media (min-width: 768px) {
+/* Para pantallas grandes - GRID 2x2 mantiene 2 columnas */
+@media (min-width: 1400px) {
+  .poblados-grid.grid-2x2 {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px;
+  }
+  
   .poblado-card {
-    min-height: 70px;
+    min-height: 60px;
+    padding: 28px;
   }
   
-  .poblado-content {
-    display: block !important;
-    max-height: 0;
-    opacity: 0;
+  .poblado-title {
+    font-size: 20px;
   }
   
-  .poblado-card:hover .poblado-content {
-    max-height: 200px;
-    margin-top: 16px;
-    opacity: 1;
+  .poblado-text {
+    font-size: 16px;
   }
-  
-  .poblado-card:hover {
-    background: rgba(40, 40, 40, 0.8);
-    border-color: #fc6f03;
-  }
-  
 }
 
 /* Nota de instalaciones */
@@ -1661,26 +1952,6 @@ const closeModal = () => {
     font-size: 14px;
   }
   
-  /* Poblados en grid para tablet */
-  .poblados-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-  }
-  
-  .poblado-card {
-    padding: 20px;
-    min-height: 80px;
-  }
-  
-  .poblado-title {
-    font-size: 18px;
-  }
-  
-  .poblado-text {
-    font-size: 15px;
-  }
-  
   /* Instalaciones */
   .facilities-grid {
     flex-direction: row;
@@ -1780,40 +2051,12 @@ const closeModal = () => {
     padding: 28px;
   }
   
-  .data-label {
-    min-width: 180px;
-    font-size: 15px;
-  }
-  
-  .data-value {
-    font-size: 16px;
-  }
-  
   .image-overlay-text {
     padding: 16px 24px;
   }
   
   .overlay-caption {
     font-size: 15px;
-  }
-  
-  /* Poblados para desktop */
-  .poblados-grid {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 24px;
-  }
-  
-  .poblado-card {
-    padding: 24px;
-    min-height: 90px;
-  }
-  
-  .poblado-title {
-    font-size: 20px;
-  }
-  
-  .poblado-text {
-    font-size: 16px;
   }
   
   /* Instalaciones */
@@ -1906,11 +2149,6 @@ const closeModal = () => {
   
   .scp-data-grid {
     padding: 32px;
-  }
-  
-  /* Poblados */
-  .poblados-grid {
-    gap: 32px;
   }
   
   /* Instalaciones */
