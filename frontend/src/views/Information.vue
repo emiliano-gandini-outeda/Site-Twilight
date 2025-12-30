@@ -395,7 +395,7 @@
               
               <div class="director-card">
                 <h4 class="director-title">Director de Destacamentos Móviles</h4>
-                <p class="director-name">Agente</p>
+                <p class="director-name">-</p>
                 <div class="director-badge">Operaciones</div>
               </div>
             </div>
