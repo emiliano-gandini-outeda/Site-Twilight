@@ -58,102 +58,219 @@
           </div>
         </div>
 
-        <!-- Información General -->
+        <!-- Información General (MODIFICADA) -->
         <div class="section-block">
           <h3 class="section-title">INFORMACIÓN GENERAL</h3>
           <div class="general-info">
-            <div class="info-text">
-              <p>Site 81, designado como "Twilight", opera como una instalación de contención secundaria bajo la jurisdicción del Sector-28. Especializado en entidades de clase Euclid y Keter con propiedades temporales o dimensionales atenuadas.</p>
-              <p>La instalación mantiene protocolos de cuarentena extendida y sistemas de monitoreo de realidad en tiempo real, sirviendo como punto crítico para investigaciones interdimensionales.</p>
+            <!-- Texto de información - Ahora con el mismo estilo que la imagen -->
+            <div class="info-text-container">
+              <div class="scp-data-grid">
+                <div class="data-item">
+                  <span class="data-label highlight">Fundada:</span>
+                  <span class="data-value">24 de abril de 2011</span>
+                </div>
+                <div class="data-item">
+                  <span class="data-label highlight">Director fundador:</span>
+                  <span class="data-value">Dr. Jean Karlyle Aktus</span>
+                </div>
+                <div class="data-item">
+                  <span class="data-label highlight">Localización:</span>
+                  <span class="data-value">Isla Cortes, archipiélago de las Islas Discovery, Columbia Británica, Canadá.</span>
+                </div>
+                <div class="data-item">
+                  <span class="data-label highlight">Historia de cobertura:</span>
+                  <span class="data-value">Comunidades poblacionales, Base militar canadiense, Estación de tratamiento de agua, Estación de electricidad</span>
+                </div>
+                <div class="data-item">
+                  <span class="data-label highlight">Funciones de sitio:</span>
+                  <span class="data-value">Investigación, contención, despliegue de destacamentos móviles, administración.</span>
+                </div>
+                <div class="data-item">
+                  <span class="data-label highlight">Superficie:</span>
+                  <span class="data-value">Área de 130 km².</span>
+                </div>
+                <div class="data-item">
+                  <span class="data-label highlight">Composición:</span>
+                  <span class="data-value">Cuatro instalaciones principales y cuatro zonas pobladas satélite, operando mayoritariamente en complejos subterráneos.</span>
+                </div>
+              </div>
             </div>
-            <div class="info-image">
+            
+            <!-- Imagen rectangular modificada -->
+            <div class="info-image-container">
               <div class="image-container">
-                <div class="placeholder-image">
-                  <div class="image-content">
-                    <div class="image-grid">
-                      <div v-for="n in 16" :key="n" class="grid-cell"></div>
-                    </div>
-                    <div class="image-overlay">
-                      <div class="overlay-text">VISUALIZACIÓN DE CONTENCIÓN</div>
-                      <div class="overlay-subtext">SECTOR-28 - SITE 81</div>
-                    </div>
+                <div class="cortes-island-map">
+                  <!-- Imagen rectangular sin overlay -->
+                  <img 
+                    src="/Cortes-Island-Map.jpg" 
+                    alt="Parte estructural de SCP-2955"
+                    class="map-image"
+                  />
+                  <div class="image-overlay-text">
+                    <span class="overlay-caption">Cortes Island</span>
                   </div>
                 </div>
-                <div class="image-caption">
-                  <span class="caption-icon">📡</span>
-                  <span class="caption-text">Monitoreo dimensional activo - Protocolo Twilight</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Poblados -->
+        <div class="section-block">
+          <h3 class="section-title">POBLADOS</h3>
+          <div class="poblados-grid">
+            <div 
+              class="poblado-card" 
+              :class="{ 'expanded': expandedPoblado === 'whaletown' || (hoveredPoblado === 'whaletown' && !isMobile) }"
+              @mouseenter="hoverPoblado('whaletown')"
+              @mouseleave="unhoverPoblado('whaletown')"
+              @click="togglePoblado('whaletown')"
+            >
+              <div class="poblado-header">
+                <h4 class="poblado-title">WHALETOWN</h4>
+                <div class="poblado-indicator">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
                 </div>
               </div>
+              <div class="poblado-content">
+                <p class="poblado-text">Fachada como comunidad portuaria civil. Funciona como punto de entrada marítima controlada y monitoreo de tráfico naval.</p>
+              </div>
+            </div>
+
+            <div 
+              class="poblado-card" 
+              :class="{ 'expanded': expandedPoblado === 'mansons' || (hoveredPoblado === 'mansons' && !isMobile) }"
+              @mouseenter="hoverPoblado('mansons')"
+              @mouseleave="unhoverPoblado('mansons')"
+              @click="togglePoblado('mansons')"
+            >
+              <div class="poblado-header">
+                <h4 class="poblado-title">MANSONS LANDING</h4>
+                <div class="poblado-indicator">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </div>
+              </div>
+              <div class="poblado-content">
+                <p class="poblado-text">Presentada como un centro turístico y cultural. En realidad, es el principal punto de llegada de suministros y personal encubierto. Única zona donde se permite estar al público civil, 4 veces al año.</p>
+              </div>
+            </div>
+
+            <div 
+              class="poblado-card" 
+              :class="{ 'expanded': expandedPoblado === 'cortes' || (hoveredPoblado === 'cortes' && !isMobile) }"
+              @mouseenter="hoverPoblado('cortes')"
+              @mouseleave="unhoverPoblado('cortes')"
+              @click="togglePoblado('cortes')"
+            >
+              <div class="poblado-header">
+                <h4 class="poblado-title">CORTES BAY</h4>
+                <div class="poblado-indicator">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </div>
+              </div>
+              <div class="poblado-content">
+                <p class="poblado-text">Puerto secundario, utilizado por la Fundación para movimiento discreto de carga sensible. Funciona como sector habitacional para el personal.</p>
+              </div>
+            </div>
+
+            <div 
+              class="poblado-card" 
+              :class="{ 'expanded': expandedPoblado === 'squirrel' || (hoveredPoblado === 'squirrel' && !isMobile) }"
+              @mouseenter="hoverPoblado('squirrel')"
+              @mouseleave="unhoverPoblado('squirrel')"
+              @click="togglePoblado('squirrel')"
+            >
+              <div class="poblado-header">
+                <h4 class="poblado-title">SQUIRREL COVE</h4>
+                <div class="poblado-indicator">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </div>
+              </div>
+              <div class="poblado-content">
+                <p class="poblado-text">Poblado costero que sirve como sector habitacional completo para hospedar al personal.</p>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Secciones Decorativas -->
-        <div class="decorative-sections">
-          <div class="decorative-item">
-            <div class="decorative-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#fc6f03" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"></circle>
-                <line x1="2" y1="12" x2="22" y2="12"></line>
-                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-              </svg>
-            </div>
-            <h4 class="decorative-title">ESTABILIDAD DIMENSIONAL</h4>
-            <p class="decorative-text">Site 81 mantiene anclajes de realidad constantes para prevenir brechas dimensionales. El sistema de redundancia opera las 24 horas con un margen de error del 0.0001%.</p>
-          </div>
-
-          <div class="decorative-item">
-            <div class="decorative-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#fc6f03" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="2" y="6" width="20" height="12" rx="2" ry="2"></rect>
-                <path d="M12 12h.01"></path>
-                <path d="M16 6V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"></path>
-              </svg>
-            </div>
-            <h4 class="decorative-title">CONTENCIÓN AVANZADA</h4>
-            <p class="decorative-text">12 cámaras de contención de nivel 4 equipadas con sistemas de supresión temporal. Capacidad para albergar hasta 24 entidades Euclid simultáneamente.</p>
-          </div>
-
-          <div class="decorative-item">
-            <div class="decorative-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#fc6f03" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                <circle cx="9" cy="7" r="4"></circle>
-                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-              </svg>
-            </div>
-            <h4 class="decorative-title">PERSONAL ESPECIALIZADO</h4>
-            <p class="decorative-text">Equipo multidisciplinario de 247 investigadores y agentes de contención. Evaluaciones de realidad obligatorias cada 72 horas para todo el personal.</p>
-          </div>
-        </div>
-
-        <!-- Instalaciones -->
+        <!-- Instalaciones - Únicas instalaciones exteriores -->
         <div class="section-block">
-          <h3 class="section-title">INSTALACIONES</h3>
+          <h3 class="section-title">INSTALACIONES EXTERIORES (FACHADAS)</h3>
+          <p class="installations-note">Estas son las únicas instalaciones que están por fuera de la tierra, funcionando como fachadas para el Sitio-81.</p>
+          
           <div class="facilities-grid">
-            <div class="facility-card">
+            <div class="facility-card" @click="openModal('power')">
               <div class="facility-header">
-                <h4 class="facility-title">CORTES ISLAND POWER STATION</h4>
+                <h4 class="facility-title">CORTES ISLAND POWER STATION PLANT</h4>
                 <div class="facility-wing">Ala A</div>
               </div>
-              <p class="facility-text">Central eléctrica principal. Provee energía redundante para sistemas de contención críticos. Capacidad de 500MW con respaldo nuclear.</p>
+              <p class="facility-text">Planta eléctrica principal que alimenta toda el área del Sitio-81. Click para más información...</p>
             </div>
 
-            <div class="facility-card">
+            <div class="facility-card" @click="openModal('water')">
               <div class="facility-header">
-                <h4 class="facility-title">CORTES WATER TREATMENT STATION</h4>
+                <h4 class="facility-title">CORTES ISLAND WATER TREATMENT STATION</h4>
                 <div class="facility-wing">Ala B</div>
               </div>
-              <p class="facility-text">Planta de tratamiento de agua especializada. Sistema de filtración para anomalías acuáticas. Laboratorios de investigación hídrica.</p>
+              <p class="facility-text">Estación de tratamiento de agua para los poblados satélite. Click para más información...</p>
             </div>
 
-            <div class="facility-card">
+            <div class="facility-card" @click="openModal('military')">
               <div class="facility-header">
                 <h4 class="facility-title">CORTES ISLAND MILITARY BASE</h4>
                 <div class="facility-wing">Ala C</div>
               </div>
-              <p class="facility-text">Base militar de respuesta rápida. Aloja unidades MTF especializadas. Centro de comando para operaciones de contención.</p>
+              <p class="facility-text">Base militar operada por personal de seguridad y Destacamentos Móviles. Click para más información...</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modales para las instalaciones -->
+        <div v-if="activeModal" class="modal-overlay" @click="closeModal">
+          <div class="modal-content" @click.stop>
+            <button class="modal-close" @click="closeModal">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+            
+            <div v-if="activeModal === 'power'" class="modal-installation">
+              <h3 class="modal-title">CORTES ISLAND POWER STATION PLANT</h3>
+              <div class="modal-wing">Ala A</div>
+              
+              <div class="modal-description">
+                <p>Planta de electricidad potenciada con generadores hidroeléctricos de un río subterráneo; alimenta de electricidad a toda el área del sitio-81, siendo los generadores primarios; no obstante, no alimenta a la instalación principal.</p>
+                <p>Cuenta con la entrada principal (Gate A) a la instalación principal, tiene oficinas del Comité de Ética y la sede de la Agencia de Inteligencia en la región.</p>
+              </div>
+            </div>
+            
+            <div v-if="activeModal === 'water'" class="modal-installation">
+              <h3 class="modal-title">CORTES ISLAND WATER TREATMENT STATION</h3>
+              <div class="modal-wing">Ala B</div>
+              
+              <div class="modal-description">
+                <p>Estación de tratamiento de agua que provee a los poblados satélite agua. Tiene oficinas administrativas y es la sede del Departamento de Clasificación y Contención.</p>
+                <p>Cuenta con la entrada secundaria (Gate B) a la instalación principal del sitio.</p>
+              </div>
+            </div>
+            
+            <div v-if="activeModal === 'military'" class="modal-installation">
+              <h3 class="modal-title">CORTES ISLAND MILITARY BASE</h3>
+              <div class="modal-wing">Ala C</div>
+              
+              <div class="modal-description">
+                <p>Base militar que es operada por el personal de seguridad y los operativos de los Destacamentos Móviles asignados al sitio.</p>
+                <p>Cuenta con túneles subterráneos para acceder a la instalación principal por medio de la Ala F.</p>
+              </div>
             </div>
           </div>
         </div>
@@ -245,26 +362,35 @@
         <div class="section-block">
           <h3 class="section-title">INFORMACIÓN ADICIONAL</h3>
           <div class="additional-info">
-            <p class="info-paragraph">Site 81 fue establecido en 1987 como respuesta al Incidente de Realidad Delta-7. Su ubicación en Cortes Island fue seleccionada por sus propiedades geológicas únicas, que proporcionan blindaje natural contra anomalías dimensionales.</p>
+            <p class="info-paragraph">El Sitio-81 de la Fundación SCP es la sede principal del Comité de Clasificación y Contención; este comité tiene como objetivo verificar la clasificación de los objetos contenidos por la Fundación SCP, siendo ayudados por la Administración de Seguridad de Registros e Información (ASRI o RAISA). También tiene oficinas del Comité de Ética y puestos permanentes del DM E-6 "Tontos del Pueblo" en su interior. Se enfoca en el estudio de anomalías espacio-temporales, humanoides y objetos. Compuesta por 4 pueblos, 3 instalaciones y una instalación principal donde se ubican los laboratorios principales, las alas de contención y SCP-2955.</p>
             
-            <p class="info-paragraph">La instalación opera bajo el Protocolo Twilight, un conjunto de medidas de seguridad diseñadas específicamente para contener entidades con propiedades espacio-temporales inestables. Este protocolo incluye monitoreo constante de fluctuaciones de realidad y sistemas de redundancia cuántica.</p>
+            <p class="info-paragraph">Cortes Island ha sido, desde tiempos precoloniales, un punto focal de anomalías astronómicas y espacio-temporales. Los pueblos indígenas locales registraban en petroglifos "la luz que hiere al caer el sol", un fenómeno atmosférico conocido hoy como el "Resplandor Crepuscular" (Afterglow). Durante este resplandor, el tejido de la realidad se debilita, generando grietas dimensionales, distorsiones lumínicas y manifestaciones de entidades extradimensionales.</p>
             
-            <p class="info-paragraph">El personal de Site 81 está compuesto por especialistas en física anómala, investigadores de realidad y agentes de contención entrenados en protocolos de emergencia interdimensional. Todos los miembros del personal deben completar el Curso de Adaptación a la Realidad antes de ser asignados.</p>
+            <p class="info-paragraph">Los registros más antiguos de la Fundación (finales del siglo XIX) muestran que al menos un Grupo de Interés extinto, el Círculo del Crepúsculo, excavó la isla en busca de una reliquia arqueológica: una estructura ciclópea subterránea con inscripciones en un lenguaje no humano. Sus investigaciones se centraban en manipular la energía emanada del Resplandor Crepuscular, convencidos de que era una "llave" hacia otros planos. El grupo colapsó tras varios experimentos fallidos, dejando la estructura olvidada. Se estima que este grupo lo conformaban almenos 20 individuos, para mas información leer GdI-1472.</p>
+            
+            <p class="info-paragraph">En una primera instancia, el primer acercamiento que tuvo la Fundación con la isla fue el descubrimiento de SCP-2955, en el año 1977. En este primer acercamiento, un grupo de operativos del DM Zeta-9 "Ratas Topo" habría descubierto el objeto mientras exploraban el sistema de cuevas de la isla debido a los numerosos reportes de civiles que señalaban muchos eventos anómalos a la hora del crepúsculo en el área del emplazamiento. Este grupo presenció directamente un evento relacionado con los efectos del SCP y fueron reducidos mientras trataban de salir del sistema de cuevas. Después de este incidente, la Fundación instaló un puesto de vigilancia en la isla para monitorear los efectos de la anomalía que fue designada como SCP-2955.</p>
+            
+            <p class="info-paragraph">En 2009, durante un eclipse parcial que coincidió con el Resplandor, la isla sufrió una brecha dimensional masiva cerca de la localidad de Whaletown. En cuestión de horas, más del 95% de la población pereció, los cuerpos de los habitantes fueron encontrados en estados de distorsión física o simplemente desaparecidos. Los pocos sobrevivientes fueron reubicados bajo amnésicos de Clase-B. Este evento, registrado internamente como Incidente Whaletown-1.</p>
+            
+            <p class="info-paragraph">Un grupo de investigación liderado por el Dr. Jean Karlyle Aktus fue enviado a la isla, fueron directamente a investigar a SCP-2955 como el posible causante de la brecha dimensional, dando como el causante de este incidente despues de unos meses. El descubrimiento confirmó que los fenómenos de la isla no eran meramente atmosféricos, sino un nodo de convergencia espacio-temporal por un objeto físico en la isla, siendo el SCP como causante de estos. La alta administración le dió la orden a Aktus que fundara un sitio de contención especializado en SCP-2955 desginandola como Sitio-81.</p>
           </div>
 
           <div class="mixed-section">
             <div class="mixed-content">
               <div class="mixed-text">
-                <h4 class="mixed-title">INVESTIGACIÓN TEMPORAL</h4>
-                <p>Site 81 alberga 3 laboratorios de investigación temporal equipados con tecnología de vanguardia para estudiar anomalías cronológicas. Estos laboratorios operan bajo estrictos protocolos de seguridad temporal para prevenir paradojas.</p>
+                <p>La Fundación decidió no solo instalar un sitio, sino transformar toda la isla en un enclave anómalo controlado, adquiriendo del gobierno canadiense toda la isla y sus poblados. Se invirtió en la construcción de la Cortes Island Water Treatment Station, la Cortes Island Power Station Plant y la Cortes Island Military Base, funcionando como fachadas para el sitio, con oficinas encubiertas y entradas hacia la instalación principal del sitio. Convirtiéndolo en el sitio seguro de la fundación más grande de la costa oeste del Pacífico.</p>
               </div>
               <div class="mixed-image">
-                <div class="image-placeholder">
-                  <div class="placeholder-content">
-                    <div class="placeholder-grid">
-                      <div v-for="n in 9" :key="n" class="grid-square"></div>
+                <div class="image-container">
+                  <div class="cortes-island-map">
+                    <img 
+                      src="/scp-2995.jpg" 
+                      alt="Parte estructural de SCP-2955"
+                      class="map-image"
+                    />
+                    <div class="image-overlay-text">
+                      <span class="overlay-caption">Parte estructural de SCP-2955</span>
                     </div>
-                    <div class="placeholder-label">LABORATORIO TEMPORAL A-7</div>
                   </div>
                 </div>
               </div>
@@ -272,31 +398,34 @@
           </div>
 
           <div class="info-paragraph solo">
-            <p>La cooperación con otros sitios de la Fundación es constante, particularmente con Site 17 para intercambio de datos de investigación y con Area 12 para protocolos de contención especializados. Site 81 también sirve como centro de entrenamiento para personal que trabajará con anomalías dimensionales.</p>
+            <p>El sitio fue establecido y fundado el 24 de abril de 2011 por el director Dr. Jean Karlyle Aktus. Aktus se centró en los primeros años del sitio en investigar a SCP-2955 y descubrir su conexión con la isla. En ese tiempo, el sitio se había hecho específicamente para contener a SCP-2955 y vigilar sus efectos en la isla; sin embargo, esto cambió durante los años posteriores. El sitio se fue expandiendo con más alas y conteniendo a objetos y entidades anómalas que fueron capturadas cerca del sitio.</p>
           </div>
 
           <div class="mixed-section reversed">
             <div class="mixed-content">
               <div class="mixed-image">
-                <div class="image-placeholder">
-                  <div class="placeholder-content">
-                    <div class="placeholder-grid alt">
-                      <div v-for="n in 12" :key="n" class="grid-square"></div>
+                <div class="image-container">
+                  <div class="cortes-island-map">
+                    <img 
+                      src="/entrada-electrica.jpg" 
+                      alt="Entrada a la instalación principal en la Estación Eléctrica"
+                      class="map-image"
+                    />
+                    <div class="image-overlay-text">
+                      <span class="overlay-caption">Entrada a la instalación principal en la Estación Eléctrica</span>
                     </div>
-                    <div class="placeholder-label">SISTEMA DE MONITOREO DIMENSIONAL</div>
                   </div>
                 </div>
               </div>
               <div class="mixed-text">
-                <h4 class="mixed-title">SISTEMAS DE SEGURIDAD</h4>
-                <p>La instalación cuenta con múltiples capas de seguridad física y dimensional. Sistemas de contención de clase IV, barreras de realidad y protocolos de cuarentena automatizados aseguran la integridad de la instalación incluso bajo estrés anómalo extremo.</p>
+                <p>El Director Aktus se retiró en el año 2017 dejando a Friedrich Eisenberg, su asistente y fiel amigo, en el cargo de Director de Sitio-81. El nuevo director expandió mucho más el sitio construyendo las Alas E, F y H, también ampliando el Ala C, destinando al sitio a una instalación administrativa regional de despliegue de destacamentos móviles sobre la costa del Pacífico. Hasta el día de hoy se sigue investigando activamente las anomalías espacio-temporales y magnéticas causadas por SCP-2955.</p>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Contenido OFF ROL -->
+      <!-- Contenido OFF ROL (sin cambios) -->
       <div v-else class="off-role-content">
         <div class="off-role-container">
           <div class="off-role-icon">
@@ -329,37 +458,95 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 
 const activeRole = ref('on')
 const expandedWing = ref(null)
+const expandedPoblado = ref(null)
+const hoveredPoblado = ref(null)
+const activeModal = ref(null)
+const isMobile = ref(false)
 
 const wings = ref([
-  { id: 1, name: 'Ala A', fullName: 'Contención Primaria', subterranean: false, function: 'Contención Euclid', capacity: '12 cámaras' },
-  { id: 2, name: 'Ala B', fullName: 'Investigación Temporal', subterranean: true, function: 'Laboratorios', capacity: '3 laboratorios' },
-  { id: 3, name: 'Ala C', fullName: 'Administración Central', subterranean: false, function: 'Oficinas', capacity: '80 oficinas' },
-  { id: 4, name: 'Ala D', fullName: 'Sistemas de Soporte', subterranean: true, function: 'Mantenimiento', capacity: 'Sistemas críticos' },
-  { id: 5, name: 'Ala E', fullName: 'Cuarteles MTF', subterranean: false, function: 'Alojamiento', capacity: '150 agentes' },
-  { id: 6, name: 'Ala F', fullName: 'Archivos Seguros', subterranean: true, function: 'Almacenamiento', capacity: 'Nivel 4' },
-  { id: 7, name: 'Ala G', fullName: 'Medicina Anómala', subterranean: false, function: 'Hospital', capacity: '50 camas' },
-  { id: 8, name: 'Ala H', fullName: 'Comunicaciones', subterranean: true, function: 'Transmisiones', capacity: 'Red global' },
-  { id: 9, name: 'Ala I', fullName: 'Energía', subterranean: true, function: 'Generación', capacity: '500MW' },
-  { id: 10, name: 'Ala J', fullName: 'Investigación Keter', subterranean: true, function: 'Contención especial', capacity: '4 cámaras' },
-  { id: 11, name: 'Ala K', fullName: 'Cuarentena', subterranean: true, function: 'Aislamiento', capacity: '20 unidades' }
+  { id: 1, name: 'Ala A', fullName: 'Sector Administrativo-Científico', subterranean: false, function: 'Gestión y análisis científico', capacity: '120 agentes' },
+
+  { id: 2, name: 'Ala B', fullName: 'Sector de Dirección y Servicios', subterranean: true, function: 'Dirección, ética y salud', capacity: '150 agentes' },
+
+  { id: 3, name: 'Ala C', fullName: 'Sector de Alojamiento', subterranean: false, function: 'Residencia del Personal', capacity: '█████ agentes' },
+
+  { id: 4, name: 'Ala D', fullName: 'Sector de Servicios Generales', subterranean: true, function: 'Servicios y tránsito interno', capacity: '320 agentes' },
+
+  { id: 5, name: 'Ala E', fullName: 'Sector de █████████████', subterranean: false, function: 'Operaciones clasificadas', capacity: '█████ agentes' },
+
+  { id: 6, name: 'Ala F', fullName: 'Sector de Seguridad', subterranean: true, function: 'Respuesta y control táctico', capacity: '████ agentes' },
+
+  { id: 7, name: 'Ala G', fullName: 'Sector de Detención Clase-D', subterranean: false, function: 'Confinamiento personal Clase-D', capacity: '170 agentes' },
+
+  { id: 8, name: 'Ala H', fullName: 'Sector de Contención Clase-Safe', subterranean: true, function: 'Contención', capacity: '250 agentes' },
+
+  { id: 9, name: 'Ala I', fullName: 'Sector de Contención Clase-Euclid', subterranean: true, function: 'Contención', capacity: '███ agentes' },
+
+  { id: 10, name: 'Ala J', fullName: 'Sector de Contención Clase-Keter', subterranean: true, function: 'Contención', capacity: '████ agentes' },
+
+  { id: 11, name: 'Ala K', fullName: '█████ ██ SCP-████', subterranean: true, function: '██████ ██ █████-████', capacity: '████ agentes' }
 ])
+
+
+const checkMobile = () => {
+  isMobile.value = window.innerWidth < 768
+}
+
+onMounted(() => {
+  checkMobile()
+  window.addEventListener('resize', checkMobile)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', checkMobile)
+})
 
 const setActiveRole = (role) => {
   activeRole.value = role
   expandedWing.value = null
+  expandedPoblado.value = null
+  activeModal.value = null
 }
 
 const toggleWing = (wingId) => {
   expandedWing.value = expandedWing.value === wingId ? null : wingId
 }
+
+const togglePoblado = (pobladoId) => {
+  if (isMobile.value) {
+    expandedPoblado.value = expandedPoblado.value === pobladoId ? null : pobladoId
+  }
+}
+
+const hoverPoblado = (pobladoId) => {
+  if (!isMobile.value) {
+    hoveredPoblado.value = pobladoId
+  }
+}
+
+const unhoverPoblado = () => {
+  if (!isMobile.value) {
+    hoveredPoblado.value = null
+  }
+}
+
+const openModal = (type) => {
+  activeModal.value = type
+  document.body.style.overflow = 'hidden'
+}
+
+const closeModal = () => {
+  activeModal.value = null
+  document.body.style.overflow = 'auto'
+}
 </script>
 
 <style scoped>
-/* Reset y base - Mobile First */
+/* Estilos principales */
 .information-page {
   position: relative;
   min-height: 100vh;
@@ -372,6 +559,19 @@ const toggleWing = (wingId) => {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
+}
+
+/* Todos los párrafos con text-align: left */
+.info-paragraph,
+.poblado-text,
+.facility-text,
+.modal-description p,
+.mixed-text p,
+.off-role-text,
+.installations-note,
+.section-title,
+.data-value {
+  text-align: left !important;
 }
 
 /* Fondo SCP */
@@ -616,7 +816,7 @@ const toggleWing = (wingId) => {
   box-shadow: 0 0 8px #fc6f03;
 }
 
-/* Secciones Generales */
+/* Secciones */
 .section-block {
   width: 100%;
   margin-bottom: 40px;
@@ -652,172 +852,285 @@ const toggleWing = (wingId) => {
   display: flex;
   flex-direction: column;
   gap: 24px;
+  align-items: stretch;
 }
 
-.info-text {
+/* Contenedores con el mismo estilo */
+.info-text-container,
+.info-image-container {
   width: 100%;
+  flex: 1;
 }
 
-.info-text p {
-  font-size: 15px;
-  color: #ccc;
-  line-height: 1.6;
-  margin: 0 0 16px 0;
-}
-
-.info-text p:last-child {
-  margin-bottom: 0;
-}
-
-.info-image {
-  width: 100%;
-}
-
-.image-container {
+/* Estilo compartido para ambos contenedores */
+.info-text-container .scp-data-grid,
+.info-image-container .image-container {
   background: rgba(25, 25, 25, 0.8);
   border: 1px solid #444;
   border-radius: 8px;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 250px;
 }
 
-.placeholder-image {
-  width: 100%;
-  height: 200px;
-  background: rgba(20, 20, 20, 0.9);
-  position: relative;
-  overflow: hidden;
+/* Estilos específicos para el texto */
+.scp-data-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
-.image-content {
+.data-item {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.data-item:last-child {
+  border-bottom: none;
+}
+
+.data-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fc6f03;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  font-family: 'Consolas', monospace;
+  min-width: 200px;
+  width: 200px; 
+  flex-shrink: 0; 
+  text-align: right; 
+  padding-right: 20px; 
+}
+
+.data-label.highlight {
+  color: #fc6f03;
+  text-shadow: 0 0 5px rgba(252, 111, 3, 0.3);
+}
+
+.data-value {
+  font-size: 15px;
+  color: #ddd;
+  line-height: 1.4;
+  text-align: left;
+  flex: 1; 
+  padding-left: 0; 
+}
+/* Estilos para la imagen */
+.cortes-island-map {
   width: 100%;
   height: 100%;
   position: relative;
 }
 
-.image-grid {
+.map-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+.image-overlay-text {
   position: absolute;
-  top: 0;
+  bottom: 0;
   left: 0;
   right: 0;
-  bottom: 0;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: repeat(4, 1fr);
-  gap: 1px;
-  padding: 16px;
-}
-
-.grid-cell {
-  background: rgba(40, 40, 40, 0.6);
-  border: 1px solid rgba(252, 111, 3, 0.2);
-}
-
-.image-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: rgba(10, 10, 10, 0.7);
-  padding: 20px;
-  text-align: center;
-}
-
-.overlay-text {
-  font-size: 14px;
-  font-weight: 600;
-  color: #fc6f03;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 4px;
-}
-
-.overlay-subtext {
-  font-size: 12px;
-  color: #888;
-  letter-spacing: 0.3px;
-}
-
-.image-caption {
+  padding: 12px 16px;
+  background: linear-gradient(
+    to top,
+    rgba(10, 10, 10, 0.9) 0%,
+    rgba(10, 10, 10, 0.7) 50%,
+    transparent 100%
+  );
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 12px 16px;
-  background: rgba(30, 30, 30, 0.6);
-  border-top: 1px solid #444;
+  z-index: 2;
 }
 
-.caption-icon {
-  font-size: 14px;
-  color: #fc6f03;
-}
-
-.caption-text {
+.overlay-caption {
   font-size: 13px;
   color: #aaa;
   letter-spacing: 0.3px;
+  flex: 1;
 }
 
-/* Secciones Decorativas */
-.decorative-sections {
+/* Poblados - Nuevo diseño */
+.poblados-grid {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  margin-bottom: 40px;
+  gap: 16px;
 }
 
-.decorative-item {
-  background: rgba(25, 25, 25, 0.7);
+.poblado-card {
+  background: rgba(30, 30, 30, 0.6);
   border: 1px solid #444;
   border-radius: 8px;
-  padding: 20px 16px;
-  text-align: center;
+  padding: 16px;
   position: relative;
   overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-height: 60px;
 }
 
-.decorative-item::before {
+.poblado-card:hover {
+  background: rgba(40, 40, 40, 0.7);
+  border-color: #555;
+}
+
+.poblado-card.expanded {
+  background: rgba(35, 35, 35, 0.8);
+  border-color: #fc6f03;
+}
+
+.poblado-card::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, #fc6f03, transparent);
-  opacity: 0.5;
+  width: 4px;
+  height: 100%;
+  background: #fc6f03;
+  opacity: 0.8;
 }
 
-.decorative-icon {
-  width: 48px;
-  height: 48px;
-  margin: 0 auto 16px;
+.poblado-header {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  gap: 12px;
 }
 
-.decorative-title {
+.poblado-title {
   font-size: 16px;
   font-weight: 700;
   color: #fc6f03;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  margin: 0 0 12px 0;
+  margin: 0;
 }
 
-.decorative-text {
+.poblado-indicator {
+  width: 20px;
+  height: 20px;
+  color: #fc6f03;
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+
+.poblado-card.expanded .poblado-indicator {
+  transform: rotate(180deg);
+}
+
+.poblado-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease, margin-top 0.3s ease, opacity 0.3s ease;
+  opacity: 0;
+}
+
+.poblado-card.expanded .poblado-content {
+  max-height: 200px;
+  margin-top: 16px;
+  opacity: 1;
+}
+
+.poblado-text {
   font-size: 14px;
   color: #ccc;
   line-height: 1.5;
   margin: 0;
+  text-align: left;
 }
 
-/* Instalaciones Grid */
+@media (max-width: 767px) {
+  .data-item {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .data-label {
+    min-width: 100%;
+    width: 100%;
+    text-align: left; /* En móvil, alinear a la izquierda */
+    padding-right: 0;
+  }
+  
+  .data-value {
+    padding-left: 0;
+  }
+}
+
+/* Ajustes para tablet */
+@media (min-width: 768px) {
+  .data-label {
+    min-width: 180px;
+    width: 180px;
+  }
+}
+
+/* Ajustes para desktop */
+@media (min-width: 1024px) {
+  .data-label {
+    min-width: 200px;
+    width: 200px;
+    font-size: 15px;
+  }
+  
+  .data-value {
+    font-size: 16px;
+  }
+}
+
+/* Para desktop - hover effect */
+@media (min-width: 768px) {
+  .poblado-card {
+    min-height: 70px;
+  }
+  
+  .poblado-content {
+    display: block !important;
+    max-height: 0;
+    opacity: 0;
+  }
+  
+  .poblado-card:hover .poblado-content {
+    max-height: 200px;
+    margin-top: 16px;
+    opacity: 1;
+  }
+  
+  .poblado-card:hover {
+    background: rgba(40, 40, 40, 0.8);
+    border-color: #fc6f03;
+  }
+  
+}
+
+/* Nota de instalaciones */
+.installations-note {
+  font-size: 14px;
+  color: #aaa;
+  margin: 0 0 20px 0;
+  padding: 12px 16px;
+  background: rgba(30, 30, 30, 0.6);
+  border: 1px solid #444;
+  border-radius: 6px;
+  border-left: 4px solid #fc6f03;
+}
+
+/* Instalaciones */
 .facilities-grid {
   width: 100%;
   display: flex;
@@ -832,6 +1145,14 @@ const toggleWing = (wingId) => {
   padding: 20px 16px;
   position: relative;
   overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.facility-card:hover {
+  background: rgba(40, 40, 40, 0.7);
+  border-color: #555;
+  transform: translateY(-2px);
 }
 
 .facility-card::before {
@@ -869,6 +1190,108 @@ const toggleWing = (wingId) => {
   color: #ccc;
   line-height: 1.5;
   margin: 0;
+}
+
+/* Modal para instalaciones */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(5px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-content {
+  background: rgba(25, 25, 25, 0.95);
+  border: 1px solid #fc6f03;
+  border-radius: 8px;
+  padding: 30px;
+  max-width: 600px;
+  width: 100%;
+  position: relative;
+  animation: slideUp 0.3s ease;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+@keyframes slideUp {
+  from { 
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal-close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: transparent;
+  border: none;
+  color: #aaa;
+  cursor: pointer;
+  padding: 5px;
+  transition: color 0.3s ease;
+}
+
+.modal-close:hover {
+  color: #fc6f03;
+}
+
+.modal-close svg {
+  width: 20px;
+  height: 20px;
+}
+
+.modal-installation {
+  color: #ddd;
+}
+
+.modal-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #fc6f03;
+  margin: 0 0 10px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.modal-wing {
+  font-size: 16px;
+  color: #888;
+  font-family: 'Consolas', monospace;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(252, 111, 3, 0.3);
+}
+
+.modal-description {
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.modal-description p {
+  margin: 0 0 15px 0;
+}
+
+.modal-description p:last-child {
+  margin-bottom: 0;
 }
 
 /* Instalación Principal */
@@ -1079,15 +1502,6 @@ const toggleWing = (wingId) => {
   width: 100%;
 }
 
-.mixed-title {
-  font-size: 18px;
-  font-weight: 700;
-  color: #fc6f03;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin: 0 0 12px 0;
-}
-
 .mixed-text p {
   font-size: 15px;
   color: #ccc;
@@ -1099,61 +1513,7 @@ const toggleWing = (wingId) => {
   width: 100%;
 }
 
-.image-placeholder {
-  width: 100%;
-  height: 200px;
-  background: rgba(20, 20, 20, 0.9);
-  border: 1px solid #444;
-  border-radius: 8px;
-  overflow: hidden;
-  position: relative;
-}
-
-.placeholder-content {
-  width: 100%;
-  height: 100%;
-  position: relative;
-}
-
-.placeholder-grid {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(3, 1fr);
-  gap: 1px;
-  padding: 20px;
-}
-
-.placeholder-grid.alt {
-  grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: repeat(3, 1fr);
-}
-
-.grid-square {
-  background: rgba(40, 40, 40, 0.6);
-  border: 1px solid rgba(252, 111, 3, 0.2);
-}
-
-.placeholder-label {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 12px;
-  background: rgba(10, 10, 10, 0.8);
-  text-align: center;
-  font-size: 12px;
-  color: #fc6f03;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-  border-top: 1px solid #444;
-}
-
-/* Contenido OFF ROL */
+/* Off Role Content */
 .off-role-content {
   width: 100%;
   padding: 40px 0;
@@ -1163,7 +1523,7 @@ const toggleWing = (wingId) => {
   width: 100%;
   max-width: 600px;
   margin: 0 auto;
-  text-align: center;
+  text-align: left;
   padding: 40px 20px;
   background: rgba(25, 25, 25, 0.7);
   border: 1px solid #444;
@@ -1205,7 +1565,6 @@ const toggleWing = (wingId) => {
   color: #ccc;
   line-height: 1.6;
   margin: 0 0 20px 0;
-  text-align: left;
 }
 
 .off-role-text:last-child {
@@ -1221,7 +1580,6 @@ const toggleWing = (wingId) => {
   background: rgba(40, 30, 0, 0.2);
   border: 1px solid #aa8800;
   border-radius: 8px;
-  text-align: left;
 }
 
 .note-icon {
@@ -1238,7 +1596,7 @@ const toggleWing = (wingId) => {
   flex: 1;
 }
 
-/* Tablet */
+/* Responsive - Tablet */
 @media (min-width: 768px) {
   .page-header {
     padding: 24px 32px;
@@ -1260,33 +1618,70 @@ const toggleWing = (wingId) => {
     font-size: 22px;
   }
   
+  /* General info en fila para tablet */
   .general-info {
     flex-direction: row;
+    align-items: stretch;
     gap: 32px;
   }
   
-  .info-text {
+  /* Ajustar tamaño de contenedores */
+  .info-text-container,
+  .info-image-container {
     flex: 1;
   }
   
-  .info-image {
-    flex: 1;
+  .info-text-container .scp-data-grid,
+  .info-image-container .image-container {
+    min-height: 320px;
   }
   
-  .placeholder-image {
-    height: 240px;
+  .scp-data-grid {
+    padding: 24px;
   }
   
-  .decorative-sections {
+  .data-item {
     flex-direction: row;
-    flex-wrap: wrap;
+    align-items: flex-start;
   }
   
-  .decorative-item {
+  .data-label {
+    min-width: 160px;
+  }
+  
+  .data-value {
     flex: 1;
-    min-width: 200px;
   }
   
+  .image-overlay-text {
+    padding: 14px 20px;
+  }
+  
+  .overlay-caption {
+    font-size: 14px;
+  }
+  
+  /* Poblados en grid para tablet */
+  .poblados-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  
+  .poblado-card {
+    padding: 20px;
+    min-height: 80px;
+  }
+  
+  .poblado-title {
+    font-size: 18px;
+  }
+  
+  .poblado-text {
+    font-size: 15px;
+  }
+  
+  /* Instalaciones */
   .facilities-grid {
     flex-direction: row;
     flex-wrap: wrap;
@@ -1297,6 +1692,16 @@ const toggleWing = (wingId) => {
     min-width: 200px;
   }
   
+  /* Modal */
+  .modal-content {
+    padding: 40px;
+  }
+  
+  .modal-title {
+    font-size: 28px;
+  }
+  
+  /* Otros ajustes responsive */
   .main-facility {
     flex-direction: row;
     gap: 32px;
@@ -1332,10 +1737,6 @@ const toggleWing = (wingId) => {
     flex: 1;
   }
   
-  .image-placeholder {
-    height: 220px;
-  }
-  
   .off-role-container {
     padding: 60px 40px;
   }
@@ -1345,7 +1746,7 @@ const toggleWing = (wingId) => {
   }
 }
 
-/* Desktop */
+/* Responsive - Desktop */
 @media (min-width: 1024px) {
   .page-header {
     padding: 28px 40px;
@@ -1369,38 +1770,77 @@ const toggleWing = (wingId) => {
     font-size: 24px;
   }
   
-  .placeholder-image {
-    height: 280px;
+  /* Ajustes para desktop */
+  .info-text-container .scp-data-grid,
+  .info-image-container .image-container {
+    min-height: 350px;
   }
   
-  .decorative-sections {
-    gap: 24px;
+  .scp-data-grid {
+    padding: 28px;
   }
   
-  .decorative-item {
-    padding: 24px 20px;
-  }
-  
-  .decorative-title {
-    font-size: 17px;
-  }
-  
-  .decorative-text {
+  .data-label {
+    min-width: 180px;
     font-size: 15px;
   }
   
-  .facilities-grid {
+  .data-value {
+    font-size: 16px;
+  }
+  
+  .image-overlay-text {
+    padding: 16px 24px;
+  }
+  
+  .overlay-caption {
+    font-size: 15px;
+  }
+  
+  /* Poblados para desktop */
+  .poblados-grid {
+    grid-template-columns: repeat(4, 1fr);
     gap: 24px;
   }
   
-  .facility-card {
-    padding: 24px 20px;
+  .poblado-card {
+    padding: 24px;
+    min-height: 90px;
+  }
+  
+  .poblado-title {
+    font-size: 20px;
+  }
+  
+  .poblado-text {
+    font-size: 16px;
+  }
+  
+  /* Instalaciones */
+  .installations-note {
+    font-size: 15px;
+    padding: 16px 20px;
   }
   
   .facility-title {
     font-size: 18px;
   }
   
+  /* Modal desktop */
+  .modal-content {
+    max-width: 700px;
+    padding: 50px;
+  }
+  
+  .modal-title {
+    font-size: 32px;
+  }
+  
+  .modal-description {
+    font-size: 17px;
+  }
+  
+  /* Otros ajustes desktop */
   .office-card {
     padding: 24px 20px;
   }
@@ -1431,20 +1871,12 @@ const toggleWing = (wingId) => {
     font-size: 16px;
   }
   
-  .mixed-title {
-    font-size: 20px;
-  }
-  
   .mixed-text p {
     font-size: 16px;
   }
-  
-  .image-placeholder {
-    height: 240px;
-  }
 }
 
-/* Pantallas grandes */
+/* Responsive - Pantallas grandes */
 @media (min-width: 1400px) {
   .page-content {
     padding: 48px 60px;
@@ -1462,18 +1894,40 @@ const toggleWing = (wingId) => {
     margin-bottom: 60px;
   }
   
+  /* Ajustes para pantallas grandes */
   .general-info {
     gap: 48px;
   }
   
-  .decorative-sections {
+  .info-text-container .scp-data-grid,
+  .info-image-container .image-container {
+    min-height: 380px;
+  }
+  
+  .scp-data-grid {
+    padding: 32px;
+  }
+  
+  /* Poblados */
+  .poblados-grid {
     gap: 32px;
   }
   
+  /* Instalaciones */
   .facilities-grid {
     gap: 32px;
   }
   
+  .facility-card {
+    padding: 28px 24px;
+  }
+  
+  /* Modal pantallas grandes */
+  .modal-content {
+    max-width: 800px;
+  }
+  
+  /* Otros ajustes */
   .main-facility {
     gap: 48px;
   }

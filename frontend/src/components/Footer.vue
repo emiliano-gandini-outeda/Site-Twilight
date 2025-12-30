@@ -1,7 +1,5 @@
 <template>
   <footer class="site-footer">
-    <div class="footer-background"></div>
-    
     <div class="footer-container">
       <!-- Banner de Clasificación -->
       <div class="classification-banner">
@@ -198,28 +196,14 @@
 <style scoped>
 /* Base mobile styles - mobile first - AHORA SOLO SVG */
 .site-footer {
-  background: rgba(10, 10, 10, 0.95);
-  border-top: 1px solid #333;
+  background: transparent;
+  border-top: 1px solid rgba(51, 51, 51, 0.5);
   position: relative;
-  backdrop-filter: blur(10px);
   width: 100%;
   left: 0;
   right: 0;
   margin-top: auto;
   flex-shrink: 0;
-}
-
-.footer-background {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, 
-    rgba(15, 15, 15, 0.95) 0%, 
-    rgba(20, 20, 20, 0.95) 50%, 
-    rgba(15, 15, 15, 0.95) 100%);
-  z-index: -1;
 }
 
 .footer-container {
@@ -264,10 +248,10 @@
 
 /* Banner de Clasificación */
 .classification-banner {
-  background: linear-gradient(90deg, #222, #333, #222);
+  background: transparent;
   padding: 0.8rem;
   text-align: center;
-  border: 1px solid #444;
+  border: 1px solid rgba(68, 68, 68, 0.5);
   border-radius: 2px;
   margin-bottom: 1.5rem;
   width: 100%;
@@ -282,6 +266,7 @@
   text-transform: uppercase;
   margin-bottom: 0.3rem;
   word-break: break-word;
+  opacity: 1 !important; /* SOLID */
 }
 
 .classification-subtext {
@@ -289,6 +274,7 @@
   color: #888;
   letter-spacing: 0.5px;
   word-break: break-word;
+  opacity: 1 !important; /* SOLID */
 }
 
 /* Grid del Contenido del Footer */
@@ -303,8 +289,8 @@
 
 /* Secciones del Footer */
 .footer-section {
-  background: rgba(25, 25, 25, 0.6);
-  border: 1px solid #444;
+  background: transparent;
+  border: 1px solid rgba(68, 68, 68, 0.5);
   border-radius: 2px;
   padding: 1rem;
   width: 100%;
@@ -318,7 +304,7 @@
   gap: 0.6rem;
   margin-bottom: 0.8rem;
   padding-bottom: 0.5rem;
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid rgba(51, 51, 51, 0.5);
   width: 100%;
   box-sizing: border-box;
 }
@@ -365,8 +351,8 @@
   width: 100%;
   min-height: 42px;
   padding: 0.7rem 0.8rem;
-  background: rgba(30, 30, 30, 0.5);
-  border: 1px solid #444;
+  background: transparent;
+  border: 1px solid rgba(68, 68, 68, 0.5);
   border-radius: 2px;
   box-sizing: border-box;
 }
@@ -392,6 +378,7 @@
   letter-spacing: 0.5px;
   word-break: break-word;
   flex: 1;
+  opacity: 1 !important; /* SOLID */
 }
 
 /* Enlaces de Documentación - NORMALIZADOS */
@@ -407,8 +394,8 @@
   align-items: center;
   gap: 0.8rem;
   padding: 0.7rem 0.9rem;
-  background: rgba(30, 30, 30, 0.6);
-  border: 1px solid #444;
+  background: transparent;
+  border: 1px solid rgba(68, 68, 68, 0.5);
   border-radius: 2px;
   color: #d8d8d8;
   text-decoration: none;
@@ -420,8 +407,8 @@
 }
 
 .document-link:hover {
-  background: rgba(40, 40, 40, 0.8);
-  border-color: #666;
+  background: rgba(40, 40, 40, 0.3);
+  border-color: rgba(102, 102, 102, 0.8);
   transform: translateY(-2px);
 }
 
@@ -431,6 +418,7 @@
   word-break: break-word;
   overflow-wrap: break-word;
   flex: 1;
+  opacity: 1 !important; /* SOLID */
 }
 
 /* Enlaces del Sistema - NORMALIZADOS */
@@ -446,8 +434,8 @@
   align-items: center;
   gap: 0.8rem;
   padding: 0.7rem 0.9rem;
-  background: rgba(30, 30, 30, 0.6);
-  border: 1px solid #444;
+  background: transparent;
+  border: 1px solid rgba(68, 68, 68, 0.5);
   border-radius: 2px;
   color: #d8d8d8;
   text-decoration: none;
@@ -459,8 +447,8 @@
 }
 
 .system-link:hover {
-  background: rgba(40, 40, 40, 0.8);
-  border-color: #666;
+  background: rgba(40, 40, 40, 0.3);
+  border-color: rgba(102, 102, 102, 0.8);
   transform: translateY(-2px);
 }
 
@@ -477,8 +465,8 @@
   align-items: center;
   gap: 0.8rem;
   padding: 0.7rem 0.9rem;
-  background: rgba(30, 30, 30, 0.6);
-  border: 1px solid #444;
+  background: transparent;
+  border: 1px solid rgba(68, 68, 68, 0.5);
   border-radius: 2px;
   color: #d8d8d8;
   text-decoration: none;
@@ -490,8 +478,8 @@
 }
 
 .contact-link:hover {
-  background: rgba(40, 40, 40, 0.8);
-  border-color: #666;
+  background: rgba(40, 40, 40, 0.3);
+  border-color: rgba(102, 102, 102, 0.8);
   transform: translateY(-2px);
 }
 
@@ -501,6 +489,7 @@
   word-break: break-word;
   overflow-wrap: break-word;
   flex: 1;
+  opacity: 1 !important; /* SOLID */
 }
 
 .security-notice {
@@ -508,8 +497,8 @@
   align-items: center;
   gap: 0.8rem;
   padding: 0.7rem 0.9rem;
-  background: rgba(40, 30, 0, 0.3);
-  border: 1px solid #aa8800;
+  background: transparent;
+  border: 1px solid rgba(170, 136, 0, 0.5);
   border-radius: 2px;
   width: 100%;
   box-sizing: border-box;
@@ -524,6 +513,7 @@
   word-break: break-word;
   overflow-wrap: break-word;
   flex: 1;
+  opacity: 1 !important; /* SOLID */
 }
 
 /* Parte Inferior del Footer */
@@ -534,7 +524,7 @@
 
 .footer-divider {
   height: 1px;
-  background: linear-gradient(90deg, transparent, #555, transparent);
+  background: linear-gradient(90deg, transparent, rgba(85, 85, 85, 0.5), transparent);
   margin-bottom: 1rem;
   width: 100%;
 }
@@ -577,8 +567,8 @@
   justify-content: center;
   gap: 0.8rem;
   padding: 0.7rem 1rem;
-  background: rgba(30, 30, 30, 0.6);
-  border: 1px solid #444;
+  background: transparent;
+  border: 1px solid rgba(68, 68, 68, 0.5);
   border-radius: 2px;
   margin: 0 auto;
   max-width: 300px;
@@ -595,6 +585,7 @@
   word-break: break-word;
   overflow-wrap: break-word;
   flex: 1;
+  opacity: 1 !important; /* SOLID */
 }
 
 /* Animación */
