@@ -387,8 +387,10 @@
                   <label class="form-label">Fecha de Nacimiento *</label>
                   <input
                     v-model="characterForm.birth_date"
-                    type="date"
+                    type="text"
                     class="form-input"
+                    placeholder="DD/MM/AAAA"
+                    @input="formatBirthDate"
                     required
                   />
                 </div>
@@ -920,6 +922,23 @@ const characterForm = reactive({
   lore: ''
 })
 
+const formatBirthDate = (event) => {
+  let value = event.target.value.replace(/\D/g, '')
+  
+  if (value.length > 8) {
+    value = value.substring(0, 8)
+  }
+  
+  // Formatear como DD/MM/AAAA
+  if (value.length > 4) {
+    value = value.substring(0, 2) + '/' + value.substring(2, 4) + '/' + value.substring(4)
+  } else if (value.length > 2) {
+    value = value.substring(0, 2) + '/' + value.substring(2)
+  }
+  
+  characterForm.birth_date = value
+}
+
 // Computed properties
 const loginUrl = computed(() => {
   const nextUrl = encodeURIComponent('/personajes')
@@ -1148,6 +1167,21 @@ const submitCharacterForm = async () => {
   
   try {
     const formData = { ...characterForm }
+
+    // Convertir fecha de DD/MM/AAAA a YYYY-MM-DD para el backend
+    if (formData.birth_date) {
+      const parts = formData.birth_date.split('/')
+      if (parts.length === 3) {
+        const [day, month, year] = parts
+        // Validar que sea una fecha válida
+        const date = new Date(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`)
+        if (!isNaN(date.getTime())) {
+          formData.birth_date = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
+        } else {
+          throw new Error('Fecha de nacimiento inválida')
+        }
+      }
+    }
     
     const numericFields = ['nvg_r', 'nvg_g', 'nvg_b', 'skin_r', 'skin_g', 'skin_b', 'cntag_r', 'cntag_g', 'cntag_b', 'crtag_r', 'crtag_g', 'crtag_b']
     numericFields.forEach(field => {
