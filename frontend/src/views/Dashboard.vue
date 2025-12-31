@@ -316,8 +316,8 @@ onMounted(() => {
   background: #0a0a0a;
   font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
   line-height: 1.5;
-  width: 100vw;
-  max-width: 100vw;
+  width: 100%;
+  max-width: 100%;
   margin: 0;
   padding: 0;
   overflow-x: hidden;
@@ -502,8 +502,8 @@ onMounted(() => {
   min-height: calc(100vh - 64px);
   padding: 20px;
   box-sizing: border-box;
-  width: 100vw;
-  max-width: 100vw;
+  width: 100%;
+  max-width: 1200px;
   margin: 0;
   gap: 20px;
 }
@@ -984,15 +984,15 @@ onMounted(() => {
 
 /* Reglas adicionales para asegurar ancho completo */
 :deep(.dashboard-page) {
-  width: 100vw !important;
-  max-width: 100vw !important;
+  width: 100% !important;
+  max-width: 100% !important;
   margin: 0 !important;
   padding: 0 !important;
 }
 
 :deep(.dashboard-content) {
   width: 100% !important;
-  max-width: 100% !important;
+  max-width: 1500% !important;
   margin: 0 !important;
 }
 </style>
