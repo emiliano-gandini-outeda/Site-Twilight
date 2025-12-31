@@ -502,8 +502,8 @@ onMounted(() => {
   min-height: calc(100vh - 64px);
   padding: 20px;
   box-sizing: border-box;
-  width: 100%;
-  max-width: 1200px;
+  width: 1500%;
+  max-width: 100%;
   margin: 0;
   gap: 20px;
 }
@@ -991,8 +991,8 @@ onMounted(() => {
 }
 
 :deep(.dashboard-content) {
-  width: 100% !important;
-  max-width: 1500% !important;
+  width: 1500px !important;
+  max-width: 100% !important;
   margin: 0 !important;
 }
 </style>
