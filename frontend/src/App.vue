@@ -31,9 +31,7 @@ import Footer from "./components/Footer.vue"
   width: 100%;
   overflow-x: hidden;
 }
-</style>
 
-<style>
 /* Estilos globales */
 html, body {
   margin: 0;
