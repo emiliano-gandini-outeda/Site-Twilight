@@ -27,9 +27,9 @@ import Footer from "./components/Footer.vue"
 
 .main-content {
   flex: 1;
-  padding-top: 64px;
   width: 100%;
-  overflow-x: hidden;
+  padding-top: 64px;
+  overflow-x: visible !important;
 }
 
 /* Estilos globales */
