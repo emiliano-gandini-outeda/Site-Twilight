@@ -500,7 +500,7 @@ onMounted(() => {
   z-index: 1;
   display: flex;
   min-height: calc(100vh - 64px);
-  padding: 20px;
+  padding: 20px 0 20px 0;
   box-sizing: border-box;
   width: 1500%;
   max-width: 100%;
