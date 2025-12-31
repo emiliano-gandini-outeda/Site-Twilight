@@ -654,34 +654,6 @@
                 </div>
               </div>
             </div>
-            
-            <div class="form-validation">
-              <div class="validation-header">
-                <h4 class="validation-title">VALIDACIÓN DEL FORMULARIO</h4>
-                <div class="validation-status" :class="{ 'valid': isFormValid, 'invalid': !isFormValid }">
-                  {{ isFormValid ? 'FORMULARIO VÁLIDO' : 'FORMULARIO INCOMPLETO' }}
-                </div>
-              </div>
-              <div class="validation-rules">
-                <div class="validation-rule" :class="{ 'met': characterForm.first_name && characterForm.last_name }">
-                  <span class="rule-indicator">●</span>
-                  <span class="rule-text">Nombre y apellido completos</span>
-                </div>
-                <div class="validation-rule" :class="{ 'met': characterForm.codename }">
-                  <span class="rule-indicator">●</span>
-                  <span class="rule-text">Codename definido</span>
-                </div>
-                <div class="validation-rule" :class="{ 'met': characterForm.faction }">
-                  <span class="rule-indicator">●</span>
-                  <span class="rule-text">Facción seleccionada</span>
-                </div>
-                <div class="validation-rule" :class="{ 'met': hasAtLeastOneMorphField }">
-                  <span class="rule-indicator">●</span>
-                  <span class="rule-text">Al menos un campo de morph definido</span>
-                </div>
-              </div>
-            </div>
-            
             <div class="form-actions">
               <button type="button" class="cancel-button" @click="closeFormView">
                 Cancelar
