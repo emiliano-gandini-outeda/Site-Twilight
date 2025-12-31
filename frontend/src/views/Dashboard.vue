@@ -313,6 +313,7 @@ onMounted(() => {
 .dashboard-page {
   position: relative;
   min-height: calc(100vh - 64px); /* Resta la altura del header */
+  height: 150vh;
   color: #d8d8d8;
   background: #0a0a0a;
   font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
@@ -505,6 +506,7 @@ onMounted(() => {
   box-sizing: border-box;
   width: 1500%;
   max-width: 100%;
+  height: 100%;
   margin: 0;
   gap: 20px;
 }
@@ -520,7 +522,7 @@ onMounted(() => {
   flex-shrink: 0;
   backdrop-filter: blur(5px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  height: calc(100vh - 104px); /* Altura fija para ocupar toda la pantalla */
+  height: 100%; /* Altura fija para ocupar toda la pantalla */
   position: sticky;
   top: 84px; /* 64px del header + 20px de padding */
 }
@@ -708,7 +710,7 @@ onMounted(() => {
   flex-direction: column;
   backdrop-filter: blur(5px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  height: calc(100vh - 104px); /* Altura fija para ocupar toda la pantalla */
+  height: 100%; /* Altura fija para ocupar toda la pantalla */
   min-width: 0; /* Importante para flexbox */
 }
 
@@ -791,7 +793,7 @@ onMounted(() => {
 /* Component Container - MODIFICADO: Scroll si es necesario */
 .component-container {
   flex: 1;
-  overflow: auto;
+  overflow: hidden;
   position: relative;
   width: 100%;
   height: 100%;

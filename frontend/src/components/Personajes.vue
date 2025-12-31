@@ -1,10 +1,20 @@
 <template>
-  <div class="personajes-container">
-    <!-- Sidebar izquierdo -->
+  <div class="personajes-container" :class="{ 'sidebar-collapsed': sidebarCollapsed }">
+    <!-- Sidebar izquierdo - Ahora minimizable -->
     <nav class="personajes-sidebar">
       <div class="sidebar-header">
-        <h3 class="sidebar-title">AGENT MANAGEMENT</h3>
-        <div class="sidebar-subtitle">Personnel Control Panel</div>
+        <div class="sidebar-header-content" v-if="!sidebarCollapsed">
+          <h3 class="sidebar-title">AGENT MANAGEMENT</h3>
+          <div class="sidebar-subtitle">Personnel Control Panel</div>
+        </div>
+        <button class="sidebar-toggle" @click="toggleSidebar">
+          <svg v-if="sidebarCollapsed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+          <svg v-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
       </div>
       
       <div class="sidebar-tools">
@@ -12,6 +22,7 @@
           class="tool-item" 
           :class="{ 'active': activeView === 'all' }"
           @click="setActiveView('all')"
+          :disabled="!props.currentUser.is_authenticated"
         >
           <div class="tool-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -21,8 +32,8 @@
               <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
             </svg>
           </div>
-          <span class="tool-name">Lista de Personal</span>
-          <div class="tool-indicator" v-if="activeView === 'all'">
+          <span class="tool-name" v-if="!sidebarCollapsed">Lista de Personal</span>
+          <div class="tool-indicator" v-if="activeView === 'all' && !sidebarCollapsed">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
@@ -33,6 +44,7 @@
           class="tool-item" 
           :class="{ 'active': activeView === 'mine' }"
           @click="setActiveView('mine')"
+          :disabled="!props.currentUser.is_authenticated"
         >
           <div class="tool-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -40,8 +52,8 @@
               <circle cx="12" cy="7" r="4"></circle>
             </svg>
           </div>
-          <span class="tool-name">Mis Agentes</span>
-          <div class="tool-indicator" v-if="activeView === 'mine'">
+          <span class="tool-name" v-if="!sidebarCollapsed">Mis Agentes</span>
+          <div class="tool-indicator" v-if="activeView === 'mine' && !sidebarCollapsed">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
@@ -49,7 +61,7 @@
         </button>
         
         <!-- Placeholders [REDACTED] -->
-        <div class="tool-item redacted">
+        <div class="tool-item redacted" v-if="!sidebarCollapsed">
           <div class="tool-icon redacted">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
               <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
@@ -59,7 +71,7 @@
           <span class="tool-name redacted-text">[REDACTED]</span>
         </div>
         
-        <div class="tool-item redacted">
+        <div class="tool-item redacted" v-if="!sidebarCollapsed">
           <div class="tool-icon redacted">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
               <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
@@ -67,375 +79,341 @@
             </svg>
           </div>
           <span class="tool-name redacted-text">[REDACTED]</span>
+        </div>
+      </div>
+      
+      <div class="sidebar-footer" v-if="!sidebarCollapsed">
+        <div class="auth-status">
+          <div class="status-indicator" :class="{ 'online': props.currentUser.is_authenticated, 'offline': !props.currentUser.is_authenticated }"></div>
+          <span class="status-text">
+            {{ props.currentUser.is_authenticated ? 'AUTENTICADO' : 'NO AUTENTICADO' }}
+          </span>
+        </div>
+        <div class="clearance-level">
+          <span class="clearance-label">CLEARANCE:</span>
+          <span class="clearance-value">{{ props.currentUser.is_authenticated ? 'LEVEL 2' : 'GUEST' }}</span>
         </div>
       </div>
     </nav>
 
     <!-- Área de contenido principal -->
     <section class="personajes-main">
-      <!-- Vista: Lista de todos los personajes -->
-      <div v-if="activeView === 'all' && !selectedCharacter" class="all-characters-view">
-        <div class="view-header">
-          <h2 class="view-title">LISTA DE PERSONAL</h2>
-          <div class="view-subtitle">Todos los agentes registrados en Site-81</div>
-        </div>
-        
-        <div class="search-bar">
-          <div class="search-container">
-            <div class="search-icon">
+      <!-- Overlay de autenticación (estilo SCP similar al header) -->
+      <div v-if="!props.currentUser.is_authenticated" class="auth-overlay">
+        <div class="access-denied-panel">
+          <div class="panel-header">
+            <div class="warning-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                <line x1="12" y1="9" x2="12" y2="13"></line>
+                <line x1="12" y1="17" x2="12.01" y2="17"></line>
               </svg>
             </div>
-            <input
-              v-model="searchQuery"
-              @input="debouncedSearch"
-              type="text"
-              placeholder="Buscar por nombre del personaje o usuario owner..."
-              class="search-input"
-            />
-            <div class="search-count" v-if="characters.length > 0">
-              {{ characters.length }} agentes encontrados
-            </div>
+            <h3 class="panel-title">ACCESO RESTRINGIDO</h3>
+            <div class="panel-subtitle">AGENT MANAGEMENT SYSTEM</div>
           </div>
-        </div>
-        
-        <div class="characters-grid" v-if="characters.length > 0">
-          <div 
-            v-for="character in characters" 
-            :key="character.id"
-            class="character-card"
-            @click="viewCharacter(character)"
-          >
-            <div class="character-header">
-              <h4 class="character-name">{{ character.codename }}</h4>
-              <div class="character-faction">{{ character.faction }}</div>
-            </div>
-            
-            <div class="character-info">
-              <div class="info-row">
-                <span class="info-label">Nombre:</span>
-                <span class="info-value">{{ character.first_name }} {{ character.last_name }}</span>
-              </div>
-              <div class="info-row">
-                <span class="info-label">Owner:</span>
-                <span class="info-value owner-link" @click.stop="viewUser(character.owner_id)">
-                  {{ character.owner_username }}
-                </span>
-              </div>
-              <div class="info-row">
-                <span class="info-label">País:</span>
-                <span class="info-value">{{ character.country }}</span>
-              </div>
-              <div class="info-row" v-if="character.age">
-                <span class="info-label">Edad:</span>
-                <span class="info-value">{{ character.age }} años</span>
+          
+          <div class="panel-content">
+            <div class="warning-section">
+              <h4 class="section-title">ADVERTENCIA DE SEGURIDAD</h4>
+              <div class="warning-message">
+                <p>El acceso al Sistema de Gestión de Agentes está restringido a personal autorizado con nivel de autorización Level 2 o superior.</p>
+                <p>Todos los intentos de acceso no autorizado serán registrados y reportados a la administración del sitio.</p>
               </div>
             </div>
             
-            <div class="character-footer">
-              <div class="character-id">ID: {{ character.id }}</div>
-              <div class="view-button">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="9 18 15 12 9 6"></polyline>
+            <div class="action-section">
+              <a :href="loginUrl" class="login-action-button">
+                <div class="button-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                  </svg>
+                </div>
+                <span class="button-text">INICIAR SESIÓN CON ROBLOX</span>
+              </a>
+              <div class="action-info">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="8" x2="12" y2="12"></line>
+                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
                 </svg>
+                <span>Serás redirigido al panel principal después de iniciar sesión</span>
+              </div>
+            </div>
+            
+            <div class="security-notice">
+              <div class="notice-item">
+                <span class="notice-label">SISTEMA:</span>
+                <span class="notice-value">AGENT MANAGEMENT v2.4</span>
+              </div>
+              <div class="notice-item">
+                <span class="notice-label">STATUS:</span>
+                <span class="notice-value error">ACCESO DENEGADO</span>
+              </div>
+              <div class="notice-item">
+                <span class="notice-label">REQUISITO:</span>
+                <span class="notice-value">LEVEL 2 CLEARANCE</span>
               </div>
             </div>
           </div>
-        </div>
-        
-        <div v-else-if="loading" class="loading-state">
-          <div class="loading-spinner"></div>
-          <p class="loading-text">Cargando agentes...</p>
-        </div>
-        
-        <div v-else class="empty-state">
-          <div class="empty-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#fc6f03" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-              <circle cx="9" cy="7" r="4"></circle>
-              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-            </svg>
-          </div>
-          <h3 class="empty-title">No se encontraron agentes</h3>
-          <p class="empty-text" v-if="searchQuery">
-            No hay agentes que coincidan con "{{ searchQuery }}"
-          </p>
-          <p class="empty-text" v-else>
-            No hay agentes registrados en el sistema.
-          </p>
         </div>
       </div>
 
-      <!-- Vista: Mis agentes -->
-      <div v-else-if="activeView === 'mine' && !selectedCharacter" class="my-characters-view">
-        <div class="view-header">
-          <h2 class="view-title">MIS AGENTES</h2>
-          <div class="view-subtitle">Tus agentes registrados en Site-81</div>
-        </div>
-        
-        <div class="search-bar">
-          <div class="search-container">
-            <div class="search-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-              </svg>
-            </div>
-            <input
-              v-model="searchQuery"
-              @input="debouncedSearch"
-              type="text"
-              placeholder="Buscar por nombre o codename..."
-              class="search-input"
-            />
-            <div class="search-count" v-if="myCharacters.length > 0">
-              {{ myCharacters.length }} agentes encontrados
+      <!-- Contenido para usuarios autenticados -->
+      <div v-else class="authenticated-content">
+        <!-- Vista: Lista de todos los personajes -->
+        <div v-if="activeView === 'all' && !selectedCharacter && !showCreateForm && !showEditForm" class="all-characters-view">
+          <div class="view-header">
+            <h2 class="view-title">LISTA DE PERSONAL</h2>
+            <div class="view-subtitle">Todos los agentes registrados en Site-81</div>
+            <div class="view-actions">
             </div>
           </div>
-        </div>
-        
-        <div class="characters-grid" v-if="myCharacters.length > 0">
-          <div 
-            v-for="character in myCharacters" 
-            :key="character.id"
-            class="character-card"
-            @click="viewCharacter(character)"
-          >
-            <div class="character-header">
-              <h4 class="character-name">{{ character.codename }}</h4>
-              <div class="character-faction">{{ character.faction }}</div>
-            </div>
-            
-            <div class="character-info">
-              <div class="info-row">
-                <span class="info-label">Nombre:</span>
-                <span class="info-value">{{ character.first_name }} {{ character.last_name }}</span>
-              </div>
-              <div class="info-row">
-                <span class="info-label">País:</span>
-                <span class="info-value">{{ character.country }}</span>
-              </div>
-              <div class="info-row" v-if="character.age">
-                <span class="info-label">Edad:</span>
-                <span class="info-value">{{ character.age }} años</span>
-              </div>
-              <div class="info-row">
-                <span class="info-label">Creado:</span>
-                <span class="info-value">{{ formatDate(character.created_at) }}</span>
-              </div>
-            </div>
-            
-            <div class="character-footer">
-              <div class="character-id">ID: {{ character.id }}</div>
-              <div class="view-button">
+          
+          <div class="search-bar">
+            <div class="search-container">
+              <div class="search-icon">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="9 18 15 12 9 6"></polyline>
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                 </svg>
+              </div>
+              <input
+                v-model="searchQuery"
+                @input="debouncedSearch"
+                type="text"
+                placeholder="Buscar por nombre del personaje o usuario owner..."
+                class="search-input"
+              />
+              <div class="search-count" v-if="characters.length > 0">
+                {{ characters.length }} agentes encontrados
               </div>
             </div>
           </div>
           
-          <!-- Botón para añadir nuevo agente -->
-          <div class="character-card add-new" @click="showCreateForm = true">
-            <div class="add-new-content">
-              <div class="add-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#fc6f03" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <line x1="12" y1="5" x2="12" y2="19"></line>
-                  <line x1="5" y1="12" x2="19" y2="12"></line>
+          <div class="characters-scroll-container">
+            <div class="characters-grid" v-if="characters.length > 0">
+              <div 
+                v-for="character in characters" 
+                :key="character.id"
+                class="character-card"
+                @click="viewCharacter(character)"
+              >
+                <div class="character-header">
+                  <h4 class="character-name">{{ character.codename }}</h4>
+                  <div class="character-faction">{{ character.faction }}</div>
+                </div>
+                
+                <div class="character-info">
+                  <div class="info-row">
+                    <span class="info-label">Nombre:</span>
+                    <span class="info-value">{{ character.first_name }} {{ character.last_name }}</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">Owner:</span>
+                    <span class="info-value owner-link" @click.stop="viewUser(character.owner_id)">
+                      {{ character.owner_username }}
+                    </span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">País:</span>
+                    <span class="info-value">{{ character.country }}</span>
+                  </div>
+                  <div class="info-row" v-if="character.age">
+                    <span class="info-label">Edad:</span>
+                    <span class="info-value">{{ character.age }} años</span>
+                  </div>
+                </div>
+                
+                <div class="character-footer">
+                  <div class="character-id">ID: {{ character.id }}</div>
+                  <div class="view-button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div v-else-if="loading" class="loading-state">
+              <div class="loading-spinner"></div>
+              <p class="loading-text">Cargando agentes...</p>
+            </div>
+            
+            <div v-else class="empty-state">
+              <div class="empty-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#fc6f03" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="9" cy="7" r="4"></circle>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                 </svg>
               </div>
-              <h4 class="add-title">REGISTRAR NUEVO AGENTE</h4>
-              <p class="add-text">Crear un nuevo personaje en el sistema</p>
+              <h3 class="empty-title">No se encontraron agentes</h3>
+              <p class="empty-text" v-if="searchQuery">
+                No hay agentes que coincidan con "{{ searchQuery }}"
+              </p>
+              <p class="empty-text" v-else>
+                No hay agentes registrados en el sistema.
+              </p>
             </div>
           </div>
         </div>
-        
-        <div v-else-if="loading" class="loading-state">
-          <div class="loading-spinner"></div>
-          <p class="loading-text">Cargando tus agentes...</p>
-        </div>
-        
-        <div v-else class="empty-state">
-          <div class="empty-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#fc6f03" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-              <circle cx="12" cy="7" r="4"></circle>
-            </svg>
-          </div>
-          <h3 class="empty-title">No tienes agentes registrados</h3>
-          <p class="empty-text" v-if="searchQuery">
-            No hay agentes que coincidan con "{{ searchQuery }}"
-          </p>
-          <p class="empty-text" v-else>
-            Comienza registrando tu primer agente en el sistema.
-          </p>
-          <button class="action-button" @click="showCreateForm = true">
-            <span class="button-text">REGISTRAR PRIMER AGENTE</span>
-            <div class="button-indicator">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="9 18 15 12 9 6"></polyline>
-              </svg>
-            </div>
-          </button>
-        </div>
-      </div>
 
-      <!-- Vista: Detalle del personaje -->
-      <div v-else-if="selectedCharacter" class="character-detail-view">
-        <div class="detail-header">
-          <button class="back-button" @click="selectedCharacter = null">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="19" y1="12" x2="5" y2="12"></line>
-              <polyline points="12 19 5 12 12 5"></polyline>
-            </svg>
-            <span>Volver</span>
-          </button>
-          
-          <div class="header-actions" v-if="selectedCharacter.is_owner">
-            <button class="edit-button" @click="showEditForm = true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-              </svg>
-              <span>Editar</span>
-            </button>
-            
-            <button class="delete-button" @click="confirmDeleteCharacter">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="3 6 5 6 21 6"></polyline>
-                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                <line x1="10" y1="11" x2="10" y2="17"></line>
-                <line x1="14" y1="11" x2="14" y2="17"></line>
-              </svg>
-              <span>Eliminar</span>
-            </button>
-          </div>
-        </div>
-        
-        <div class="character-detail-content">
-          <div class="detail-section">
-            <h3 class="section-title">INFORMACIÓN DE IDENTIDAD</h3>
-            <div class="detail-grid">
-              <div class="detail-item">
-                <span class="detail-label">Codename:</span>
-                <span class="detail-value highlight">{{ selectedCharacter.codename }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">Nombre:</span>
-                <span class="detail-value">{{ selectedCharacter.first_name }} {{ selectedCharacter.last_name }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">País:</span>
-                <span class="detail-value">{{ selectedCharacter.country }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">Fecha de Nacimiento:</span>
-                <span class="detail-value">{{ selectedCharacter.birth_date }} ({{ selectedCharacter.age }} años)</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">Facción:</span>
-                <span class="detail-value faction">{{ selectedCharacter.faction }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">Owner:</span>
-                <span class="detail-value owner-link" @click="viewUser(selectedCharacter.owner_id)">
-                  {{ selectedCharacter.owner_username }}
-                </span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">Registrado:</span>
-                <span class="detail-value">{{ formatDate(selectedCharacter.created_at) }}</span>
-              </div>
-            </div>
-          </div>
-          
-          <div class="detail-section">
-            <h3 class="section-title">DATOS MORPH</h3>
-            <div class="morph-grid">
-              <div class="morph-item" v-if="selectedCharacter.morph">
-                <span class="morph-label">Morph:</span>
-                <span class="morph-value">{{ selectedCharacter.morph }}</span>
-              </div>
-              <div class="morph-item" v-if="selectedCharacter.hat">
-                <span class="morph-label">Hat:</span>
-                <span class="morph-value">{{ selectedCharacter.hat }}</span>
-              </div>
-              <div class="morph-item" v-if="selectedCharacter.nvg_color">
-                <span class="morph-label">NVG Color:</span>
-                <span class="morph-value">{{ selectedCharacter.nvg_color }}</span>
-              </div>
-              <div class="morph-item" v-if="selectedCharacter.shirt">
-                <span class="morph-label">Shirt:</span>
-                <span class="morph-value">{{ selectedCharacter.shirt }}</span>
-              </div>
-              <div class="morph-item" v-if="selectedCharacter.pants">
-                <span class="morph-label">Pants:</span>
-                <span class="morph-value">{{ selectedCharacter.pants }}</span>
-              </div>
-              <div class="morph-item" v-if="selectedCharacter.skin_r !== null">
-                <span class="morph-label">Skin Color:</span>
-                <span class="morph-value">RGB({{ selectedCharacter.skin_r }}, {{ selectedCharacter.skin_g }}, {{ selectedCharacter.skin_b }})</span>
-              </div>
-              <div class="morph-item" v-if="selectedCharacter.ntag">
-                <span class="morph-label">NTag:</span>
-                <span class="morph-value">{{ selectedCharacter.ntag }}</span>
-              </div>
-              <div class="morph-item" v-if="selectedCharacter.cntag_r !== null">
-                <span class="morph-label">CNTag Color:</span>
-                <span class="morph-value">RGB({{ selectedCharacter.cntag_r }}, {{ selectedCharacter.cntag_g }}, {{ selectedCharacter.cntag_b }})</span>
-              </div>
-              <div class="morph-item" v-if="selectedCharacter.rtag">
-                <span class="morph-label">RTag:</span>
-                <span class="morph-value">{{ selectedCharacter.rtag }}</span>
-              </div>
-              <div class="morph-item" v-if="selectedCharacter.crtag_r !== null">
-                <span class="morph-label">CRTag Color:</span>
-                <span class="morph-value">RGB({{ selectedCharacter.crtag_r }}, {{ selectedCharacter.crtag_g }}, {{ selectedCharacter.crtag_b }})</span>
-              </div>
-              <div class="morph-item" v-if="selectedCharacter.rhat">
-                <span class="morph-label">RHat:</span>
-                <span class="morph-value highlight">ACTIVADO</span>
-              </div>
-            </div>
-          </div>
-          
-          <div class="detail-section">
-            <h3 class="section-title">COMANDO MORPH</h3>
-            <div class="morph-command-container">
-              <div class="command-preview">
-                <code class="command-text">{{ selectedCharacter.morph_command }}</code>
-              </div>
-              <button class="copy-button" @click="copyMorphCommand">
+        <!-- Vista: Mis agentes -->
+        <div v-else-if="activeView === 'mine' && !selectedCharacter && !showCreateForm && !showEditForm" class="my-characters-view">
+          <div class="view-header">
+            <h2 class="view-title">MIS AGENTES</h2>
+            <div class="view-subtitle">Tus agentes registrados en Site-81</div>
+            <div class="view-actions">
+              <button class="view-action-button" @click="toggleSidebar" title="Alternar sidebar">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                  <line x1="3" y1="12" x2="21" y2="12"></line>
+                  <line x1="3" y1="6" x2="21" y2="6"></line>
+                  <line x1="3" y1="18" x2="21" y2="18"></line>
                 </svg>
-                <span>Copiar Comando</span>
+              </button>
+            </div>
+          </div>
+          
+          <div class="search-bar">
+            <div class="search-container">
+              <div class="search-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+              </div>
+              <input
+                v-model="searchQuery"
+                @input="debouncedSearch"
+                type="text"
+                placeholder="Buscar por nombre o codename..."
+                class="search-input"
+              />
+              <div class="search-count" v-if="myCharacters.length > 0">
+                {{ myCharacters.length }} agentes encontrados
+              </div>
+            </div>
+          </div>
+          
+          <div class="characters-scroll-container">
+            <div class="characters-grid" v-if="myCharacters.length > 0">
+              <div 
+                v-for="character in myCharacters" 
+                :key="character.id"
+                class="character-card"
+                @click="viewCharacter(character)"
+              >
+                <div class="character-header">
+                  <h4 class="character-name">{{ character.codename }}</h4>
+                  <div class="character-faction">{{ character.faction }}</div>
+                </div>
+                
+                <div class="character-info">
+                  <div class="info-row">
+                    <span class="info-label">Nombre:</span>
+                    <span class="info-value">{{ character.first_name }} {{ character.last_name }}</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">País:</span>
+                    <span class="info-value">{{ character.country }}</span>
+                  </div>
+                  <div class="info-row" v-if="character.age">
+                    <span class="info-label">Edad:</span>
+                    <span class="info-value">{{ character.age }} años</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">Creado:</span>
+                    <span class="info-value">{{ formatDate(character.created_at) }}</span>
+                  </div>
+                </div>
+                
+                <div class="character-footer">
+                  <div class="character-id">ID: {{ character.id }}</div>
+                  <div class="view-button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Botón para añadir nuevo agente -->
+              <div class="character-card add-new" @click="showCreateForm = true">
+                <div class="add-new-content">
+                  <div class="add-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#fc6f03" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <line x1="12" y1="5" x2="12" y2="19"></line>
+                      <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                  </div>
+                  <h4 class="add-title">REGISTRAR NUEVO AGENTE</h4>
+                  <p class="add-text">Crear un nuevo personaje en el sistema</p>
+                </div>
+              </div>
+            </div>
+            
+            <div v-else-if="loading" class="loading-state">
+              <div class="loading-spinner"></div>
+              <p class="loading-text">Cargando tus agentes...</p>
+            </div>
+            
+            <div v-else class="empty-state">
+              <div class="empty-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#fc6f03" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+              </div>
+              <h3 class="empty-title">No tienes agentes registrados</h3>
+              <p class="empty-text" v-if="searchQuery">
+                No hay agentes que coincidan con "{{ searchQuery }}"
+              </p>
+              <p class="empty-text" v-else>
+                Comienza registrando tu primer agente en el sistema.
+              </p>
+              <button class="action-button" @click="showCreateForm = true">
+                <span class="button-text">REGISTRAR PRIMER AGENTE</span>
+                <div class="button-indicator">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                  </svg>
+                </div>
               </button>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Modal: Crear/Editar Personaje -->
-      <div v-if="showCreateForm || showEditForm" class="modal-overlay" @click.self="closeModal">
-        <div class="modal-content character-form-modal" @click.stop>
-          <div class="modal-header">
-            <h3 class="modal-title">{{ showEditForm ? 'EDITAR AGENTE' : 'REGISTRAR NUEVO AGENTE' }}</h3>
-            <button class="modal-close" @click="closeModal">
+        <!-- Vista: Crear/Editar Personaje como página interna -->
+        <div v-if="showCreateForm || showEditForm" class="character-form-view">
+          <div class="form-view-header">
+            <button class="back-button" @click="closeFormView">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="18" y1="6" x2="6" y2="18"></line>
-                <line x1="6" y1="6" x2="18" y2="18"></line>
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
               </svg>
+              <span>Volver a {{ activeView === 'mine' ? 'Mis Agentes' : 'Lista de Personal' }}</span>
             </button>
+            
+            <h2 class="form-title">{{ showEditForm ? 'EDITAR AGENTE' : 'REGISTRAR NUEVO AGENTE' }}</h2>
+            
+            <div class="view-actions">
+              <button class="view-action-button" @click="toggleSidebar" title="Alternar sidebar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="3" y1="12" x2="21" y2="12"></line>
+                  <line x1="3" y1="6" x2="21" y2="6"></line>
+                  <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+              </button>
+            </div>
           </div>
           
-          <form @submit.prevent="submitCharacterForm" class="character-form">
+          <form @submit.prevent="submitCharacterForm" class="character-form-page">
             <div class="form-section">
-              <h4 class="form-section-title">Información Básica</h4>
+              <h3 class="section-title">INFORMACIÓN DE IDENTIDAD</h3>
               <div class="form-grid">
                 <div class="form-group">
                   <label class="form-label">Nombre *</label>
@@ -502,7 +480,7 @@
             </div>
             
             <div class="form-section">
-              <h4 class="form-section-title">Datos Morph (al menos uno requerido)</h4>
+              <h3 class="section-title">DATOS MORPH (al menos uno requerido)</h3>
               <div class="form-grid">
                 <div class="form-group">
                   <label class="form-label">Morph</label>
@@ -587,7 +565,7 @@
                 <div class="form-group">
                   <label class="form-label">NTag</label>
                   <input
-                    v.model="characterForm.ntag"
+                    v-model="characterForm.ntag"
                     type="text"
                     class="form-input"
                     placeholder="Texto para NTag"
@@ -606,7 +584,7 @@
                       placeholder="R"
                     />
                     <input
-                      v.model.number="characterForm.cntag_g"
+                      v-model.number="characterForm.cntag_g"
                       type="number"
                       min="0"
                       max="255"
@@ -614,7 +592,7 @@
                       placeholder="G"
                     />
                     <input
-                      v.model.number="characterForm.cntag_b"
+                      v-model.number="characterForm.cntag_b"
                       type="number"
                       min="0"
                       max="255"
@@ -627,7 +605,7 @@
                 <div class="form-group">
                   <label class="form-label">RTag</label>
                   <textarea
-                    v.model="characterForm.rtag"
+                    v-model="characterForm.rtag"
                     class="form-textarea"
                     placeholder="Texto para RTag (puede ser largo)"
                     rows="2"
@@ -638,7 +616,7 @@
                   <label class="form-label">CRTag Color (RGB)</label>
                   <div class="color-inputs">
                     <input
-                      v.model.number="characterForm.crtag_r"
+                      v-model.number="characterForm.crtag_r"
                       type="number"
                       min="0"
                       max="255"
@@ -646,7 +624,7 @@
                       placeholder="R"
                     />
                     <input
-                      v.model.number="characterForm.crtag_g"
+                      v-model.number="characterForm.crtag_g"
                       type="number"
                       min="0"
                       max="255"
@@ -654,7 +632,7 @@
                       placeholder="G"
                     />
                     <input
-                      v.model.number="characterForm.crtag_b"
+                      v-model.number="characterForm.crtag_b"
                       type="number"
                       min="0"
                       max="255"
@@ -677,16 +655,195 @@
               </div>
             </div>
             
+            <div class="form-validation">
+              <div class="validation-header">
+                <h4 class="validation-title">VALIDACIÓN DEL FORMULARIO</h4>
+                <div class="validation-status" :class="{ 'valid': isFormValid, 'invalid': !isFormValid }">
+                  {{ isFormValid ? 'FORMULARIO VÁLIDO' : 'FORMULARIO INCOMPLETO' }}
+                </div>
+              </div>
+              <div class="validation-rules">
+                <div class="validation-rule" :class="{ 'met': characterForm.first_name && characterForm.last_name }">
+                  <span class="rule-indicator">●</span>
+                  <span class="rule-text">Nombre y apellido completos</span>
+                </div>
+                <div class="validation-rule" :class="{ 'met': characterForm.codename }">
+                  <span class="rule-indicator">●</span>
+                  <span class="rule-text">Codename definido</span>
+                </div>
+                <div class="validation-rule" :class="{ 'met': characterForm.faction }">
+                  <span class="rule-indicator">●</span>
+                  <span class="rule-text">Facción seleccionada</span>
+                </div>
+                <div class="validation-rule" :class="{ 'met': hasAtLeastOneMorphField }">
+                  <span class="rule-indicator">●</span>
+                  <span class="rule-text">Al menos un campo de morph definido</span>
+                </div>
+              </div>
+            </div>
+            
             <div class="form-actions">
-              <button type="button" class="cancel-button" @click="closeModal">
+              <button type="button" class="cancel-button" @click="closeFormView">
                 Cancelar
               </button>
-              <button type="submit" class="submit-button" :disabled="submitting">
+              <button type="submit" class="submit-button" :disabled="submitting || !isFormValid">
                 <span v-if="submitting">Procesando...</span>
                 <span v-else>{{ showEditForm ? 'ACTUALIZAR AGENTE' : 'REGISTRAR AGENTE' }}</span>
+                <div class="submit-indicator">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                  </svg>
+                </div>
               </button>
             </div>
           </form>
+        </div>
+
+        <!-- Vista: Detalle del personaje -->
+        <div v-else-if="selectedCharacter" class="character-detail-view">
+          <div class="detail-header">
+            <button class="back-button" @click="selectedCharacter = null">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+              </svg>
+              <span>Volver</span>
+            </button>
+            
+            <div class="header-actions" v-if="selectedCharacter.is_owner">
+              <button class="edit-button" @click="showEditForm = true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                </svg>
+                <span>Editar</span>
+              </button>
+              
+              <button class="delete-button" @click="confirmDeleteCharacter">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  <line x1="10" y1="11" x2="10" y2="17"></line>
+                  <line x1="14" y1="11" x2="14" y2="17"></line>
+                </svg>
+                <span>Eliminar</span>
+              </button>
+            </div>
+            
+            <div class="view-actions">
+              <button class="view-action-button" @click="toggleSidebar" title="Alternar sidebar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="3" y1="12" x2="21" y2="12"></line>
+                  <line x1="3" y1="6" x2="21" y2="6"></line>
+                  <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+              </button>
+            </div>
+          </div>
+          
+          <div class="character-detail-content">
+            <div class="detail-section">
+              <h3 class="section-title">INFORMACIÓN DE IDENTIDAD</h3>
+              <div class="detail-grid">
+                <div class="detail-item">
+                  <span class="detail-label">Codename:</span>
+                  <span class="detail-value highlight">{{ selectedCharacter.codename }}</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">Nombre:</span>
+                  <span class="detail-value">{{ selectedCharacter.first_name }} {{ selectedCharacter.last_name }}</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">País:</span>
+                  <span class="detail-value">{{ selectedCharacter.country }}</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">Fecha de Nacimiento:</span>
+                  <span class="detail-value">{{ selectedCharacter.birth_date }} ({{ selectedCharacter.age }} años)</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">Facción:</span>
+                  <span class="detail-value faction">{{ selectedCharacter.faction }}</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">Owner:</span>
+                  <span class="detail-value owner-link" @click="viewUser(selectedCharacter.owner_id)">
+                    {{ selectedCharacter.owner_username }}
+                  </span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">Registrado:</span>
+                  <span class="detail-value">{{ formatDate(selectedCharacter.created_at) }}</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="detail-section">
+              <h3 class="section-title">DATOS MORPH</h3>
+              <div class="morph-grid">
+                <div class="morph-item" v-if="selectedCharacter.morph">
+                  <span class="morph-label">Morph:</span>
+                  <span class="morph-value">{{ selectedCharacter.morph }}</span>
+                </div>
+                <div class="morph-item" v-if="selectedCharacter.hat">
+                  <span class="morph-label">Hat:</span>
+                  <span class="morph-value">{{ selectedCharacter.hat }}</span>
+                </div>
+                <div class="morph-item" v-if="selectedCharacter.nvg_color">
+                  <span class="morph-label">NVG Color:</span>
+                  <span class="morph-value">{{ selectedCharacter.nvg_color }}</span>
+                </div>
+                <div class="morph-item" v-if="selectedCharacter.shirt">
+                  <span class="morph-label">Shirt:</span>
+                  <span class="morph-value">{{ selectedCharacter.shirt }}</span>
+                </div>
+                <div class="morph-item" v-if="selectedCharacter.pants">
+                  <span class="morph-label">Pants:</span>
+                  <span class="morph-value">{{ selectedCharacter.pants }}</span>
+                </div>
+                <div class="morph-item" v-if="selectedCharacter.skin_r !== null">
+                  <span class="morph-label">Skin Color:</span>
+                  <span class="morph-value">RGB({{ selectedCharacter.skin_r }}, {{ selectedCharacter.skin_g }}, {{ selectedCharacter.skin_b }})</span>
+                </div>
+                <div class="morph-item" v-if="selectedCharacter.ntag">
+                  <span class="morph-label">NTag:</span>
+                  <span class="morph-value">{{ selectedCharacter.ntag }}</span>
+                </div>
+                <div class="morph-item" v-if="selectedCharacter.cntag_r !== null">
+                  <span class="morph-label">CNTag Color:</span>
+                  <span class="morph-value">RGB({{ selectedCharacter.cntag_r }}, {{ selectedCharacter.cntag_g }}, {{ selectedCharacter.cntag_b }})</span>
+                </div>
+                <div class="morph-item" v-if="selectedCharacter.rtag">
+                  <span class="morph-label">RTag:</span>
+                  <span class="morph-value">{{ selectedCharacter.rtag }}</span>
+                </div>
+                <div class="morph-item" v-if="selectedCharacter.crtag_r !== null">
+                  <span class="morph-label">CRTag Color:</span>
+                  <span class="morph-value">RGB({{ selectedCharacter.crtag_r }}, {{ selectedCharacter.crtag_g }}, {{ selectedCharacter.crtag_b }})</span>
+                </div>
+                <div class="morph-item" v-if="selectedCharacter.rhat">
+                  <span class="morph-label">RHat:</span>
+                  <span class="morph-value highlight">ACTIVADO</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="detail-section">
+              <h3 class="section-title">COMANDO MORPH</h3>
+              <div class="morph-command-container">
+                <div class="command-preview">
+                  <code class="command-text">{{ selectedCharacter.morph_command }}</code>
+                </div>
+                <button class="copy-button" @click="copyMorphCommand">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                  </svg>
+                  <span>Copiar Comando</span>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       
@@ -722,7 +879,9 @@
 <script setup>
 import { ref, reactive, onMounted, watch, computed } from 'vue'
 import { debounce } from 'lodash'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const props = defineProps({
   currentUser: {
     type: Object,
@@ -741,6 +900,7 @@ const showCreateForm = ref(false)
 const showEditForm = ref(false)
 const showDeleteConfirm = ref(false)
 const submitting = ref(false)
+const sidebarCollapsed = ref(false)
 
 // Formulario
 const characterForm = reactive({
@@ -769,15 +929,53 @@ const characterForm = reactive({
   rhat: false
 })
 
+// Computed properties
+const loginUrl = computed(() => {
+  // URL de login que redirige a dashboard después de autenticación
+  const nextUrl = encodeURIComponent('/dashboard')
+  return `/accounts/login/roblox/?next=${nextUrl}`
+})
+
+const isFormValid = computed(() => {
+  return characterForm.first_name && 
+         characterForm.last_name && 
+         characterForm.codename && 
+         characterForm.faction &&
+         hasAtLeastOneMorphField.value
+})
+
+const hasAtLeastOneMorphField = computed(() => {
+  const morphFields = [
+    characterForm.morph,
+    characterForm.hat,
+    characterForm.nvg_color,
+    characterForm.shirt,
+    characterForm.pants,
+    characterForm.ntag,
+    characterForm.rtag,
+  ]
+  return morphFields.some(field => field && field.trim() !== '')
+})
+
 // Métodos
+const toggleSidebar = () => {
+  sidebarCollapsed.value = !sidebarCollapsed.value
+}
+
 const setActiveView = (view) => {
+  if (!props.currentUser.is_authenticated) return
+  
   activeView.value = view
   selectedCharacter.value = null
+  showCreateForm.value = false
+  showEditForm.value = false
   searchQuery.value = ''
   loadCharacters()
 }
 
 const loadCharacters = async () => {
+  if (!props.currentUser.is_authenticated) return
+  
   loading.value = true
   try {
     let endpoint = '/api/characters/all/'
@@ -803,6 +1001,8 @@ const loadCharacters = async () => {
 const debouncedSearch = debounce(loadCharacters, 500)
 
 const viewCharacter = async (character) => {
+  if (!props.currentUser.is_authenticated) return
+  
   try {
     const response = await fetch(`/api/characters/${character.id}/`)
     const data = await response.json()
@@ -813,7 +1013,7 @@ const viewCharacter = async (character) => {
 }
 
 const viewUser = (userId) => {
-  // Esto redirigirá al perfil del usuario cuando se implemente
+  if (!props.currentUser.is_authenticated) return
   console.log('Viewing user:', userId)
   alert(`Redirigiendo al perfil del usuario ID: ${userId}`)
 }
@@ -860,13 +1060,41 @@ const openEditForm = () => {
   }
 }
 
-const closeModal = () => {
+const closeFormView = () => {
   showCreateForm.value = false
   showEditForm.value = false
+  selectedCharacter.value = null
   resetCharacterForm()
 }
 
+// FIX: Obtener CSRF token correctamente
+const getCSRFToken = () => {
+  // Método 1: Buscar en las cookies
+  const cookieValue = document.cookie
+    .split('; ')
+    .find(row => row.startsWith('csrftoken='))
+    ?.split('=')[1]
+  
+  if (cookieValue) return cookieValue
+  
+  // Método 2: Buscar en meta tags
+  const metaTag = document.querySelector('meta[name="csrf-token"]')
+  if (metaTag) return metaTag.content
+  
+  // Método 3: Buscar en input hidden
+  const inputTag = document.querySelector('input[name="csrfmiddlewaretoken"]')
+  if (inputTag) return inputTag.value
+  
+  console.error('CSRF token no encontrado')
+  return ''
+}
+
 const submitCharacterForm = async () => {
+  if (!props.currentUser.is_authenticated) {
+    alert('Debes estar autenticado para realizar esta acción')
+    return
+  }
+  
   submitting.value = true
   
   try {
@@ -903,32 +1131,42 @@ const submitCharacterForm = async () => {
       method = 'PUT'
     }
     
+    // Obtener CSRF token correctamente
+    const csrfToken = getCSRFToken()
+    if (!csrfToken) {
+      alert('Error: No se pudo obtener el token de seguridad. Por favor, recarga la página.')
+      submitting.value = false
+      return
+    }
+    
     const response = await fetch(endpoint, {
       method: method,
       headers: {
         'Content-Type': 'application/json',
-        'X-CSRFToken': getCSRFToken()
+        'X-CSRFToken': csrfToken
       },
+      credentials: 'include', // Importante para incluir cookies
       body: JSON.stringify(formData)
     })
     
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}))
+      throw new Error(errorData.error || `Error ${response.status}: ${response.statusText}`)
+    }
+    
     const data = await response.json()
     
-    if (response.ok) {
-      alert(showEditForm.value ? 'Agente actualizado correctamente' : 'Agente registrado correctamente')
-      closeModal()
-      loadCharacters()
-      
-      if (showEditForm.value && selectedCharacter.value) {
-        // Recargar los detalles del personaje
-        viewCharacter(selectedCharacter.value)
-      }
-    } else {
-      alert(`Error: ${data.error || 'Error desconocido'}`)
+    alert(showEditForm.value ? 'Agente actualizado correctamente' : 'Agente registrado correctamente')
+    closeFormView()
+    loadCharacters()
+    
+    if (showEditForm.value && selectedCharacter.value) {
+      // Recargar los detalles del personaje
+      viewCharacter(selectedCharacter.value)
     }
   } catch (error) {
     console.error('Error submitting form:', error)
-    alert('Error al procesar la solicitud')
+    alert(`Error al procesar la solicitud: ${error.message}`)
   } finally {
     submitting.value = false
   }
@@ -942,11 +1180,18 @@ const deleteCharacter = async () => {
   if (!selectedCharacter.value) return
   
   try {
+    const csrfToken = getCSRFToken()
+    if (!csrfToken) {
+      alert('Error: No se pudo obtener el token de seguridad.')
+      return
+    }
+    
     const response = await fetch(`/api/characters/${selectedCharacter.value.id}/delete/`, {
       method: 'DELETE',
       headers: {
-        'X-CSRFToken': getCSRFToken()
-      }
+        'X-CSRFToken': csrfToken
+      },
+      credentials: 'include'
     })
     
     if (response.ok) {
@@ -964,14 +1209,11 @@ const deleteCharacter = async () => {
   }
 }
 
-const getCSRFToken = () => {
-  const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')
-  return csrfToken ? csrfToken.value : ''
-}
-
 // Watchers
 watch(searchQuery, () => {
-  debouncedSearch()
+  if (props.currentUser.is_authenticated) {
+    debouncedSearch()
+  }
 })
 
 watch(showEditForm, (newValue) => {
@@ -982,7 +1224,9 @@ watch(showEditForm, (newValue) => {
 
 // Lifecycle
 onMounted(() => {
-  loadCharacters()
+  if (props.currentUser.is_authenticated) {
+    loadCharacters()
+  }
 })
 </script>
 
@@ -990,24 +1234,63 @@ onMounted(() => {
 .personajes-container {
   display: flex;
   width: 100%;
-  height: 100%;
-  background: rgba(20, 20, 20, 0.8);
+  height: 150vh;
+  background: rgba(10, 10, 10, 0.98);
+  position: relative;
+  overflow: hidden;
 }
 
-/* Sidebar */
+.personajes-container.sidebar-collapsed .personajes-sidebar {
+  width: 60px;
+}
+
+.personajes-container.sidebar-collapsed .sidebar-header-content {
+  display: none;
+}
+
+.personajes-container.sidebar-collapsed .tool-name,
+.personajes-container.sidebar-collapsed .tool-indicator,
+.personajes-container.sidebar-collapsed .redacted-text,
+.personajes-container.sidebar-collapsed .sidebar-footer {
+  display: none;
+}
+
+.personajes-container.sidebar-collapsed .tool-item {
+  padding: 16px 0;
+  justify-content: center;
+}
+
+.personajes-container.sidebar-collapsed .tool-icon {
+  margin: 0;
+}
+
+/* Sidebar - Estilo similar al header */
 .personajes-sidebar {
   width: 280px;
-  background: rgba(25, 25, 25, 0.9);
+  background: rgba(15, 15, 15, 0.98);
   border-right: 1px solid #333;
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
+  transition: width 0.3s ease;
+  height: 100%;
+  position: relative;
+  backdrop-filter: blur(10px);
+  box-shadow: 2px 0 20px rgba(0, 0, 0, 0.5);
 }
 
 .sidebar-header {
-  padding: 24px 20px;
+  padding: 20px;
   border-bottom: 1px solid #333;
-  background: rgba(30, 30, 30, 0.6);
+  background: rgba(20, 20, 20, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.sidebar-header-content {
+  flex: 1;
 }
 
 .sidebar-title {
@@ -1017,6 +1300,7 @@ onMounted(() => {
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin: 0 0 4px 0;
+  font-family: 'Consolas', 'Courier New', monospace;
 }
 
 .sidebar-subtitle {
@@ -1024,6 +1308,31 @@ onMounted(() => {
   color: #888;
   font-family: 'Consolas', monospace;
   letter-spacing: 0.3px;
+}
+
+.sidebar-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: rgba(30, 30, 30, 0.8);
+  border: 1px solid #444;
+  color: #aaa;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.sidebar-toggle:hover {
+  background: rgba(40, 40, 40, 0.9);
+  border-color: #666;
+  color: #fff;
+}
+
+.sidebar-toggle svg {
+  width: 16px;
+  height: 16px;
 }
 
 .sidebar-tools {
@@ -1047,7 +1356,7 @@ onMounted(() => {
   overflow: hidden;
 }
 
-.tool-item:not(.redacted):hover {
+.tool-item:not(.redacted):not(:disabled):hover {
   background: rgba(40, 40, 40, 0.6);
   color: #ddd;
 }
@@ -1056,6 +1365,11 @@ onMounted(() => {
   background: rgba(252, 111, 3, 0.1);
   color: #fc6f03;
   border-right: 3px solid #fc6f03;
+}
+
+.tool-item:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .tool-item.redacted {
@@ -1094,50 +1408,345 @@ onMounted(() => {
   opacity: 0.8;
 }
 
-.clearance-warning {
-  width: 16px;
-  height: 16px;
-  color: #aa2222;
+.sidebar-footer {
+  padding: 20px;
+  border-top: 1px solid #333;
+  background: rgba(20, 20, 20, 0.9);
+}
+
+.auth-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.status-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
   flex-shrink: 0;
+}
+
+.status-indicator.online {
+  background: #00cc00;
+  box-shadow: 0 0 8px #00cc00;
+}
+
+.status-indicator.offline {
+  background: #cc0000;
+  box-shadow: 0 0 8px #cc0000;
+}
+
+.status-text {
+  font-size: 12px;
+  color: #aaa;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  font-family: 'Consolas', monospace;
+}
+
+.clearance-level {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.clearance-label {
+  font-size: 11px;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.clearance-value {
+  font-size: 12px;
+  color: #fc6f03;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  font-family: 'Consolas', monospace;
 }
 
 /* Área principal */
 .personajes-main {
   flex: 1;
-  padding: 24px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Overlay de autenticación - Estilo similar al header */
+.auth-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.95);
+  backdrop-filter: blur(10px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  overflow: hidden;
+}
+
+.access-denied-panel {
+  background: linear-gradient(135deg, 
+    rgba(15, 15, 15, 0.98) 0%, 
+    rgba(20, 20, 20, 0.98) 50%, 
+    rgba(15, 15, 15, 0.98) 100%);
+  border: 1px solid #333;
+  width: 100%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
+}
+
+.panel-header {
+  padding: 30px;
+  background: rgba(25, 25, 25, 0.9);
+  border-bottom: 1px solid #333;
+  text-align: center;
+  position: relative;
+}
+
+.warning-icon {
+  width: 50px;
+  height: 50px;
+  color: #aa2222;
+  margin: 0 auto 20px;
+}
+
+.panel-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #ff3333;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0 0 8px 0;
+  font-family: 'Consolas', 'Courier New', monospace;
+}
+
+.panel-subtitle {
+  font-size: 14px;
+  color: #ff6666;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.panel-content {
+  flex: 1;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
   overflow-y: auto;
 }
 
-.view-header {
-  margin-bottom: 32px;
-  padding-bottom: 20px;
+.warning-section {
+  border: 1px solid #444;
+  padding: 25px;
+  background: rgba(30, 30, 30, 0.6);
+}
+
+.warning-section .section-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #fc6f03;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0 0 20px 0;
+  padding-bottom: 10px;
   border-bottom: 1px solid rgba(252, 111, 3, 0.3);
+  font-family: 'Consolas', 'Courier New', monospace;
+}
+
+.warning-message {
+  color: #ddd;
+  line-height: 1.6;
+  font-size: 15px;
+}
+
+.warning-message p {
+  margin: 0 0 15px 0;
+}
+
+.action-section {
+  text-align: center;
+  padding: 20px 0;
+}
+
+.login-action-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  padding: 16px 32px;
+  background: rgba(30, 30, 30, 0.9);
+  border: 1px solid #4CAF50;
+  color: #4CAF50;
+  font-size: 16px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 20px;
+  font-family: 'Consolas', 'Courier New', monospace;
+}
+
+.login-action-button:hover {
+  background: rgba(76, 175, 80, 0.1);
+  border-color: #66BB6A;
+  color: #66BB6A;
+}
+
+.button-icon {
+  width: 20px;
+  height: 20px;
+  color: currentColor;
+}
+
+.action-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: #888;
+  font-size: 13px;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.action-info svg {
+  width: 16px;
+  height: 16px;
+  color: #888;
+  flex-shrink: 0;
+}
+
+.security-notice {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  padding: 20px;
+  background: rgba(20, 20, 20, 0.9);
+  border-top: 1px solid #333;
+  margin-top: auto;
+}
+
+.notice-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.notice-label {
+  font-size: 11px;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-family: 'Consolas', monospace;
+}
+
+.notice-value {
+  font-size: 13px;
+  color: #ddd;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
+.notice-value.error {
+  color: #ff3333;
+  font-weight: 700;
+}
+
+/* Contenido autenticado */
+.authenticated-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Headers de vista */
+.view-header {
+  padding: 25px 30px;
+  border-bottom: 1px solid #333;
+  background: rgba(20, 20, 20, 0.9);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-shrink: 0;
 }
 
 .view-title {
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 700;
   color: #fc6f03;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin: 0 0 8px 0;
+  font-family: 'Consolas', 'Courier New', monospace;
 }
 
 .view-subtitle {
-  font-size: 15px;
+  font-size: 14px;
   color: #aaa;
+  letter-spacing: 0.3px;
+}
+
+.view-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.view-action-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: rgba(30, 30, 30, 0.8);
+  border: 1px solid #444;
+  color: #aaa;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.view-action-button:hover {
+  background: rgba(40, 40, 40, 0.9);
+  border-color: #666;
+  color: #fff;
+}
+
+.view-action-button svg {
+  width: 18px;
+  height: 18px;
 }
 
 /* Barra de búsqueda */
 .search-bar {
-  margin-bottom: 32px;
+  padding: 20px 30px;
+  border-bottom: 1px solid #333;
+  background: rgba(25, 25, 25, 0.9);
+  flex-shrink: 0;
 }
 
 .search-container {
   position: relative;
   background: rgba(30, 30, 30, 0.6);
   border: 1px solid #444;
-  border-radius: 8px;
   padding: 12px 16px;
   display: flex;
   align-items: center;
@@ -1178,17 +1787,25 @@ onMounted(() => {
   white-space: nowrap;
 }
 
+/* Contenedor de scroll para las tarjetas */
+.characters-scroll-container {
+  flex: 1;
+  overflow-y: auto;
+  height: 200%;
+  padding: 30px;
+}
+
 /* Grid de personajes */
 .characters-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 20px;
+  margin-bottom: 20px;
 }
 
 .character-card {
   background: rgba(30, 30, 30, 0.6);
   border: 1px solid #444;
-  border-radius: 8px;
   padding: 20px;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -1275,7 +1892,6 @@ onMounted(() => {
   color: #fc6f03;
   background: rgba(252, 111, 3, 0.1);
   padding: 4px 8px;
-  border-radius: 4px;
   border: 1px solid rgba(252, 111, 3, 0.3);
   font-family: 'Consolas', monospace;
   letter-spacing: 0.3px;
@@ -1408,7 +2024,6 @@ onMounted(() => {
   padding: 12px 24px;
   background: rgba(252, 111, 3, 0.1);
   border: 1px solid rgba(252, 111, 3, 0.3);
-  border-radius: 6px;
   color: #fc6f03;
   font-size: 14px;
   font-weight: 600;
@@ -1434,28 +2049,32 @@ onMounted(() => {
   color: currentColor;
 }
 
-/* Vista de detalle del personaje */
-.character-detail-view {
-  width: 100%;
+/* Vista de formulario como página interna */
+.character-form-view {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
-.detail-header {
+.form-view-header {
+  padding: 25px 30px;
+  border-bottom: 1px solid #333;
+  background: rgba(20, 20, 20, 0.9);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 32px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid rgba(252, 111, 3, 0.3);
+  gap: 20px;
+  flex-shrink: 0;
 }
 
-.back-button {
+.form-view-header .back-button {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
+  gap: 10px;
+  padding: 10px 16px;
   background: rgba(40, 40, 40, 0.6);
   border: 1px solid #444;
-  border-radius: 6px;
   color: #aaa;
   font-size: 14px;
   font-weight: 500;
@@ -1463,15 +2082,337 @@ onMounted(() => {
   transition: all 0.3s ease;
 }
 
-.back-button:hover {
+.form-view-header .back-button:hover {
   background: rgba(50, 50, 50, 0.7);
   border-color: #555;
   color: #fff;
 }
 
-.back-button svg {
+.form-view-header .back-button svg {
   width: 16px;
   height: 16px;
+}
+
+.form-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #fc6f03;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
+  font-family: 'Consolas', 'Courier New', monospace;
+}
+
+.character-form-page {
+  flex: 1;
+  overflow-y: auto;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.form-section {
+  background: rgba(30, 30, 30, 0.6);
+  border: 1px solid #444;
+  padding: 25px;
+}
+
+.character-form-page .section-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #fc6f03;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0 0 20px 0;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(252, 111, 3, 0.3);
+  font-family: 'Consolas', 'Courier New', monospace;
+}
+
+.character-form-page .form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.character-form-page .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.character-form-page .form-label {
+  font-size: 13px;
+  color: #ccc;
+  font-weight: 500;
+}
+
+.character-form-page .form-input,
+.character-form-page .form-textarea {
+  background: rgba(40, 40, 40, 0.6);
+  border: 1px solid #444;
+  padding: 10px 12px;
+  color: #fff;
+  font-size: 14px;
+  font-family: inherit;
+  transition: all 0.3s ease;
+}
+
+.character-form-page .form-input:focus,
+.character-form-page .form-textarea:focus {
+  outline: none;
+  border-color: #fc6f03;
+  box-shadow: 0 0 0 2px rgba(252, 111, 3, 0.1);
+}
+
+.character-form-page .form-input:disabled {
+  background: rgba(50, 50, 50, 0.4);
+  color: #888;
+  cursor: not-allowed;
+}
+
+.character-form-page .form-textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.character-form-page .form-hint {
+  font-size: 11px;
+  color: #888;
+  font-style: italic;
+}
+
+.character-form-page .color-inputs {
+  display: flex;
+  gap: 8px;
+}
+
+.character-form-page .color-input {
+  flex: 1;
+  background: rgba(40, 40, 40, 0.6);
+  border: 1px solid #444;
+  padding: 10px;
+  color: #fff;
+  font-size: 14px;
+  text-align: center;
+  font-family: inherit;
+}
+
+.character-form-page .color-input::placeholder {
+  color: #666;
+}
+
+.character-form-page .color-input:focus {
+  outline: none;
+  border-color: #fc6f03;
+}
+
+.character-form-page .checkbox-group {
+  flex-direction: row;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.character-form-page .checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.character-form-page .checkbox-input {
+  width: 18px;
+  height: 18px;
+  accent-color: #fc6f03;
+}
+
+.character-form-page .checkbox-text {
+  font-size: 14px;
+  color: #ccc;
+}
+
+.form-validation {
+  background: rgba(30, 30, 30, 0.6);
+  border: 1px solid #444;
+  padding: 20px;
+}
+
+.validation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.validation-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #fc6f03;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
+  font-family: 'Consolas', 'Courier New', monospace;
+}
+
+.validation-status {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 6px 12px;
+  border: 1px solid;
+  font-family: 'Consolas', monospace;
+}
+
+.validation-status.valid {
+  color: #4CAF50;
+  border-color: #4CAF50;
+  background: rgba(76, 175, 80, 0.1);
+}
+
+.validation-status.invalid {
+  color: #ff3333;
+  border-color: #ff3333;
+  background: rgba(255, 51, 51, 0.1);
+}
+
+.validation-rules {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.validation-rule {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  background: rgba(40, 40, 40, 0.6);
+  border: 1px solid #444;
+  transition: all 0.3s ease;
+}
+
+.validation-rule.met {
+  border-color: #4CAF50;
+  background: rgba(76, 175, 80, 0.1);
+}
+
+.rule-indicator {
+  font-size: 12px;
+  color: #ff3333;
+  font-weight: 900;
+}
+
+.validation-rule.met .rule-indicator {
+  color: #4CAF50;
+}
+
+.rule-text {
+  font-size: 14px;
+  color: #ddd;
+  flex: 1;
+}
+
+.character-form-page .form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #444;
+}
+
+.character-form-page .cancel-button,
+.character-form-page .submit-button {
+  padding: 12px 24px;
+  border-radius: 0;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.character-form-page .cancel-button {
+  background: rgba(40, 40, 40, 0.6);
+  border: 1px solid #444;
+  color: #aaa;
+}
+
+.character-form-page .cancel-button:hover {
+  background: rgba(50, 50, 50, 0.7);
+  border-color: #555;
+  color: #fff;
+}
+
+.character-form-page .submit-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: rgba(252, 111, 3, 0.1);
+  border: 1px solid rgba(252, 111, 3, 0.3);
+  color: #fc6f03;
+}
+
+.character-form-page .submit-button:hover:not(:disabled) {
+  background: rgba(252, 111, 3, 0.2);
+  border-color: rgba(252, 111, 3, 0.5);
+}
+
+.character-form-page .submit-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.submit-indicator {
+  width: 16px;
+  height: 16px;
+  color: currentColor;
+}
+
+/* Vista de detalle del personaje */
+.character-detail-view {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.detail-header {
+  padding: 25px 30px;
+  border-bottom: 1px solid #333;
+  background: rgba(20, 20, 20, 0.9);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-shrink: 0;
+}
+
+.detail-header .back-button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  background: rgba(40, 40, 40, 0.6);
+  border: 1px solid #444;
+  color: #aaa;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.detail-header .back-button:hover {
+  background: rgba(50, 50, 50, 0.7);
+  border-color: #555;
+  color: #fff;
 }
 
 .header-actions {
@@ -1484,8 +2425,8 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 16px;
-  border-radius: 6px;
+  padding: 10px 16px;
+  border-radius: 0;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -1522,19 +2463,21 @@ onMounted(() => {
 }
 
 .character-detail-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 30px;
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 30px;
 }
 
-.detail-section {
+.character-detail-view .detail-section {
   background: rgba(30, 30, 30, 0.6);
   border: 1px solid #444;
-  border-radius: 8px;
-  padding: 24px;
+  padding: 25px;
 }
 
-.section-title {
+.character-detail-view .section-title {
   font-size: 18px;
   font-weight: 700;
   color: #fc6f03;
@@ -1543,101 +2486,99 @@ onMounted(() => {
   margin: 0 0 20px 0;
   padding-bottom: 12px;
   border-bottom: 1px solid rgba(252, 111, 3, 0.3);
+  font-family: 'Consolas', 'Courier New', monospace;
 }
 
-.detail-grid {
+.character-detail-view .detail-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 16px;
 }
 
-.detail-item {
+.character-detail-view .detail-item {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
-.detail-label {
+.character-detail-view .detail-label {
   font-size: 12px;
   color: #888;
   text-transform: uppercase;
   letter-spacing: 0.3px;
 }
 
-.detail-value {
+.character-detail-view .detail-value {
   font-size: 15px;
   color: #ddd;
   font-weight: 500;
 }
 
-.detail-value.highlight {
+.character-detail-view .detail-value.highlight {
   color: #fc6f03;
   font-weight: 700;
 }
 
-.detail-value.faction {
+.character-detail-view .detail-value.faction {
   color: #fc6f03;
   background: rgba(252, 111, 3, 0.1);
   padding: 4px 8px;
-  border-radius: 4px;
   border: 1px solid rgba(252, 111, 3, 0.3);
   display: inline-block;
   font-family: 'Consolas', monospace;
   letter-spacing: 0.3px;
 }
 
-.morph-grid {
+.character-detail-view .morph-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 12px;
 }
 
-.morph-item {
+.character-detail-view .morph-item {
   padding: 12px;
   background: rgba(40, 40, 40, 0.6);
   border: 1px solid #444;
-  border-radius: 6px;
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
-.morph-label {
+.character-detail-view .morph-label {
   font-size: 11px;
   color: #888;
   text-transform: uppercase;
   letter-spacing: 0.3px;
 }
 
-.morph-value {
+.character-detail-view .morph-value {
   font-size: 14px;
   color: #ddd;
   font-weight: 500;
   word-break: break-all;
 }
 
-.morph-command-container {
+.character-detail-view .morph-command-container {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-.command-preview {
+.character-detail-view .command-preview {
   background: rgba(20, 20, 20, 0.8);
   border: 1px solid #444;
-  border-radius: 6px;
   padding: 16px;
   overflow-x: auto;
 }
 
-.command-text {
+.character-detail-view .command-text {
   font-family: 'Consolas', monospace;
   font-size: 14px;
   color: #4CAF50;
   white-space: nowrap;
 }
 
-.copy-button {
+.character-detail-view .copy-button {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1645,7 +2586,6 @@ onMounted(() => {
   padding: 12px 24px;
   background: rgba(76, 175, 80, 0.1);
   border: 1px solid rgba(76, 175, 80, 0.3);
-  border-radius: 6px;
   color: #4CAF50;
   font-size: 14px;
   font-weight: 600;
@@ -1656,17 +2596,17 @@ onMounted(() => {
   align-self: flex-start;
 }
 
-.copy-button:hover {
+.character-detail-view .copy-button:hover {
   background: rgba(76, 175, 80, 0.2);
   border-color: rgba(76, 175, 80, 0.5);
 }
 
-.copy-button svg {
+.character-detail-view .copy-button svg {
   width: 16px;
   height: 16px;
 }
 
-/* Modal y formulario */
+/* Modal de confirmación */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -1675,257 +2615,20 @@ onMounted(() => {
   bottom: 0;
   background: rgba(0, 0, 0, 0.8);
   backdrop-filter: blur(5px);
-  z-index: 1000;
+  z-index: 2000;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
-  animation: fadeIn 0.3s ease;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-.character-form-modal {
-  background: rgba(25, 25, 25, 0.95);
-  border: 1px solid #fc6f03;
-  border-radius: 8px;
-  padding: 30px;
-  max-width: 900px;
-  width: 100%;
-  max-height: 90vh;
-  overflow-y: auto;
-  animation: slideUp 0.3s ease;
-}
-
-@keyframes slideUp {
-  from { 
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to { 
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid rgba(252, 111, 3, 0.3);
-}
-
-.modal-title {
-  font-size: 22px;
-  font-weight: 700;
-  color: #fc6f03;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin: 0;
-}
-
-.modal-close {
-  background: transparent;
-  border: none;
-  color: #aaa;
-  cursor: pointer;
-  padding: 4px;
-  transition: color 0.3s ease;
-}
-
-.modal-close:hover {
-  color: #fc6f03;
-}
-
-.modal-close svg {
-  width: 20px;
-  height: 20px;
-}
-
-.form-section {
-  margin-bottom: 32px;
-}
-
-.form-section-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: #fc6f03;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin: 0 0 16px 0;
-  padding-bottom: 8px;
-  border-bottom: 1px solid rgba(252, 111, 3, 0.2);
-}
-
-.form-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 16px;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.form-label {
-  font-size: 13px;
-  color: #ccc;
-  font-weight: 500;
-}
-
-.form-input,
-.form-textarea {
-  background: rgba(40, 40, 40, 0.6);
-  border: 1px solid #444;
-  border-radius: 6px;
-  padding: 10px 12px;
-  color: #fff;
-  font-size: 14px;
-  font-family: inherit;
-  transition: all 0.3s ease;
-}
-
-.form-input:focus,
-.form-textarea:focus {
-  outline: none;
-  border-color: #fc6f03;
-  box-shadow: 0 0 0 2px rgba(252, 111, 3, 0.1);
-}
-
-.form-input:disabled {
-  background: rgba(50, 50, 50, 0.4);
-  color: #888;
-  cursor: not-allowed;
-}
-
-.form-textarea {
-  resize: vertical;
-  min-height: 80px;
-}
-
-.form-hint {
-  font-size: 11px;
-  color: #888;
-  font-style: italic;
-}
-
-.color-inputs {
-  display: flex;
-  gap: 8px;
-}
-
-.color-input {
-  flex: 1;
-  background: rgba(40, 40, 40, 0.6);
-  border: 1px solid #444;
-  border-radius: 6px;
-  padding: 10px;
-  color: #fff;
-  font-size: 14px;
-  text-align: center;
-  font-family: inherit;
-}
-
-.color-input::placeholder {
-  color: #666;
-}
-
-.color-input:focus {
-  outline: none;
-  border-color: #fc6f03;
-}
-
-.checkbox-group {
-  flex-direction: row;
-  align-items: center;
-  margin-top: 8px;
-}
-
-.checkbox-label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-}
-
-.checkbox-input {
-  width: 18px;
-  height: 18px;
-  accent-color: #fc6f03;
-}
-
-.checkbox-text {
-  font-size: 14px;
-  color: #ccc;
-}
-
-.form-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-  margin-top: 32px;
-  padding-top: 24px;
-  border-top: 1px solid #444;
-}
-
-.cancel-button,
-.submit-button {
-  padding: 12px 24px;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border: none;
-}
-
-.cancel-button {
-  background: rgba(40, 40, 40, 0.6);
-  border: 1px solid #444;
-  color: #aaa;
-}
-
-.cancel-button:hover {
-  background: rgba(50, 50, 50, 0.7);
-  border-color: #555;
-  color: #fff;
-}
-
-.submit-button {
-  background: rgba(252, 111, 3, 0.1);
-  border: 1px solid rgba(252, 111, 3, 0.3);
-  color: #fc6f03;
-}
-
-.submit-button:hover:not(:disabled) {
-  background: rgba(252, 111, 3, 0.2);
-  border-color: rgba(252, 111, 3, 0.5);
-}
-
-.submit-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-/* Modal de confirmación */
 .confirm-modal {
   background: rgba(25, 25, 25, 0.95);
   border: 1px solid #aa2222;
-  border-radius: 8px;
   padding: 40px;
   max-width: 500px;
   width: 100%;
   text-align: center;
-  animation: slideUp 0.3s ease;
 }
 
 .confirm-icon {
@@ -1964,7 +2667,7 @@ onMounted(() => {
 .confirm-cancel,
 .confirm-delete {
   padding: 12px 24px;
-  border-radius: 6px;
+  border-radius: 0;
   font-size: 14px;
   font-weight: 600;
   text-transform: uppercase;
@@ -2007,8 +2710,17 @@ onMounted(() => {
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   }
   
-  .form-grid {
+  .character-form-page .form-grid {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+  
+  .character-detail-view .detail-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+  
+  .security-notice {
+    grid-template-columns: 1fr;
+    gap: 15px;
   }
 }
 
@@ -2021,6 +2733,25 @@ onMounted(() => {
     width: 100%;
     border-right: none;
     border-bottom: 1px solid #333;
+    height: auto;
+    max-height: 300px;
+  }
+  
+  .personajes-container.sidebar-collapsed .personajes-sidebar {
+    width: 100%;
+    height: 60px;
+  }
+  
+  .personajes-container.sidebar-collapsed .sidebar-tools {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    padding: 0;
+  }
+  
+  .personajes-container.sidebar-collapsed .tool-item {
+    flex: 0 0 auto;
+    padding: 16px 20px;
   }
   
   .sidebar-tools {
@@ -2040,21 +2771,36 @@ onMounted(() => {
     grid-template-columns: 1fr;
   }
   
-  .character-form-modal {
-    padding: 20px;
-    max-height: 80vh;
+  .view-header,
+  .form-view-header,
+  .detail-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 15px;
   }
   
-  .form-grid {
+  .character-form-page .form-grid {
     grid-template-columns: 1fr;
   }
   
-  .form-actions {
+  .character-form-page .form-actions {
     flex-direction: column;
   }
   
   .confirm-actions {
     flex-direction: column;
+  }
+  
+  .auth-overlay {
+    padding: 20px;
+  }
+  
+  .access-denied-panel {
+    max-height: 95vh;
+  }
+  
+  .panel-content {
+    padding: 25px;
   }
 }
 </style>

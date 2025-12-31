@@ -58,46 +58,53 @@ class Character(models.Model):
     # ============================
     # Roblox command builder
     # ============================
-    def morph_command(self, user_placeholder="[USER]"):
+    def morph_command(self):
         cmds = []
-
+        
+        # Obtener el nombre de usuario del owner
+        username = self.owner.roblox_username if hasattr(self.owner, 'roblox_username') else str(self.owner)
+        
+        # Construir comandos individuales
         if self.morph:
-            cmd = f"run permmorph {user_placeholder} {self.morph}"
+            cmd = f"permmorph {username} {self.morph}"
             if self.rhat:
-                cmd += f" & rhat {user_placeholder}"
+                cmd += f" & rhat {username}"
             cmds.append(cmd)
-
+        
         if self.hat:
-            cmds.append(f"permhat {user_placeholder} {self.hat}")
-
+            cmds.append(f"permhat {username} {self.hat}")
+        
         if self.shirt:
-            cmds.append(f"permshirt {user_placeholder} {self.shirt}")
-
+            cmds.append(f"permshirt {username} {self.shirt}")
+        
         if self.pants:
-            cmds.append(f"permpants {user_placeholder} {self.pants}")
-
+            cmds.append(f"permpants {username} {self.pants}")
+        
         if self.nvg_color:
-            cmds.append(f"permcolornvg {user_placeholder} {self.nvg_color}")
-
+            cmds.append(f"permcolornvg {username} {self.nvg_color}")
+        
         if self.ntag:
-            cmds.append(f'permntag {user_placeholder} {self.ntag}')
-
+            cmds.append(f'permntag {username} {self.ntag}')
+        
         if None not in (self.cntag_r, self.cntag_g, self.cntag_b):
             cmds.append(
-                f"permcntag {user_placeholder} "
+                f"permcntag {username} "
                 f"{self.cntag_r} {self.cntag_g} {self.cntag_b}"
             )
-
+        
         if self.rtag:
-            cmds.append(f"permrtag {user_placeholder} {self.rtag}")
-
+            cmds.append(f"permrtag {username} {self.rtag}")
+        
         if None not in (self.crtag_r, self.crtag_g, self.crtag_b):
             cmds.append(
-                f"permcrtag {user_placeholder} "
+                f"permcrtag {username} "
                 f"{self.crtag_r} {self.crtag_g} {self.crtag_b}"
             )
-
-        return " & ".join(cmds)
+        
+        # Agregar "run " al inicio y unir comandos con " & "
+        if cmds:
+            return f"run {' & '.join(cmds)}"
+        return ""
 
     def __str__(self):
         return f"{self.codename} ({self.owner})"

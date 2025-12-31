@@ -10,6 +10,11 @@ from django.utils import timezone
 from .models import Character
 from .forms import CharacterForm
 
+def _calculate_age(birth_date):
+    """Función helper independiente para calcular la edad"""
+    today = timezone.now().date()
+    return today.year - birth_date.year - ((today.month, today.day) < (birth_date.month, birth_date.day))
+
 @login_required
 @require_http_methods(["GET"])
 def character_list_all(request):
@@ -33,7 +38,7 @@ def character_list_all(request):
                 "last_name": c.last_name,
                 "country": c.country,
                 "birth_date": c.birth_date.strftime("%Y-%m-%d") if c.birth_date else None,
-                "age": self._calculate_age(c.birth_date) if c.birth_date else None,
+                "age": _calculate_age(c.birth_date) if c.birth_date else None,
                 "codename": c.codename,
                 "owner_id": c.owner_id,
                 "owner_username": c.owner.roblox_username,
@@ -62,10 +67,6 @@ def character_list_all(request):
         ]
     })
 
-def _calculate_age(self, birth_date):
-    today = timezone.now().date()
-    return today.year - birth_date.year - ((today.month, today.day) < (birth_date.month, birth_date.day))
-
 @login_required
 @require_http_methods(["GET"])
 def character_list_user(request):
@@ -88,7 +89,7 @@ def character_list_user(request):
                 "last_name": c.last_name,
                 "country": c.country,
                 "birth_date": c.birth_date.strftime("%Y-%m-%d") if c.birth_date else None,
-                "age": self._calculate_age(c.birth_date) if c.birth_date else None,
+                "age": _calculate_age(c.birth_date) if c.birth_date else None,
                 "codename": c.codename,
                 "faction": c.faction,
                 "morph": c.morph,
@@ -122,7 +123,7 @@ def character_detail(request, pk):
     
     # Verificar si el usuario es el owner o tiene permisos globales
     is_owner = character.owner == request.user
-    can_view_all = request.user.has_permission("view_all_characters")
+    can_view_all = request.user.has_perm("characters.view_all_characters")
     
     if not (is_owner or can_view_all):
         return JsonResponse({"error": "No tienes permiso para ver este personaje"}, status=403)
@@ -187,12 +188,31 @@ def character_create(request):
         if Character.objects.filter(codename=data.get("codename")).exists():
             return JsonResponse({"error": "Este codename ya está en uso."}, status=400)
         
+        # Manejar fecha de nacimiento (puede ser None o string vacío)
+        birth_date = data.get("birth_date")
+        if birth_date == "":
+            birth_date = None
+        
+        # Manejar campos booleanos
+        rhat = data.get("rhat", False)
+        if isinstance(rhat, str):
+            rhat = rhat.lower() in ['true', '1', 'yes']
+        
+        # Convertir campos de color a enteros o None
+        def parse_color_value(value):
+            if value is None or value == "":
+                return None
+            try:
+                return int(value)
+            except (ValueError, TypeError):
+                return None
+        
         character = Character.objects.create(
             owner=request.user,
             first_name=data.get("first_name", ""),
             last_name=data.get("last_name", ""),
             country=data.get("country", ""),
-            birth_date=data.get("birth_date"),
+            birth_date=birth_date,
             codename=data.get("codename", ""),
             faction=data.get("faction", ""),
             
@@ -202,18 +222,18 @@ def character_create(request):
             nvg_color=data.get("nvg_color", ""),
             shirt=data.get("shirt", ""),
             pants=data.get("pants", ""),
-            skin_r=data.get("skin_r"),
-            skin_g=data.get("skin_g"),
-            skin_b=data.get("skin_b"),
+            skin_r=parse_color_value(data.get("skin_r")),
+            skin_g=parse_color_value(data.get("skin_g")),
+            skin_b=parse_color_value(data.get("skin_b")),
             ntag=data.get("ntag", ""),
-            cntag_r=data.get("cntag_r"),
-            cntag_g=data.get("cntag_g"),
-            cntag_b=data.get("cntag_b"),
+            cntag_r=parse_color_value(data.get("cntag_r")),
+            cntag_g=parse_color_value(data.get("cntag_g")),
+            cntag_b=parse_color_value(data.get("cntag_b")),
             rtag=data.get("rtag", ""),
-            crtag_r=data.get("crtag_r"),
-            crtag_g=data.get("crtag_g"),
-            crtag_b=data.get("crtag_b"),
-            rhat=data.get("rhat", False),
+            crtag_r=parse_color_value(data.get("crtag_r")),
+            crtag_g=parse_color_value(data.get("crtag_g")),
+            crtag_b=parse_color_value(data.get("crtag_b")),
+            rhat=rhat,
         )
         
         return JsonResponse({
@@ -239,35 +259,81 @@ def character_update(request, pk):
         
         data = json.loads(request.body)
         
-        # Actualizar campos
-        character.first_name = data.get("first_name", character.first_name)
-        character.last_name = data.get("last_name", character.last_name)
-        character.country = data.get("country", character.country)
+        # Verificar si se intenta cambiar el codename y si ya existe
+        new_codename = data.get("codename")
+        if new_codename and new_codename != character.codename:
+            if Character.objects.filter(codename=new_codename).exists():
+                return JsonResponse({"error": "Este codename ya está en uso."}, status=400)
         
-        if data.get("birth_date"):
-            character.birth_date = data.get("birth_date")
+        # Manejar fecha de nacimiento
+        if "birth_date" in data:
+            birth_date = data.get("birth_date")
+            character.birth_date = None if birth_date == "" else birth_date
         
-        character.codename = data.get("codename", character.codename)
-        character.faction = data.get("faction", character.faction)
+        # Actualizar campos básicos
+        if "first_name" in data:
+            character.first_name = data.get("first_name", "")
+        if "last_name" in data:
+            character.last_name = data.get("last_name", "")
+        if "country" in data:
+            character.country = data.get("country", "")
+        if "codename" in data:
+            character.codename = data.get("codename", "")
+        if "faction" in data:
+            character.faction = data.get("faction", "")
         
-        # Morph data
-        character.morph = data.get("morph", character.morph)
-        character.hat = data.get("hat", character.hat)
-        character.nvg_color = data.get("nvg_color", character.nvg_color)
-        character.shirt = data.get("shirt", character.shirt)
-        character.pants = data.get("pants", character.pants)
-        character.skin_r = data.get("skin_r", character.skin_r)
-        character.skin_g = data.get("skin_g", character.skin_g)
-        character.skin_b = data.get("skin_b", character.skin_b)
-        character.ntag = data.get("ntag", character.ntag)
-        character.cntag_r = data.get("cntag_r", character.cntag_r)
-        character.cntag_g = data.get("cntag_g", character.cntag_g)
-        character.cntag_b = data.get("cntag_b", character.cntag_b)
-        character.rtag = data.get("rtag", character.rtag)
-        character.crtag_r = data.get("crtag_r", character.crtag_r)
-        character.crtag_g = data.get("crtag_g", character.crtag_g)
-        character.crtag_b = data.get("crtag_b", character.crtag_b)
-        character.rhat = data.get("rhat", character.rhat)
+        # Actualizar campos de morph
+        if "morph" in data:
+            character.morph = data.get("morph", "")
+        if "hat" in data:
+            character.hat = data.get("hat", "")
+        if "nvg_color" in data:
+            character.nvg_color = data.get("nvg_color", "")
+        if "shirt" in data:
+            character.shirt = data.get("shirt", "")
+        if "pants" in data:
+            character.pants = data.get("pants", "")
+        if "ntag" in data:
+            character.ntag = data.get("ntag", "")
+        if "rtag" in data:
+            character.rtag = data.get("rtag", "")
+        
+        # Actualizar campos de color
+        def update_color_field(field_name, value):
+            if value is None or value == "":
+                setattr(character, field_name, None)
+            else:
+                try:
+                    setattr(character, field_name, int(value))
+                except (ValueError, TypeError):
+                    setattr(character, field_name, None)
+        
+        if "skin_r" in data:
+            update_color_field("skin_r", data.get("skin_r"))
+        if "skin_g" in data:
+            update_color_field("skin_g", data.get("skin_g"))
+        if "skin_b" in data:
+            update_color_field("skin_b", data.get("skin_b"))
+        if "cntag_r" in data:
+            update_color_field("cntag_r", data.get("cntag_r"))
+        if "cntag_g" in data:
+            update_color_field("cntag_g", data.get("cntag_g"))
+        if "cntag_b" in data:
+            update_color_field("cntag_b", data.get("cntag_b"))
+        if "crtag_r" in data:
+            update_color_field("crtag_r", data.get("crtag_r"))
+        if "crtag_g" in data:
+            update_color_field("crtag_g", data.get("crtag_g"))
+        if "crtag_b" in data:
+            update_color_field("crtag_b", data.get("crtag_b"))
+        
+        # Actualizar campo booleano
+        if "rhat" in data:
+            rhat_value = data.get("rhat")
+            if isinstance(rhat_value, str):
+                character.rhat = rhat_value.lower() in ['true', '1', 'yes']
+            else:
+                character.rhat = bool(rhat_value)
         
         # Validar que haya al menos un campo de morph
         morph_fields = [
