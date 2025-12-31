@@ -2307,7 +2307,7 @@ onMounted(() => {
   transition: all 0.4s ease;
   position: relative;
   overflow: hidden;
-  height: 280px;
+  height: 300px;
   display: flex;
   flex-direction: column;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
@@ -2335,9 +2335,10 @@ onMounted(() => {
 /* Header con gradiente */
 .card-header {
   position: relative;
-  padding: 1.5rem 1.5rem 1rem 1.5rem;
+  padding: 1.2rem 1.2rem 0.8rem 1.2rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  min-height: 80px;
+  min-height: 70px;
+  flex-shrink: 0;
 }
 
 .header-gradient {
@@ -2361,7 +2362,7 @@ onMounted(() => {
 }
 
 .character-codename {
-  font-size: 1.4rem;
+  font-size: min(1.4rem, max(0.9rem, 3.5vw)); /* Se ajusta entre 0.9rem y 1.4rem */
   font-weight: 800;
   color: #fff;
   margin: 0;
@@ -2369,6 +2370,16 @@ onMounted(() => {
   text-transform: uppercase;
   letter-spacing: 0.5px;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  line-height: 1.2;
+  word-wrap: break-word; /* Permite que las palabras largas se dividan */
+  overflow-wrap: break-word;
+  hyphens: auto; /* Agrega guiones automáticamente si es necesario */
+  max-height: 2.8em; /* Aproximadamente 2 líneas */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2; /* Máximo 2 líneas */
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .id-badge {
@@ -2400,12 +2411,14 @@ onMounted(() => {
 /* Cuerpo de la tarjeta */
 .card-body {
   flex: 1;
-  padding: 1rem 1.5rem;
+  padding: 0.8rem 1.2rem;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.8rem;
   position: relative;
   z-index: 2;
+  min-height: 0; /* Importante para que flex funcione correctamente */
+  overflow: hidden;
 }
 
 .name-section {
@@ -2413,10 +2426,20 @@ onMounted(() => {
 }
 
 .character-name {
-  font-size: 1.1rem;
+  font-size: min(1.1rem, max(0.8rem, 2.5vw)); /* Se ajusta entre 0.8rem y 1.1rem */
   font-weight: 600;
   color: #ddd;
   margin: 0 0 0.3rem 0;
+  line-height: 1.2;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  max-height: 2.4em; /* Aproximadamente 2 líneas */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2; /* Máximo 2 líneas */
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .character-country {
@@ -2432,15 +2455,21 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 1rem;
+  margin-bottom: 0.8rem;
+  gap: 0.5rem;
+  min-height: 70px; /* Espacio suficiente para 2 líneas de nombre + facción */
 }
 
 .name-faction {
   flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
 }
 
 .character-faction {
-  font-size: 0.8rem;
+  font-size: min(0.8rem, max(0.65rem, 1.8vw)); /* Se ajusta entre 0.65rem y 0.8rem */
   color: #fc6f03;
   background: rgba(252, 111, 3, 0.1);
   padding: 0.2rem 0.5rem;
@@ -2449,6 +2478,12 @@ onMounted(() => {
   margin-top: 0.3rem;
   font-family: 'Consolas', monospace;
   letter-spacing: 0.3px;
+  max-width: 100%;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .right-info {
@@ -2456,7 +2491,9 @@ onMounted(() => {
   flex-direction: column;
   align-items: flex-end;
   gap: 0.5rem;
-  margin-left: 1rem;
+  margin-left: 0.5rem;
+  flex-shrink: 0;
+  min-width: 110px; /* Ancho mínimo para edad y registro */
 }
 
 .owner-id-section {
@@ -2512,9 +2549,13 @@ onMounted(() => {
 }
 
 .info-value {
-  font-size: 0.9rem;
+  font-size: min(0.9rem, max(0.75rem, 2vw)); /* Se ajusta entre 0.75rem y 0.9rem */
   color: #ddd;
   font-weight: 500;
+  text-align: right;
+  line-height: 1.2;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .owner-section {
@@ -2533,9 +2574,18 @@ onMounted(() => {
 }
 
 .owner-name {
-  font-size: 0.85rem;
+  font-size: min(0.85rem, max(0.75rem, 1.8vw)); /* Se ajusta entre 0.75rem y 0.85rem */
   color: #aaa;
   font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-height: 1.8em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* Footer de la tarjeta */
@@ -3837,6 +3887,27 @@ onMounted(() => {
 .notification-slide-leave-to {
   opacity: 0;
   transform: translateX(100%);
+}
+
+/* Clases para control de texto responsive */
+.text-responsive {
+  font-size: min(var(--max-size), max(var(--min-size), var(--dynamic-size)));
+  line-height: 1.2;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Para nombres muy largos con guiones */
+.hyphenate {
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  -ms-hyphens: auto;
+}
+
+/* Contenedor flexible para texto */
+.text-container {
+  min-width: 0; /* Permite que el texto se ajuste en flex containers */
+  flex: 1;
 }
 
 /* Responsive */
