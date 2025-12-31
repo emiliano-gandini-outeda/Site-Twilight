@@ -102,138 +102,11 @@
     <main class="personajes-main">
       <!-- Overlay de autenticación -->
       <div v-if="!currentUser?.is_authenticated" class="auth-modal-overlay">
-        <div class="scp-auth-modal">
-          <!-- Encabezado del modal -->
-          <div class="modal-header">
-            <div class="modal-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#fc6f03" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-              </svg>
-            </div>
-            <div class="modal-title-section">
-              <h2 class="modal-title">ACCESO RESTRINGIDO</h2>
-              <div class="modal-subtitle">SISTEMA DE GESTIÓN DE AGENTES - CLEARANCE LEVEL 2 REQUERIDO</div>
-            </div>
-            <div class="modal-status">
-              <div class="status-indicator denied"></div>
-              <span class="status-text">ACCESO DENEGADO</span>
-            </div>
-          </div>
-
-          <!-- Contenido del modal -->
-          <div class="modal-content">
-            <!-- Advertencia de seguridad -->
-            <div class="security-warning">
-              <div class="warning-header">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#ff3333" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-                  <line x1="12" y1="9" x2="12" y2="13"></line>
-                  <line x1="12" y1="17" x2="12.01" y2="17"></line>
-                </svg>
-                <h3>ADVERTENCIA DE SEGURIDAD NIVEL 4</h3>
-              </div>
-              <div class="warning-content">
-                <p>Este sistema contiene información clasificada Nivel 2/SCP. El acceso está restringido a:</p>
-                <ul>
-                  <li>Personal autorizado con nivel de autorización <strong>Level 2</strong> o superior</li>
-                  <li>Personal del Departamento de Seguridad de la Fundación</li>
-                  <li>Miembros del Consejo O5 con autorización explícita</li>
-                </ul>
-                <p class="warning-note">Cualquier intento de acceso no autorizado será registrado y reportado inmediatamente al Departamento de Seguridad Interna.</p>
-              </div>
-            </div>
-
-            <!-- Información del sistema -->
-            <div class="system-info">
-              <div class="info-grid">
-                <div class="info-item">
-                  <span class="info-label">SISTEMA:</span>
-                  <span class="info-value">AGENT-MANAGEMENT v2.4</span>
-                </div>
-                <div class="info-item">
-                  <span class="info-label">ESTADO:</span>
-                  <span class="info-value status-operational">OPERATIVO</span>
-                </div>
-                <div class="info-item">
-                  <span class="info-label">UBICACIÓN:</span>
-                  <span class="info-value">SITE-81</span>
-                </div>
-                <div class="info-item">
-                  <span class="info-label">CLASIFICACIÓN:</span>
-                  <span class="info-value status-classified">LEVEL 2/SCP</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Botón de acción -->
-            <div class="action-section">
-              <div class="action-required">
-                <div class="required-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#4CAF50" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                  </svg>
-                </div>
-                <div class="required-text">
-                  <h4>ACCIÓN REQUERIDA</h4>
-                  <p>Debe autenticarse para acceder al Sistema de Gestión de Agentes</p>
-                </div>
-              </div>
-              
-              <a :href="loginUrl" class="scp-login-button">
-                <div class="button-glow"></div>
-                <div class="button-content">
-                  <div class="button-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
-                      <polyline points="10 17 15 12 10 7"></polyline>
-                      <line x1="15" y1="12" x2="3" y2="12"></line>
-                    </svg>
-                  </div>
-                  <div class="button-text">
-                    <span class="main-text">INICIAR SESIÓN CON ROBLOX</span>
-                    <span class="sub-text">Redirección automática habilitada</span>
-                  </div>
-                  <div class="button-indicator">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <polyline points="9 18 15 12 9 6"></polyline>
-                    </svg>
-                  </div>
-                </div>
-              </a>
-
-              <div class="login-info">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <line x1="12" y1="16" x2="12" y2="12"></line>
-                  <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                </svg>
-                <span>Será redirigido al portal de autenticación de Roblox. Al completar la autenticación, volverá automáticamente a esta página.</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Footer del modal -->
-          <div class="modal-footer">
-            <div class="footer-grid">
-              <div class="footer-item">
-                <span class="footer-label">REFERENCIA:</span>
-                <span class="footer-value">AMS-81-02</span>
-              </div>
-              <div class="footer-item">
-                <span class="footer-label">ÚLTIMO ACCESO:</span>
-                <span class="footer-value">{{ currentTime }}</span>
-              </div>
-              <div class="footer-item">
-                <span class="footer-label">AUDITORÍA:</span>
-                <span class="footer-value">HABILITADA</span>
-              </div>
-            </div>
-          </div>
-        </div>
+        <Login_Required 
+          :redirect-path="'/dashboard/personnel/'"
+          :user="currentUser"
+        />        
       </div>
-
       <!-- Contenido autenticado -->
       <div v-else class="authenticated-content">
         <!-- Header de la vista actual -->
@@ -987,6 +860,7 @@ import { ref, reactive, onMounted, watch, computed, nextTick } from 'vue'
 import { debounce } from 'lodash'
 import { useRouter } from 'vue-router'
 import No_Mobile from '@/components/No_Mobile.vue'
+import Login_Required from '@/components/Login_Required.vue'
 
 const router = useRouter()
 
