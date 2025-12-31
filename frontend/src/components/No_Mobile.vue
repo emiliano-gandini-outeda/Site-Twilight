@@ -1,13 +1,27 @@
 <template>
+  <!-- Overlay que cubre toda la página -->
   <div v-if="isMobile" class="mobile-block-overlay">
     <div class="scp-mobile-block">
       <!-- Encabezado SCP -->
       <div class="block-header">
         <div class="block-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#ff3333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
-            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
-          </svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="#ff3333" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <!-- Círculo exterior con corte (estilo candado) -->
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" stroke="#ff3333" stroke-width="2"/>
+            <!-- Cuerpo del candado -->
+            <rect x="8" y="10" width="8" height="6" rx="1" stroke="#ff3333" stroke-width="1.5"/>
+            <!-- Arco del candado -->
+            <path d="M12 6C10.5 6 9 7.5 9 9v1h6V9c0-1.5-1.5-3-3-3z" stroke="#ff3333" stroke-width="1.5"/>
+            <!-- SCP en el interior -->
+            <text x="12" y="14" text-anchor="middle" font-family="'Courier New', monospace" font-size="3.5" font-weight="bold" fill="#ff3333">
+                SCP
+            </text>
+            <!-- Líneas de restricción -->
+            <line x1="6" y1="6" x2="10" y2="10" stroke="#ff3333" stroke-width="1"/>
+            <line x1="18" y1="6" x2="14" y2="10" stroke="#ff3333" stroke-width="1"/>
+            <line x1="6" y1="18" x2="10" y2="14" stroke="#ff3333" stroke-width="1"/>
+            <line x1="18" y1="18" x2="14" y2="14" stroke="#ff3333" stroke-width="1"/>
+            </svg>
         </div>
         <div class="block-title-section">
           <h2 class="block-title">ACCESO RESTRINGIDO</h2>
@@ -107,6 +121,17 @@
             </ol>
           </div>
         </div>
+
+        <!-- Botón Volver a Inicio -->
+        <div class="home-button-container">
+          <button @click="goToHome" class="home-button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+              <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+            <span>VOLVER A INICIO</span>
+          </button>
+        </div>
       </div>
 
       <!-- Footer -->
@@ -138,7 +163,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 // Estado reactivo
 const isMobile = ref(false)
@@ -184,15 +212,47 @@ const updateTime = () => {
   currentTime.value = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`
 }
 
+// Función para ir al inicio
+const goToHome = () => {
+  // Redirigir a la página de inicio
+  // Puedes cambiar '/' por la ruta de tu página de inicio
+  router.push('/')
+}
+
+// Controlar el scroll del body
+const toggleBodyScroll = (disable) => {
+  if (disable) {
+    document.body.style.overflow = 'hidden'
+    document.body.style.position = 'fixed'
+    document.body.style.width = '100%'
+    document.body.style.height = '100%'
+  } else {
+    document.body.style.overflow = ''
+    document.body.style.position = ''
+    document.body.style.width = ''
+    document.body.style.height = ''
+  }
+}
+
 // Listener para resize
 const handleResize = () => {
   checkIsMobile()
 }
 
+// Watch para controlar el scroll cuando cambia isMobile
+watch(isMobile, (newValue) => {
+  toggleBodyScroll(newValue)
+})
+
 // Ciclo de vida
 onMounted(() => {
   checkIsMobile()
   updateTime()
+  
+  // Aplicar scroll bloqueado si es móvil
+  if (isMobile.value) {
+    toggleBodyScroll(true)
+  }
   
   // Actualizar hora cada segundo
   const timeInterval = setInterval(updateTime, 1000)
@@ -204,11 +264,18 @@ onMounted(() => {
   onBeforeUnmount(() => {
     clearInterval(timeInterval)
     window.removeEventListener('resize', handleResize)
+    toggleBodyScroll(false) // Restaurar scroll al desmontar
   })
 })
 </script>
 
 <style scoped>
+/* Estilos para deshabilitar scroll en toda la página */
+body {
+  margin: 0;
+  padding: 0;
+}
+
 .mobile-block-overlay {
   position: fixed;
   top: 0;
@@ -217,13 +284,14 @@ onMounted(() => {
   bottom: 0;
   background: rgba(0, 0, 0, 0.98);
   backdrop-filter: blur(10px);
-  z-index: 9999;
+  z-index: 99999; /* Z-index muy alto para estar sobre todo */
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 1rem;
   animation: fadeIn 0.5s ease;
-  overflow: hidden;
+  overflow-y: auto; /* Permitir scroll solo dentro del overlay si es necesario */
+  -webkit-overflow-scrolling: touch;
 }
 
 .scp-mobile-block {
@@ -234,7 +302,7 @@ onMounted(() => {
   border: 2px solid #333;
   width: 100%;
   max-width: 800px;
-  max-height: 90vh;
+  max-height: calc(100vh - 2rem); /* Asegura que no exceda la altura visible */
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -347,6 +415,50 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+}
+
+/* Botón Volver a Inicio */
+.home-button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.home-button {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  background: linear-gradient(135deg, #ff3333 0%, #fc6f03 100%);
+  border: none;
+  color: white;
+  padding: 0.8rem 2rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(255, 51, 51, 0.3);
+  font-family: 'Consolas', 'Courier New', monospace;
+}
+
+.home-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(255, 51, 51, 0.4);
+  background: linear-gradient(135deg, #ff4444 0%, #fd7f1a 100%);
+}
+
+.home-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(255, 51, 51, 0.3);
+}
+
+.home-button svg {
+  width: 20px;
+  height: 20px;
 }
 
 /* Advertencia del sistema */
@@ -681,6 +793,13 @@ onMounted(() => {
   
   .instructions-content ol {
     padding-left: 1.2rem;
+  }
+  
+  .home-button {
+    padding: 0.7rem 1.5rem;
+    font-size: 0.8rem;
+    width: 100%;
+    justify-content: center;
   }
 }
 
