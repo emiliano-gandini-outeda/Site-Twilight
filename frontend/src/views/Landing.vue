@@ -37,20 +37,16 @@
       <div class="section-content">
         <div class="section-header">
           <div class="section-number">01</div>
-          <h2 class="section-title">SITE 81 - PROTOCOLO DE OPERACIONES</h2>
+          <h2 class="section-title">SITE 81: TWILIGHT</h2>
           <div class="section-classification">CLASIFICADO - NIVEL 3</div>
         </div>
         <div class="text-card">
           <div class="card-body">
             <p class="card-text">
-              Site 81 opera como una instalación de contención secundaria bajo la jurisdicción del Sector-28. 
-              Especializado en entidades de clase Euclid y Keter con propiedades temporales o dimensionales atenuadas. 
-              La instalación mantiene protocolos de cuarentena extendida y sistemas de monitoreo de realidad en tiempo real.
+El Sitio-81 se erige como uno de los enclaves más críticos de la Fundación SCP, albergando al Comité de Clasificación y Contención y concentrando operaciones vinculadas al estudio y manejo de anomalías espacio-temporales, humanoides y artefactos de alto riesgo. Ubicado en Cortes Island, el sitio integra múltiples instalaciones y poblados bajo control total de la Fundación, con el objetivo de garantizar la contención y el encubrimiento de fenómenos que superan los límites de la realidad consensuada.
             </p>
             <p class="card-text extra-text">
-              La infraestructura principal incluye 12 cámaras de contención de nivel 4, 3 laboratorios de investigación temporal 
-              y un sistema de redundancia dimensional que opera las 24 horas del día. Todo el personal debe someterse a evaluaciones 
-              de realidad cada 72 horas y llevar dispositivos de anclaje dimensional en todo momento.
+Desde tiempos precoloniales, la isla ha sido un foco recurrente de eventos anómalos asociados al denominado Resplandor Crepuscular, un fenómeno capaz de debilitar el tejido de la realidad. Incidentes catastróficos, la presencia de SCP-2955 y evidencias de actividad de Grupos de Interés extintos confirmaron que Cortes Island constituye un nodo de convergencia espacio-temporal activo, cuya vigilancia y contención permanente resultan esenciales para la seguridad global.
             </p>
           </div>
           <div class="card-footer">
@@ -74,31 +70,26 @@
       <div class="section-content">
         <div class="section-header">
           <div class="section-number">02</div>
-          <h2 class="section-title">SITE TWILIGHT - INFRAESTRUCTURA</h2>
+          <h2 class="section-title">SITE TWILIGHT</h2>
           <div class="section-classification">RESTRINGIDO - NIVEL 2</div>
         </div>
         <div class="text-card">
           <div class="card-body">
             <p class="card-text">
-              Site Twilight es una plataforma de roleplay dedicada a la recreación de experiencias dentro del universo SCP. 
-              Ofrecemos un entorno inmersivo donde los usuarios pueden participar en narrativas colaborativas, desarrollar personajes 
-              únicos y explorar escenarios inspirados en la Fundación SCP.
-            </p>
+Sitio Twilight es una instalación de rol ambientada en el universo del proyecto colaborativo SCP, diseñada para reproducir de manera estructurada y coherente los protocolos, dinámicas y atmósferas propias de la Fundación SCP. El servidor opera bajo una modalidad Semi-Seria, priorizando la consistencia narrativa, el cumplimiento de procedimientos y la interpretación responsable de los distintos roles institucionales.            </p>
             <p class="card-text extra-text">
-              Nuestra plataforma utiliza tecnología moderna para proporcionar una experiencia fluida y accesible desde cualquier dispositivo. 
-              Con integración de Discord para comunicación en tiempo real, sistema de personajes personalizables y eventos regulares 
-              organizados por nuestro equipo de administración.
-            </p>
+Las actividades principales se desarrollan durante instancias SSU (Server Starting Up) dentro del juego Roblox SCP: Role Play, desarrollado por Meta Method, entorno en el cual se concentran las operaciones, eventos y escenarios de rol del Sitio. Sitio Twilight implementa un sistema de rol parcialmente guionizado, sustentado por una trama central y arcos narrativos predefinidos, los cuales establecen el marco operativo del servidor. Esta estructura permite garantizar continuidad, coherencia y control narrativo, al mismo tiempo que otorga a los participantes la flexibilidad necesaria para el desarrollo orgánico de situaciones, decisiones y consecuencias dentro del canon interno del Sitio.</p>
           </div>
           <div class="card-footer">
             <div class="action-buttons">
               <a href="https://discord.com/invite/37BrVa6b8E" target="_blank" class="discord-button">
-                <span class="button-icon">🎮</span>
                 <span class="button-text">UNIRSE AL DISCORD</span>
               </a>
               <button class="info-button">
+                <a href="/information" class="info-text">            
                 <span class="button-icon">ℹ</span>
                 <span class="button-text">MÁS INFORMACIÓN</span>
+              </a>
               </button>
             </div>
           </div>
@@ -655,7 +646,7 @@ onMounted(() => {
   color: #ccc;
   line-height: 1.7;
   margin-bottom: 1.2rem;
-  text-align: center;
+  text-align: justify;
   width: 100%;
   box-sizing: border-box;
   font-size: 1rem;
@@ -738,6 +729,14 @@ onMounted(() => {
   width: 100%;
   max-width: 320px;
   box-sizing: border-box;
+}
+
+.info-text {
+    color: #d8d8d8;
+      display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
 }
 
 .discord-button:hover {

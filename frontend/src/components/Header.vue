@@ -51,7 +51,7 @@
               <line x1="12" y1="8" x2="12.01" y2="8"></line>
             </svg>
           </div>
-          <span class="button-text">Info</span>
+          <span class="button-text">Información</span>
         </button>
         
         <button class="nav-button secondary" @click="goToDashboard">
@@ -191,7 +191,7 @@
                 <line x1="12" y1="8" x2="12.01" y2="8"></line>
               </svg>
             </div>
-            <span class="mobile-nav-text">Site Information</span>
+            <span class="mobile-nav-text">Site Información</span>
           </button>
           
           <button class="mobile-nav-item" @click="goToDashboard">

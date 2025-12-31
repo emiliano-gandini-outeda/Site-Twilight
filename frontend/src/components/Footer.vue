@@ -92,7 +92,7 @@
           </div>
           <div class="section-content">
             <div class="system-links">
-              <a href="#" class="system-link">
+              <a href="/dashboard" class="system-link">
                 <div class="link-icon-svg">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                     <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
@@ -100,7 +100,7 @@
                     <line x1="9" y1="21" x2="9" y2="9"></line>
                   </svg>
                 </div>
-                <span class="link-text">Marcador 1</span>
+                <span class="link-text">Dashboard</span>
               </a>
               <a href="#" class="system-link">
                 <div class="link-icon-svg">
@@ -108,7 +108,7 @@
                     <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
                   </svg>
                 </div>
-                <span class="link-text">Marcador 2</span>
+                <span class="link-text">[REDACTED]</span>
               </a>
               <a href="#" class="system-link">
                 <div class="link-icon-svg">
@@ -118,7 +118,7 @@
                     <line x1="6" y1="20" x2="6" y2="14"></line>
                   </svg>
                 </div>
-                <span class="link-text">Marcador 3</span>
+                <span class="link-text">[REDACTED]</span>
               </a>
               <a href="#" class="system-link">
                 <div class="link-icon-svg">
@@ -126,7 +126,7 @@
                     <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
                   </svg>
                 </div>
-                <span class="link-text">Marcador 4</span>
+                <span class="link-text">[REDACTED]</span>
               </a>
             </div>
           </div>
