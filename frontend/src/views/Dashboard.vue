@@ -239,6 +239,7 @@
 </template>
 
 <script setup>
+import Personajes from "@/components/Personajes.vue"
 import { ref, onMounted, onUnmounted } from 'vue'
 
 const activeTool = ref('characters')
