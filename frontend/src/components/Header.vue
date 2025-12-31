@@ -67,7 +67,6 @@
 
         <div class="user-menu" @click="toggleDropdown">
           <div class="account-display">
-            <span class="account-emoji">👤</span>
             <div class="account-icon-svg">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -97,7 +96,6 @@
             
             <template v-if="user && user.is_authenticated">
               <a href="#" class="dropdown-item">
-                <span class="item-emoji">⚙</span>
                 <div class="item-icon-svg">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="12" cy="12" r="3"></circle>
@@ -107,7 +105,6 @@
                 <span class="item-text">Settings</span>
               </a>
               <a href="#" class="dropdown-item">
-                <span class="item-emoji">📁</span>
                 <div class="item-icon-svg">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
@@ -115,8 +112,7 @@
                 </div>
                 <span class="item-text">Profile</span>
               </a>
-              <a href="/accounts/logout" class="dropdown-item logout">
-                <span class="item-emoji">⎋</span>
+              <a href="/accounts/logout/" class="dropdown-item logout">
                 <div class="item-icon-svg">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
@@ -128,8 +124,7 @@
               </a>
             </template>
             <template v-else>
-              <a href="/accounts/login/roblox" class="dropdown-item login">
-                <span class="item-emoji">🔑</span>
+              <a href="/accounts/login/roblox/" class="dropdown-item login">
                 <div class="item-icon-svg">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                     <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
@@ -180,7 +175,6 @@
 
         <div class="mobile-nav-items">
           <button class="mobile-nav-item" @click="openDiscord">
-            <span class="mobile-nav-emoji">🎮</span>
             <div class="mobile-nav-icon-svg">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
@@ -190,7 +184,6 @@
           </button>
           
           <button class="mobile-nav-item" @click="goToInfo">
-            <span class="mobile-nav-emoji">ℹ</span>
             <div class="mobile-nav-icon-svg">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="10"></circle>
@@ -202,7 +195,6 @@
           </button>
           
           <button class="mobile-nav-item" @click="goToDashboard">
-            <span class="mobile-nav-emoji">📊</span>
             <div class="mobile-nav-icon-svg">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
@@ -217,7 +209,6 @@
           
           <template v-if="user && user.is_authenticated">
             <a href="#" class="mobile-nav-item">
-              <span class="mobile-nav-emoji">⚙</span>
               <div class="mobile-nav-icon-svg">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                   <circle cx="12" cy="12" r="3"></circle>
@@ -227,7 +218,6 @@
               <span class="mobile-nav-text">Settings</span>
             </a>
             <a href="#" class="mobile-nav-item">
-              <span class="mobile-nav-emoji">📁</span>
               <div class="mobile-nav-icon-svg">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
@@ -235,8 +225,7 @@
               </div>
               <span class="mobile-nav-text">Profile</span>
             </a>
-            <a href="/accounts/logout" class="mobile-nav-item logout">
-              <span class="mobile-nav-emoji">⎋</span>
+            <a href="/accounts/logout/" class="mobile-nav-item logout">
               <div class="mobile-nav-icon-svg">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
@@ -248,8 +237,7 @@
             </a>
           </template>
           <template v-else>
-            <a href="/accounts/login/roblox" class="mobile-nav-item login">
-              <span class="mobile-nav-emoji">🔑</span>
+            <a href="/accounts/login/roblox/" class="mobile-nav-item login">
               <div class="mobile-nav-icon-svg">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                   <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
@@ -376,7 +364,6 @@ onMounted(() => {
 
 const toggleDropdown = (event) => {
   event.stopPropagation()
-  event.preventDefault()
   dropdownOpen.value = !dropdownOpen.value
   if (dropdownOpen.value) {
     closeMobileMenu()
