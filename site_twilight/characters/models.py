@@ -17,6 +17,8 @@ class Character(models.Model):
     codename = models.CharField(max_length=64, unique=True)
     faction = models.CharField(max_length=64)
 
+    lore = models.CharField(max_length=10000, blank=True)
+
     # === Morph data (todos opcionales) ===
     morph = models.CharField(max_length=255, blank=True)
     hat = models.CharField(max_length=255, blank=True)

@@ -1,267 +1,213 @@
 <template>
   <div class="dashboard-page">
-    <!-- Overlay para móviles -->
-    <div v-if="isMobile" class="mobile-overlay">
-      <div class="mobile-overlay-content">
-        <div class="mobile-warning-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#fc6f03" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="12" y1="8" x2="12" y2="12"></line>
-            <line x1="12" y1="16" x2="12.01" y2="16"></line>
-          </svg>
+    <!-- Fondo SCP -->
+    <div class="site-background">
+      <div class="grid-overlay"></div>
+      <div class="scan-line"></div>
+      <div class="particles"></div>
+    </div>
+
+    <!-- Header Dashboard -->
+    <div class="dashboard-header">
+      <div class="header-left">
+        <div class="header-logo">
+          <img src="/logo.png" alt="Site Twilight Logo" class="header-logo-img" />
+          <div class="header-title">
+            <span class="header-main">DASHBOARD CONTROL</span>
+            <span class="header-sub">SECURED FACILITY INTERFACE</span>
+          </div>
         </div>
-        <h2 class="mobile-warning-title">ACCESO RESTRINGIDO</h2>
-        <div class="mobile-warning-subtitle">SISTEMA DE CONTROL DE SITIO</div>
-        <div class="mobile-warning-message">
-          Este Dashboard no es accesible desde plataformas móviles.<br>
-          Por favor, utilice un dispositivo de escritorio para acceder al sistema.
+      </div>
+      
+      <div class="header-right">
+        <div class="session-status">
+          <div class="session-indicator active"></div>
+          <span class="session-text">SESSION ACTIVE</span>
         </div>
-        <div class="mobile-warning-info">
-          <div class="warning-info-item">
-            <span class="info-label">RAZÓN:</span>
-            <span class="info-value">INTERFAZ CRÍTICA DE CONTROL</span>
-          </div>
-          <div class="warning-info-item">
-            <span class="info-label">NIVEL DE SEGURIDAD:</span>
-            <span class="info-value">CLASE 3</span>
-          </div>
-          <div class="warning-info-item">
-            <span class="info-label">ACCESO PERMITIDO:</span>
-            <span class="info-value">SOLO ESCRITORIO</span>
-          </div>
+        <div class="current-time">
+          {{ currentTime }}
         </div>
       </div>
     </div>
 
-    <!-- Contenido Desktop -->
-    <template v-else>
-      <!-- Fondo SCP -->
-      <div class="site-background">
-        <div class="grid-overlay"></div>
-        <div class="scan-line"></div>
-        <div class="particles"></div>
+    <!-- Contenido Principal - Tarjetas -->
+    <main class="cards-container">
+      <div class="cards-header">
+        <h1 class="cards-title">CONTROL PANEL</h1>
+        <div class="cards-subtitle">AUTHORIZED FUNCTIONS & TOOLS</div>
       </div>
 
-      <!-- Contenido Principal -->
-      <main class="dashboard-content">
-        <!-- Sidebar de Navegación -->
-        <nav class="dashboard-sidebar">
-          <div class="sidebar-header">
-            <h3 class="sidebar-title">CONTROL PANEL</h3>
-            <div class="sidebar-subtitle">Authorized Tools</div>
-          </div>
-          
-          <div class="sidebar-tools">
-            <!-- Herramientas Disponibles -->
-            <div class="tool-category">
-              <div class="category-header">
-                <span class="category-title">PERSONNEL MANAGEMENT</span>
-                <div class="category-indicator"></div>
-              </div>
-              
-              <div class="tool-list">
-                <!-- Tool activo -->
-                <button 
-                  class="tool-item" 
-                  :class="{ 'active': activeTool === 'characters' }"
-                  @click="setActiveTool('characters')"
-                >
-                  <div class="tool-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                      <circle cx="12" cy="7" r="4"></circle>
-                    </svg>
-                  </div>
-                  <span class="tool-name">Personajes</span>
-                  <div class="tool-indicator" v-if="activeTool === 'characters'">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <polyline points="9 18 15 12 9 6"></polyline>
-                    </svg>
-                  </div>
-                </button>
-                
-                <button 
-                  class="tool-item" 
-                  :class="{ 'active': activeTool === 'user' }"
-                  @click="setActiveTool('user')"
-                >
-                  <div class="tool-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-                      <circle cx="12" cy="7" r="4"></circle>
-                    </svg>
-                  </div>
-                  <span class="tool-name">Mi Usuario</span>
-                  <div class="tool-indicator" v-if="activeTool === 'user'">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <polyline points="9 18 15 12 9 6"></polyline>
-                    </svg>
-                  </div>
-                </button>
-              </div>
+      <!-- Grid de Tarjetas -->
+      <div class="cards-grid">
+        <!-- Tarjeta 1: Manejo de Personal (Activa) -->
+        <div class="dashboard-card" :class="{ 'active': activeCard === 1 }" @click="activateCard(1)">
+          <div class="card-header">
+            <div class="card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
             </div>
-            
-            <!-- Placeholders [REDACTED] -->
-            <div class="tool-category">
-              <div class="category-header">
-                <span class="category-title">CLASSIFIED TOOLS</span>
-                <div class="category-indicator classified"></div>
-              </div>
-              
-              <div class="tool-list">
-                <!-- 6 placeholders [REDACTED] -->
-                <div class="tool-item redacted" v-for="n in 6" :key="n">
-                  <div class="tool-icon redacted">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                      <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                    </svg>
-                  </div>
-                  <span class="tool-name redacted-text">[REDACTED]</span>
-                  <div class="clearance-warning">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <circle cx="12" cy="12" r="10"></circle>
-                      <line x1="12" y1="8" x2="12" y2="12"></line>
-                      <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                    </svg>
-                  </div>
+            <div class="card-title">MANEJO DE PERSONAL</div>
+            <div class="card-status" v-if="activeCard === 1">
+              <span class="status-active">ACTIVE</span>
+            </div>
+          </div>
+          <div class="card-content">
+            <p class="card-description">Manage and view authorized personnel files, access levels, and assignments.</p>
+            <div class="card-meta">
+              <span class="meta-label">ACCESS:</span>
+              <span class="meta-value authorized">GRANTED</span>
+            </div>
+          </div>
+          <div class="card-footer">
+            <div class="card-action">
+              <button class="action-button" @click.stop="goToPersonnel">
+                <span class="button-text">ACCESS SYSTEM</span>
+                <div class="button-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                  </svg>
                 </div>
-              </div>
+              </button>
             </div>
           </div>
-          
-          <div class="sidebar-footer">
-            <div class="system-status">
-              <div class="status-item">
-                <span class="status-label">USER:</span>
-                <span class="status-value authorized">{{ currentUser?.roblox_username || 'GUEST' }}</span>
-              </div>
-              <div class="status-item">
-                <span class="status-label">CLEARANCE:</span>
-                <span class="status-value">LEVEL {{ clearanceLevel }}</span>
-              </div>
-              <div class="status-item">
-                <span class="status-label">SYSTEM:</span>
-                <span class="status-value">OPERATIONAL</span>
-              </div>
-            </div>
-          </div>
-        </nav>
+        </div>
 
-        <!-- Área de Contenido Principal -->
-        <section class="dashboard-main">
-          <div class="main-header">
-            <div class="header-left">
-              <h2 class="main-title">{{ getActiveToolTitle() }}</h2>
-              <div class="main-subtitle">
-                <span v-if="activeTool === 'characters'">Manage and view your authorized personnel files</span>
-                <span v-else-if="activeTool === 'user'">View and manage your user profile and settings</span>
-                <span v-else>[CLASSIFIED CONTENT]</span>
-              </div>
+        <!-- Tarjetas 2-8: [REDACTED] -->
+        <div class="dashboard-card redacted" v-for="n in 7" :key="n" @click="showAccessDenied(n + 1)">
+          <div class="card-header redacted">
+            <div class="card-icon redacted">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
             </div>
-            
-            <div class="header-right">
-              <div class="session-info">
-                <div class="session-indicator active"></div>
-                <span class="session-text">SESSION ACTIVE</span>
-              </div>
-              <div class="timestamp">
-                {{ currentTime }}
-              </div>
+            <div class="card-title redacted-text">[REDACTED]</div>
+            <div class="card-status">
+              <span class="status-redacted">CLASSIFIED</span>
             </div>
           </div>
-          
-          <!-- Componente dinámico -->
-          <div class="component-container">
-            <div v-if="activeTool === 'characters'">
-              <Personajes :current-user="currentUser" />
-            </div>
-            
-            <div v-else-if="activeTool === 'user'" class="component-placeholder">
-              <div class="placeholder-content">
-                <div class="placeholder-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#fc6f03" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="12" cy="7" r="4"></circle>
-                  </svg>
-                </div>
-                <h3 class="placeholder-title">USER PROFILE</h3>
-                <p class="placeholder-text">User management system is loading...</p>
-                <div class="placeholder-action">
-                  <button class="action-button" @click="loadUserProfile">
-                    <span class="button-text">ACCESS PROFILE</span>
-                    <div class="button-indicator">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <polyline points="9 18 15 12 9 6"></polyline>
-                      </svg>
-                    </div>
-                  </button>
-                </div>
-              </div>
-            </div>
-            
-            <div v-else class="component-placeholder classified">
-              <div class="placeholder-content">
-                <div class="placeholder-icon redacted">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#aa2222" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                  </svg>
-                </div>
-                <h3 class="placeholder-title redacted-text">[ACCESS DENIED]</h3>
-                <p class="placeholder-text">Insufficient clearance level for this tool. Required: Level 4 or higher.</p>
-                <div class="clearance-required">
-                  <span class="clearance-label">REQUIRED CLEARANCE:</span>
-                  <span class="clearance-value">LEVEL 4+</span>
-                </div>
-              </div>
+          <div class="card-content redacted">
+            <p class="card-description redacted-text">Access to this function requires Level 4 security clearance or higher.</p>
+            <div class="card-meta">
+              <span class="meta-label">CLEARANCE:</span>
+              <span class="meta-value redacted">LEVEL 4+</span>
             </div>
           </div>
-          
-          <div class="main-footer">
-            <div class="footer-info">
-              <span class="info-label">SYSTEM:</span>
-              <span class="info-value">TWILIGHT-DASHBOARD v1.0.3</span>
-            </div>
-            <div class="footer-info">
-              <span class="info-label">LAST UPDATE:</span>
-              <span class="info-value">{{ currentTime }}</span>
-            </div>
-            <div class="footer-info">
-              <span class="info-label">ACCESS LEVEL:</span>
-              <span class="info-value">{{ currentUser?.is_authenticated ? 'AUTHORIZED' : 'GUEST' }}</span>
+          <div class="card-footer redacted">
+            <div class="clearance-warning">
+              <div class="warning-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#aa2222" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="8" x2="12" y2="12"></line>
+                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+              </div>
+              <span class="warning-text">INSUFFICIENT CLEARANCE</span>
             </div>
           </div>
-        </section>
-      </main>
-    </template>
+        </div>
+      </div>
+
+      <!-- Información del Sistema -->
+      <div class="system-info">
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">SYSTEM STATUS:</span>
+            <span class="info-value operational">OPERATIONAL</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">USER:</span>
+            <span class="info-value">{{ currentUser?.roblox_username || 'GUEST' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">CLEARANCE LEVEL:</span>
+            <span class="info-value">3</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">ACCESS TYPE:</span>
+            <span class="info-value">{{ currentUser?.is_authenticated ? 'AUTHORIZED' : 'GUEST' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">SYSTEM VERSION:</span>
+            <span class="info-value">TWILIGHT-DASH v1.0.4</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">LAST UPDATE:</span>
+            <span class="info-value">{{ currentTime }}</span>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Modal de Acceso Denegado -->
+    <div v-if="showDeniedModal" class="access-denied-modal">
+      <div class="modal-overlay" @click="closeModal"></div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="modal-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#aa2222" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="15" y1="9" x2="9" y2="15"></line>
+              <line x1="9" y1="9" x2="15" y2="15"></line>
+            </svg>
+          </div>
+          <h3 class="modal-title">ACCESS DENIED</h3>
+        </div>
+        <div class="modal-body">
+          <p class="modal-text">You do not have sufficient clearance to access this function.</p>
+          <div class="clearance-info">
+            <div class="clearance-item">
+              <span class="clearance-label">CURRENT CLEARANCE:</span>
+              <span class="clearance-value">LEVEL 3</span>
+            </div>
+            <div class="clearance-item">
+              <span class="clearance-label">REQUIRED CLEARANCE:</span>
+              <span class="clearance-value redacted">LEVEL 4+</span>
+            </div>
+            <div class="clearance-item">
+              <span class="clearance-label">STATUS:</span>
+              <span class="clearance-value denied">ACCESS DENIED</span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="modal-button" @click="closeModal">
+            <span class="button-text">ACKNOWLEDGE</span>
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import Personajes from "@/components/Personajes.vue"
 import { ref, onMounted, onUnmounted } from 'vue'
+import { useRouter } from 'vue-router'
 
-const activeTool = ref('characters')
+const router = useRouter()
+const activeCard = ref(1)
 const currentUser = ref(null)
-const clearanceLevel = ref(3)
 const currentTime = ref('')
-const isMobile = ref(false)
+const showDeniedModal = ref(false)
 
-const setActiveTool = (tool) => {
-  activeTool.value = tool
+const activateCard = (cardNumber) => {
+  activeCard.value = cardNumber
 }
 
-const getActiveToolTitle = () => {
-  switch(activeTool.value) {
-    case 'characters': return 'CHARACTERS MANAGEMENT'
-    case 'user': return 'USER PROFILE'
-    default: return '[CLASSIFIED TOOL]'
-  }
+const showAccessDenied = (cardNumber) => {
+  activeCard.value = cardNumber
+  showDeniedModal.value = true
 }
 
-const loadUserProfile = () => {
-  console.log('Loading user profile component...')
+const closeModal = () => {
+  showDeniedModal.value = false
+  activeCard.value = 1
+}
+
+const goToPersonnel = () => {
+  router.push('/dashboard/personnel')
 }
 
 const updateTime = () => {
@@ -277,10 +223,6 @@ const updateTime = () => {
   }).replace(/(\d+)\/(\d+)\/(\d+),/, '$3-$1-$2')
 }
 
-const checkMobile = () => {
-  isMobile.value = window.innerWidth < 1024
-}
-
 const fetchCurrentUser = async () => {
   try {
     const response = await fetch('/api/auth/user/')
@@ -294,143 +236,31 @@ const fetchCurrentUser = async () => {
 }
 
 onMounted(() => {
-  checkMobile()
   updateTime()
   const timeInterval = setInterval(updateTime, 1000)
   fetchCurrentUser()
   
-  window.addEventListener('resize', checkMobile)
-  
   return () => {
     clearInterval(timeInterval)
-    window.removeEventListener('resize', checkMobile)
   }
 })
 </script>
 
 <style scoped>
-/* Estilos principales - MODIFICADO: Ocupa toda la página */
+/* Estilos principales */
 .dashboard-page {
   position: relative;
-  min-height: calc(100vh - 64px); /* Resta la altura del header */
-  height: 150vh;
+  min-height: 100vh;
   color: #d8d8d8;
   background: #0a0a0a;
   font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
   line-height: 1.5;
-  width: 100%;
-  max-width: 100%;
-  margin: 0;
-  padding: 0;
   overflow-x: hidden;
+  padding: 20px;
   box-sizing: border-box;
 }
 
-/* Overlay para móviles */
-.mobile-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: 
-    linear-gradient(135deg, #0a0a0a 0%, #121212 25%, #0a0a0a 50%, #121212 75%, #0a0a0a 100%),
-    radial-gradient(circle at 20% 30%, rgba(30, 30, 30, 0.9) 0%, transparent 50%),
-    radial-gradient(circle at 80% 70%, rgba(40, 40, 40, 0.7) 0%, transparent 50%);
-  z-index: 10000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  backdrop-filter: blur(10px);
-}
-
-.mobile-overlay-content {
-  max-width: 600px;
-  width: 100%;
-  background: rgba(15, 15, 15, 0.95);
-  border: 1px solid #333;
-  border-radius: 0px;
-  padding: 40px;
-  text-align: center;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-}
-
-.mobile-warning-icon {
-  width: 80px;
-  height: 80px;
-  color: #fc6f03;
-  margin: 0 auto 20px;
-}
-
-.mobile-warning-title {
-  font-size: 28px;
-  font-weight: 900;
-  color: #fc6f03;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin: 0 0 8px 0;
-  text-shadow: 0 0 10px rgba(252, 111, 3, 0.3);
-}
-
-.mobile-warning-subtitle {
-  font-size: 14px;
-  color: #aaa;
-  letter-spacing: 0.5px;
-  margin: 0 0 30px 0;
-  text-transform: uppercase;
-}
-
-.mobile-warning-message {
-  font-size: 16px;
-  color: #d8d8d8;
-  line-height: 1.6;
-  margin: 0 0 30px 0;
-  padding: 20px;
-  background: rgba(30, 30, 30, 0.6);
-  border: 1px solid #444;
-  border-radius: 0px;
-}
-
-.mobile-warning-info {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-top: 30px;
-  padding: 20px;
-  background: rgba(25, 25, 25, 0.8);
-  border: 1px solid #333;
-  border-radius: 0px;
-}
-
-.warning-info-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.warning-info-item:last-child {
-  border-bottom: none;
-}
-
-.info-label {
-  font-size: 12px;
-  color: #888;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-}
-
-.info-value {
-  font-size: 14px;
-  color: #fc6f03;
-  font-weight: 600;
-  font-family: 'Consolas', monospace;
-  letter-spacing: 0.5px;
-}
-
-/* Fondo SCP - MODIFICADO: Cubre toda la pantalla */
+/* Fondo SCP */
 .site-background {
   position: fixed;
   top: 0;
@@ -496,250 +326,60 @@ onMounted(() => {
   100% { transform: translateY(40px); }
 }
 
-/* Contenido Principal - MODIFICADO: Ocupa todo el ancho */
-.dashboard-content {
+/* Header Dashboard */
+.dashboard-header {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   display: flex;
-  min-height: calc(100vh - 64px);
-  padding: 20px 0 20px 0;
-  box-sizing: border-box;
-  width: 1500%;
-  max-width: 100%;
-  height: 100%;
-  margin: 0;
-  gap: 20px;
-}
-
-/* Sidebar de Navegación - MODIFICADO: Altura completa */
-.dashboard-sidebar {
-  width: 260px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
   background: rgba(15, 15, 15, 0.95);
   border: 1px solid #333;
   border-radius: 0px;
-  display: flex;
-  flex-direction: column;
-  flex-shrink: 0;
-  backdrop-filter: blur(5px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  height: 100%; /* Altura fija para ocupar toda la pantalla */
-  position: sticky;
-  top: 84px; /* 64px del header + 20px de padding */
-}
-
-.sidebar-header {
-  padding: 16px 20px;
-  border-bottom: 1px solid #333;
-  background: rgba(25, 25, 25, 0.8);
-  overflow-x: hidden;
-}
-
-.sidebar-title {
-  font-size: 16px;
-  font-weight: 700;
-  color: #fc6f03;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin: 0 0 4px 0;
-  overflow-x: hidden;
-}
-
-.sidebar-subtitle {
-  font-size: 11px;
-  color: #888;
-  font-family: 'Consolas', monospace;
-  letter-spacing: 0.3px;
-  overflow-x: hidden;
-}
-
-.sidebar-tools {
-  flex: 1;
-  padding: 16px 0;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
-.tool-category {
-  margin-bottom: 20px;
-}
-
-.category-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 20px 10px 20px;
-  border-bottom: 1px solid #333;
-}
-
-.category-title {
-  font-size: 10px;
-  font-weight: 600;
-  color: #888;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.category-indicator {
-  width: 6px;
-  height: 6px;
-  border-radius: 0px;
-  background: #fc6f03;
-}
-
-.category-indicator.classified {
-  background: #aa2222;
-}
-
-.tool-list {
-  padding: 8px 0;
-}
-
-.tool-item {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 20px;
-  background: transparent;
-  border: none;
-  color: #aaa;
-  text-align: left;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  position: relative;
-  border-radius: 0px;
-}
-
-.tool-item:not(.redacted):hover {
-  background: rgba(40, 40, 40, 0.6);
-  color: #ddd;
-}
-
-.tool-item.active {
-  background: rgba(252, 111, 3, 0.1);
-  color: #fc6f03;
-  border-left: 2px solid #fc6f03;
-}
-
-.tool-item.redacted {
-  cursor: not-allowed;
-  opacity: 0.6;
-}
-
-.tool-icon {
-  width: 18px;
-  height: 18px;
-  color: currentColor;
-  flex-shrink: 0;
-}
-
-.tool-icon.redacted {
-  color: #aa2222;
-}
-
-.tool-name {
-  font-size: 13px;
-  font-weight: 500;
-  flex: 1;
-}
-
-.tool-name.redacted-text {
-  font-family: 'Consolas', monospace;
-  color: #aa2222;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-}
-
-.tool-indicator {
-  width: 14px;
-  height: 14px;
-  color: #fc6f03;
-  opacity: 0.8;
-}
-
-.clearance-warning {
-  width: 14px;
-  height: 14px;
-  color: #aa2222;
-  flex-shrink: 0;
-}
-
-.sidebar-footer {
-  padding: 16px 20px;
-  border-top: 1px solid #333;
-  background: rgba(25, 25, 25, 0.8);
-}
-
-.system-status {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.status-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.status-label {
-  font-size: 10px;
-  color: #888;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-}
-
-.status-value {
-  font-size: 11px;
-  font-weight: 600;
-  color: #ddd;
-  font-family: 'Consolas', monospace;
-}
-
-.status-value.authorized {
-  color: #4CAF50;
-}
-
-/* Área de Contenido Principal - MODIFICADO: Ocupa todo el espacio restante */
-.dashboard-main {
-  flex: 1;
-  background: rgba(15, 15, 15, 0.95);
-  border: 1px solid #333;
-  border-radius: 0px;
-  display: flex;
-  flex-direction: column;
-  backdrop-filter: blur(5px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  height: 100%; /* Altura fija para ocupar toda la pantalla */
-  min-width: 0; /* Importante para flexbox */
-}
-
-.main-header {
-  padding: 20px 24px;
-  border-bottom: 1px solid #333;
-  background: rgba(25, 25, 25, 0.8);
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  flex-shrink: 0;
+  margin-bottom: 30px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
 }
 
 .header-left {
-  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
-.main-title {
-  font-size: 20px;
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header-logo-img {
+  height: 40px;
+  width: 40px;
+  object-fit: contain;
+  filter: grayscale(0.3) brightness(1.2);
+}
+
+.header-title {
+  display: flex;
+  flex-direction: column;
+}
+
+.header-main {
+  font-size: 1.1rem;
   font-weight: 700;
-  color: #fc6f03;
+  letter-spacing: 1px;
+  color: #fff;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin: 0 0 6px 0;
+  line-height: 1.2;
 }
 
-.main-subtitle {
-  font-size: 13px;
-  color: #aaa;
+.header-sub {
+  font-size: 0.7rem;
+  letter-spacing: 0.5px;
+  color: #888;
+  text-transform: uppercase;
 }
 
 .header-right {
@@ -749,7 +389,7 @@ onMounted(() => {
   gap: 8px;
 }
 
-.session-info {
+.session-status {
   display: flex;
   align-items: center;
   gap: 6px;
@@ -777,7 +417,7 @@ onMounted(() => {
   font-weight: 600;
 }
 
-.timestamp {
+.current-time {
   font-size: 11px;
   color: #888;
   font-family: 'Consolas', monospace;
@@ -790,78 +430,181 @@ onMounted(() => {
   100% { opacity: 0.6; }
 }
 
-/* Component Container - MODIFICADO: Scroll si es necesario */
-.component-container {
-  flex: 1;
-  overflow: hidden;
+/* Contenedor de Tarjetas */
+.cards-container {
   position: relative;
-  width: 100%;
-  height: 100%;
+  z-index: 2;
 }
 
-/* Placeholders */
-.component-placeholder {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 400px;
-}
-
-.component-placeholder.classified {
-  background: rgba(30, 20, 20, 0.3);
-  border: 1px solid rgba(170, 34, 34, 0.3);
-  border-radius: 0px;
-}
-
-.placeholder-content {
+.cards-header {
   text-align: center;
-  max-width: 400px;
-  padding: 40px;
-  background: rgba(25, 25, 25, 0.6);
-  border: 1px solid #444;
-  border-radius: 0px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
+  margin-bottom: 40px;
 }
 
-.placeholder-icon {
-  width: 50px;
-  height: 50px;
+.cards-title {
+  font-size: 2rem;
+  font-weight: 900;
   color: #fc6f03;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0 0 8px 0;
+  text-shadow: 0 0 10px rgba(252, 111, 3, 0.3);
+}
+
+.cards-subtitle {
+  font-size: 0.9rem;
+  color: #aaa;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* Grid de Tarjetas */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.dashboard-card {
+  background: rgba(20, 20, 20, 0.95);
+  border: 1px solid #333;
+  border-radius: 0px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  backdrop-filter: blur(5px);
+}
+
+.dashboard-card:hover {
+  transform: translateY(-2px);
+  border-color: #444;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.dashboard-card.active {
+  border-color: #fc6f03;
+  background: rgba(30, 20, 15, 0.95);
+  box-shadow: 0 0 20px rgba(252, 111, 3, 0.2);
+}
+
+.dashboard-card.redacted {
+  cursor: not-allowed;
   opacity: 0.8;
 }
 
-.placeholder-icon.redacted {
+.dashboard-card.redacted:hover {
+  transform: none;
+  border-color: #aa2222;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px;
+  background: rgba(30, 30, 30, 0.8);
+  border-bottom: 1px solid #333;
+}
+
+.card-header.redacted {
+  background: rgba(40, 20, 20, 0.8);
+  border-bottom-color: #aa2222;
+}
+
+.card-icon {
+  width: 24px;
+  height: 24px;
+  color: #fc6f03;
+  flex-shrink: 0;
+}
+
+.card-icon.redacted {
   color: #aa2222;
 }
 
-.placeholder-title {
-  font-size: 18px;
+.card-title {
+  font-size: 1rem;
   font-weight: 700;
-  color: #fc6f03;
+  color: #fff;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  margin: 0;
+  flex: 1;
 }
 
-.placeholder-title.redacted-text {
+.card-title.redacted-text {
   color: #aa2222;
   font-family: 'Consolas', monospace;
 }
 
-.placeholder-text {
-  font-size: 14px;
-  color: #aaa;
-  line-height: 1.6;
-  margin: 0;
+.card-status {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
 }
 
-.placeholder-action {
-  margin-top: 16px;
+.status-active {
+  color: #4CAF50;
+  text-transform: uppercase;
+}
+
+.status-redacted {
+  color: #aa2222;
+  text-transform: uppercase;
+}
+
+.card-content {
+  padding: 20px;
+}
+
+.card-description {
+  font-size: 0.9rem;
+  color: #aaa;
+  line-height: 1.6;
+  margin: 0 0 16px 0;
+}
+
+.card-description.redacted-text {
+  color: #884444;
+  font-style: italic;
+}
+
+.card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.meta-label {
+  font-size: 0.7rem;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.meta-value {
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-family: 'Consolas', monospace;
+}
+
+.meta-value.authorized {
+  color: #4CAF50;
+}
+
+.meta-value.redacted {
+  color: #aa2222;
+}
+
+.card-footer {
+  padding: 0 20px 20px 20px;
+}
+
+.card-action {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .action-button {
@@ -874,7 +617,7 @@ onMounted(() => {
   border: 1px solid rgba(252, 111, 3, 0.3);
   border-radius: 0px;
   color: #fc6f03;
-  font-size: 13px;
+  font-size: 0.8rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.3px;
@@ -888,118 +631,276 @@ onMounted(() => {
   transform: translateY(-1px);
 }
 
-.button-text {
-  font-family: 'Consolas', monospace;
-}
-
-.button-indicator {
+.button-icon {
   width: 14px;
   height: 14px;
   color: currentColor;
 }
 
-.clearance-required {
+.clearance-warning {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
-  margin-top: 16px;
-  padding: 12px 16px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
   background: rgba(170, 34, 34, 0.1);
   border: 1px solid rgba(170, 34, 34, 0.3);
   border-radius: 0px;
-  width: 100%;
 }
 
-.clearance-label {
-  font-size: 10px;
+.warning-icon {
+  width: 16px;
+  height: 16px;
   color: #aa2222;
+}
+
+.warning-text {
+  font-size: 0.7rem;
+  color: #aa2222;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.3px;
 }
 
-.clearance-value {
-  font-size: 13px;
-  font-weight: 700;
-  color: #aa2222;
-  font-family: 'Consolas', monospace;
-  letter-spacing: 0.5px;
+/* Información del Sistema */
+.system-info {
+  background: rgba(15, 15, 15, 0.95);
+  border: 1px solid #333;
+  border-radius: 0px;
+  padding: 20px;
+  backdrop-filter: blur(5px);
 }
 
-.main-footer {
-  padding: 12px 24px;
-  border-top: 1px solid #333;
-  background: rgba(25, 25, 25, 0.8);
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.info-item {
   display: flex;
   justify-content: space-between;
-  flex-shrink: 0;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.footer-info {
-  display: flex;
-  align-items: center;
-  gap: 6px;
+.info-item:last-child {
+  border-bottom: none;
 }
 
 .info-label {
-  font-size: 10px;
+  font-size: 0.75rem;
   color: #888;
   text-transform: uppercase;
   letter-spacing: 0.3px;
 }
 
 .info-value {
-  font-size: 11px;
+  font-size: 0.85rem;
+  font-weight: 600;
   color: #ddd;
   font-family: 'Consolas', monospace;
 }
 
+.info-value.operational {
+  color: #4CAF50;
+}
+
+/* Modal de Acceso Denegado */
+.access-denied-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+}
+
+.modal-content {
+  position: relative;
+  background: rgba(15, 15, 15, 0.98);
+  border: 1px solid #aa2222;
+  border-radius: 0px;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 10px 40px rgba(170, 34, 34, 0.3);
+  animation: modalAppear 0.3s ease forwards;
+}
+
+@keyframes modalAppear {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal-header {
+  padding: 30px 30px 20px 30px;
+  text-align: center;
+  border-bottom: 1px solid #333;
+}
+
+.modal-icon {
+  width: 50px;
+  height: 50px;
+  color: #aa2222;
+  margin: 0 auto 15px;
+}
+
+.modal-title {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #aa2222;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+.modal-body {
+  padding: 30px;
+}
+
+.modal-text {
+  font-size: 1rem;
+  color: #d8d8d8;
+  text-align: center;
+  line-height: 1.6;
+  margin: 0 0 30px 0;
+}
+
+.clearance-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+  background: rgba(40, 20, 20, 0.6);
+  border: 1px solid rgba(170, 34, 34, 0.3);
+  border-radius: 0px;
+}
+
+.clearance-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.clearance-item:last-child {
+  border-bottom: none;
+}
+
+.clearance-label {
+  font-size: 0.8rem;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.clearance-value {
+  font-size: 0.9rem;
+  font-weight: 700;
+  font-family: 'Consolas', monospace;
+  letter-spacing: 0.5px;
+}
+
+.clearance-value.redacted {
+  color: #aa2222;
+}
+
+.clearance-value.denied {
+  color: #ff4444;
+}
+
+.modal-footer {
+  padding: 20px 30px 30px 30px;
+  text-align: center;
+  border-top: 1px solid #333;
+}
+
+.modal-button {
+  padding: 12px 30px;
+  background: rgba(170, 34, 34, 0.1);
+  border: 1px solid rgba(170, 34, 34, 0.3);
+  border-radius: 0px;
+  color: #aa2222;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 200px;
+}
+
+.modal-button:hover {
+  background: rgba(170, 34, 34, 0.2);
+  border-color: rgba(170, 34, 34, 0.5);
+  transform: translateY(-1px);
+}
+
+.button-text {
+  font-family: 'Consolas', monospace;
+}
+
 /* Responsive */
-@media (max-width: 1023px) {
-  .dashboard-content {
-    display: none;
+@media (max-width: 768px) {
+  .cards-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .dashboard-header {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+  
+  .header-left {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .header-right {
+    align-items: center;
+  }
+  
+  .cards-title {
+    font-size: 1.5rem;
+  }
+  
+  .info-grid {
+    grid-template-columns: 1fr;
   }
 }
 
-/* Ajustes para pantallas grandes */
-@media (min-width: 1024px) {
-  .mobile-overlay {
-    display: none !important;
-  }
-  
-  .dashboard-content {
-    display: flex !important;
+@media (min-width: 769px) and (max-width: 1024px) {
+  .cards-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media (min-width: 1400px) {
-  .dashboard-sidebar {
-    width: 280px;
+@media (min-width: 1025px) {
+  .cards-grid {
+    grid-template-columns: repeat(4, 1fr);
   }
-  
-  .dashboard-main {
-    flex: 1;
-  }
-  
-  .main-title {
-    font-size: 22px;
-  }
-  
-  .main-subtitle {
-    font-size: 14px;
-  }
-}
-
-/* Reglas adicionales para asegurar ancho completo */
-:deep(.dashboard-page) {
-  width: 100% !important;
-  max-width: 100% !important;
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
-:deep(.dashboard-content) {
-  width: 1500px !important;
-  max-width: 100% !important;
-  margin: 0 !important;
 }
 </style>

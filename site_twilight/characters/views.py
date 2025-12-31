@@ -43,6 +43,7 @@ def character_list_all(request):
                 "owner_id": c.owner_id,
                 "owner_username": c.owner.roblox_username,
                 "faction": c.faction,
+                "lore": c.lore,
                 "morph": c.morph,
                 "hat": c.hat,
                 "nvg_color": c.nvg_color,
@@ -92,6 +93,7 @@ def character_list_user(request):
                 "age": _calculate_age(c.birth_date) if c.birth_date else None,
                 "codename": c.codename,
                 "faction": c.faction,
+                "lore": c.lore,
                 "morph": c.morph,
                 "hat": c.hat,
                 "nvg_color": c.nvg_color,
@@ -137,7 +139,9 @@ def character_detail(request, pk):
         "age": _calculate_age(character.birth_date) if character.birth_date else None,
         "codename": character.codename,
         "faction": character.faction,
+        "lore": character.lore,
         "owner_id": character.owner_id,
+        "owner_roblox_id" : character.owner.roblox_id,
         "owner_username": character.owner.roblox_username,
         "is_owner": is_owner,
         
@@ -215,6 +219,7 @@ def character_create(request):
             birth_date=birth_date,
             codename=data.get("codename", ""),
             faction=data.get("faction", ""),
+            lore=data.get("lore", ""),
             
             # Morph data
             morph=data.get("morph", ""),
@@ -281,6 +286,8 @@ def character_update(request, pk):
             character.codename = data.get("codename", "")
         if "faction" in data:
             character.faction = data.get("faction", "")
+        if "lore" in data:
+            character.lore = data.get("lore", "")
         
         # Actualizar campos de morph
         if "morph" in data:

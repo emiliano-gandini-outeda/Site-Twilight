@@ -118,7 +118,6 @@
         <div class="functions-grid">
           <!-- Card 1 -->
           <div class="function-card">
-            <div class="card-icon">👤</div>
             <div class="card-icon-svg">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -127,7 +126,7 @@
             </div>
             <h3 class="card-title">SISTEMA DE PERSONAJES</h3>
             <p class="card-description">
-              Crea y gestiona múltiples personajes con perfiles detallados, historias personalizadas y estadísticas únicas.
+              Crea y gestiona múltiples personajes con perfiles detallados, historias personalizadas y habilidades únicas.
             </p>
             <div class="card-status">
               <div class="status-light active"></div>
@@ -137,7 +136,6 @@
 
           <!-- Card 2 -->
           <div class="function-card">
-            <div class="card-icon">💬</div>
             <div class="card-icon-svg">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
@@ -145,7 +143,7 @@
             </div>
             <h3 class="card-title">ROLEPLAY EN TIEMPO REAL</h3>
             <p class="card-description">
-              Participa en sesiones de roleplay sincronizadas con otros usuarios en canales temáticos organizados.
+              Participa en sesiones de roleplay sincronizadas con otros usuarios en servidores temáticos organizados.
             </p>
             <div class="card-status">
               <div class="status-light active"></div>
@@ -155,7 +153,6 @@
 
           <!-- Card 3 -->
           <div class="function-card">
-            <div class="card-icon">📖</div>
             <div class="card-icon-svg">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
@@ -174,7 +171,6 @@
 
           <!-- Card 4 -->
           <div class="function-card">
-            <div class="card-icon">🎭</div>
             <div class="card-icon-svg">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="10"></circle>
@@ -195,44 +191,58 @@
 
           <!-- Card 5 -->
           <div class="function-card">
-            <div class="card-icon">⚙️</div>
             <div class="card-icon-svg">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="3"></circle>
                 <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
               </svg>
             </div>
-            <h3 class="card-title">SISTEMA DE RANGOS</h3>
+<!--             <h3 class="card-title">SISTEMA DE FACCIONES</h3>
             <p class="card-description">
-              Progresión estructurada con rangos de la Fundación, permisos escalonados y responsabilidades asignadas.
+              Progresión estructurada con rangos de la Fundación o GoI, roles exclusivos y responsabilidades asignadas.
             </p>
             <div class="card-status">
-              <div class="status-light active"></div>
-              <span class="status-text">ACTIVO</span>
+              <div class="status-light"></div>
+              <span class="status-text">ACTIVO</span> -->
+              <h3 class="card-title">[DATA EXPUNGED]</h3>
+            <p class="card-description">
+              █████ ██ █████████ ███████ ███. ████ ████ ███ ███ ████████████ ██ ██ ██████████.
+            </p>
+            <div class="card-status">
+              <div class="status-light"></div>
+              <span class="status-text">EN DESAROLLO</span>
             </div>
           </div>
 
           <!-- Card 6 -->
           <div class="function-card">
-            <div class="card-icon">🔧</div>
             <div class="card-icon-svg">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
               </svg>
             </div>
-            <h3 class="card-title">HERRAMIENTAS DE CREACIÓN</h3>
+<!--             <h3 class="card-title">HERRAMIENTAS DE CREACIÓN</h3>
             <p class="card-description">
               Conjunto de herramientas para crear artículos SCP originales, historias colaborativas y contenido canónico.
             </p>
             <div class="card-status">
               <div class="status-light"></div>
               <span class="status-text">PRÓXIMAMENTE</span>
+            </div> -->
+              <h3 class="card-title">[REDACTED]</h3>
+            <p class="card-description">
+               [ACCESS DENIED]
+            </p>
+            <div class="card-status">
+              <div class="status-light"></div>
+              <span class="status-text">EN DESAROLLO</span>
             </div>
+
+            
           </div>
 
           <!-- Card 7 -->
           <div class="function-card">
-            <div class="card-icon">📊</div>
             <div class="card-icon-svg">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
@@ -252,7 +262,6 @@
 
           <!-- Card 8 -->
           <div class="function-card">
-            <div class="card-icon">🛡️</div>
             <div class="card-icon-svg">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
@@ -271,7 +280,6 @@
 
         <div class="section-footer">
           <div class="footer-note">
-            <span class="note-icon">📌</span>
             <div class="note-icon-svg">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>

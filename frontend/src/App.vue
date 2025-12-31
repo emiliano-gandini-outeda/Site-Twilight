@@ -23,31 +23,50 @@ import Footer from "./components/Footer.vue"
   background: #0a0a0a;
   color: #d8d8d8;
   position: relative;
+  width: 100vw;
+  max-width: 100vw;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
 }
 
 .main-content {
   flex: 1;
-  width: 100%;
+  width: 100vw;
+  max-width: 100vw;
   padding-top: 64px;
-  overflow-x: visible !important;
+  position: relative;
 }
 
-/* Estilos globales */
+/* Anular estilos del styles.css global */
+:global(#app) {
+  max-width: 100vw !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  text-align: left !important;
+}
+</style>
+
+<style>
+/* Estilos globales - se aplican a toda la aplicación */
 html, body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
   background: #0a0a0a;
   overflow-x: hidden;
+  width: 100vw;
+  max-width: 100vw;
+}
+
+#app {
+  width: 100vw !important;
+  max-width: 100vw !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 * {
   box-sizing: border-box;
 }
-
-#app {
-  width: 100%;
-  min-height: 100vh;
-}
-
 </style>

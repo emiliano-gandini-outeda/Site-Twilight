@@ -6,7 +6,7 @@ import LoginSignup from "@/views/LoginSignup.vue"
 import Information from "@/views/Information.vue"
 import Error_404 from "@/views/Error_404.vue"
 import Dashboard from "@/views/Dashboard.vue"
-import Personajes from "@/components/Personajes.vue"
+import Personajes from "@/views/Personajes.vue"
 
 /* import CharacterCreate from "@/views/CharacterCreate.vue"
 import CharacterList from "@/views/CharacterList.vue"
@@ -38,12 +38,11 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
-    path: '/dashboard/personajes',
+    path: '/dashboard/personnel',
     name: 'personajes',
     component: Personajes,
     meta: {
       requiresAuth: true,
-      title: 'Gestión de Personajes - Site 81 Twilight'
     }
   },
 /*   {
