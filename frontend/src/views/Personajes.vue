@@ -122,7 +122,7 @@
           </div>
         </div>
 
-        <!-- Barra de búsqueda -->
+        <!-- Barra de búsqueda mejorada con fuzzy search -->
         <div class="search-bar">
           <div class="search-container">
             <div class="search-icon">
@@ -134,12 +134,59 @@
             <input
               v-model="searchQuery"
               @input="handleSearch"
+              @focus="showSearchSuggestions = searchQuery.length >= 2 && searchResults.length > 0"
+              @blur="setTimeout(() => showSearchSuggestions = false, 200)"
               type="text"
-              :placeholder="activeView === 'all' ? 'Buscar por nombre del personaje o usuario owner...' : 'Buscar por nombre o codename...'"
+              :placeholder="activeView === 'all' ? 'Buscar por nombre, codename, facción o owner...' : 'Buscar por nombre, codename...'"
               class="search-input"
             />
-            <div class="search-count" v-if="totalItems > 0">
-              {{ totalItems }} agentes encontrados
+            
+            <!-- Botón para limpiar búsqueda -->
+            <button 
+              v-if="searchQuery" 
+              @click="clearSearch"
+              class="search-clear"
+              title="Limpiar búsqueda"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+            
+            <div class="search-info">
+              <!-- Indicador de búsqueda fuzzy -->
+              <span v-if="isFuzzySearch && searchQuery" class="fuzzy-indicator" title="Búsqueda inteligente activada">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M13.5 3H12H8"></path>
+                  <path d="M17.5 10H19C20.1046 10 21 10.8954 21 12V14C21 15.1046 20.1046 16 19 16H17.5"></path>
+                  <path d="M8.62128 3.48561L3.62128 8.48561C3.22399 8.8829 3 9.43038 3 10.0019V14.9978C3 16.1044 3.89543 16.9998 5 16.9998H10.7573C11.3279 16.9998 11.8754 16.7758 12.2727 16.3785L17.2727 11.3785C18.0601 10.5911 18.0601 9.3248 17.2727 8.53738L12.2627 3.52737C11.4753 2.73995 10.209 2.73995 9.42159 3.52737L8.62128 4.32769"></path>
+                  <circle cx="18" cy="18" r="3"></circle>
+                  <path d="M20 20L22 22"></path>
+                </svg>
+                INTELIGENTE
+              </span>
+              
+              <div class="search-count" v-if="totalItems > 0">
+                {{ totalItems }} {{ totalItems === 1 ? 'agente' : 'agentes' }} encontrados
+              </div>
+            </div>
+          </div>
+          
+          <!-- Sugerencias de búsqueda -->
+          <div v-if="showSearchSuggestions && searchResults.length > 0" class="search-suggestions">
+            <div class="suggestion-item">
+              <span class="suggestion-label">TIP:</span>
+              <span class="suggestion-text">
+                Buscando: "<strong>{{ searchQuery }}</strong>" 
+                <span v-if="searchResults.length > 0">• Coincidencias: {{ searchResults.length }}</span>
+              </span>
+            </div>
+            <div v-if="searchQuery.length < 3" class="suggestion-item">
+              <span class="suggestion-label">TIP:</span>
+              <span class="suggestion-text">
+                Escribe más de 2 caracteres para mejores resultados
+              </span>
             </div>
           </div>
         </div>
@@ -236,7 +283,8 @@
               {{ activeView === 'mine' ? 'No tienes agentes registrados' : 'No se encontraron agentes' }}
             </h3>
             <p class="empty-text" v-if="searchQuery">
-              No hay agentes que coincidan con "{{ searchQuery }}"
+              <span v-if="isFuzzySearch">No hay agentes que coincidan con "<strong>{{ searchQuery }}</strong>"</span>
+              <span v-else>No hay agentes que coincidan con "{{ searchQuery }}"</span>
             </p>
             <p class="empty-text" v-else>
               {{ activeView === 'mine' ? 'Comienza registrando tu primer agente en el sistema.' : 'No hay agentes registrados en el sistema.' }}
@@ -859,6 +907,7 @@
 import { ref, reactive, onMounted, watch, computed, nextTick } from 'vue'
 import { debounce } from 'lodash'
 import { useRouter } from 'vue-router'
+import Fuse from 'fuse.js' // Añadir esta línea
 import No_Mobile from '@/components/No_Mobile.vue'
 import Login_Required from '@/components/Login_Required.vue'
 
@@ -869,7 +918,7 @@ const activeView = ref('all')
 const characters = ref([])
 const myCharacters = ref([])
 const selectedCharacter = ref(null)
-const loading = ref(true) // Inicializar como true para mostrar carga inmediatamente
+const loading = ref(true)
 const searchQuery = ref('')
 const showCreateForm = ref(false)
 const showEditForm = ref(false)
@@ -884,7 +933,35 @@ const pagination = reactive({
   totalPages: 0
 })
 
-// Formulario
+// Nuevos estados para fuzzy search
+const fuseAllCharacters = ref(null)
+const fuseMyCharacters = ref(null)
+const searchResults = ref([])
+const isFuzzySearch = ref(false)
+const showSearchSuggestions = ref(false)
+
+// Configuración de Fuse.js
+const fuseOptions = {
+  keys: [
+    { name: 'codename', weight: 0.4 },
+    { name: 'first_name', weight: 0.3 },
+    { name: 'last_name', weight: 0.2 },
+    { name: 'faction', weight: 0.05 },
+    { name: 'owner_username', weight: 0.05 }
+  ],
+  threshold: 0.3,
+  distance: 100,
+  minMatchCharLength: 2,
+  includeScore: true,
+  includeMatches: true,
+  shouldSort: true,
+  findAllMatches: true,
+  ignoreLocation: true,
+  useExtendedSearch: true,
+  ignoreFieldNorm: true
+}
+
+// Formulario (mantener igual)
 const characterForm = reactive({
   first_name: '',
   last_name: '',
@@ -921,7 +998,6 @@ const formatBirthDate = (event) => {
     value = value.substring(0, 8)
   }
   
-  // Formatear como DD/MM/AAAA
   if (value.length > 4) {
     value = value.substring(0, 2) + '/' + value.substring(2, 4) + '/' + value.substring(4)
   } else if (value.length > 2) {
@@ -957,14 +1033,25 @@ const hasAtLeastOneMorphField = computed(() => {
   return morphFields.some(field => field && field.trim() !== '')
 })
 
+// Modificar displayedCharacters para usar fuzzy search
 const displayedCharacters = computed(() => {
+  if (isFuzzySearch.value && searchQuery.value.trim()) {
+    const startIndex = (pagination.currentPage - 1) * pagination.pageSize
+    const endIndex = startIndex + pagination.pageSize
+    return searchResults.value.slice(startIndex, endIndex)
+  }
+  
   const source = activeView.value === 'all' ? characters.value : myCharacters.value
   const startIndex = (pagination.currentPage - 1) * pagination.pageSize
   const endIndex = startIndex + pagination.pageSize
   return source.slice(startIndex, endIndex)
 })
 
+// Modificar totalItems
 const totalItems = computed(() => {
+  if (isFuzzySearch.value && searchQuery.value.trim()) {
+    return searchResults.value.length
+  }
   return activeView.value === 'all' ? characters.value.length : myCharacters.value.length
 })
 
@@ -977,12 +1064,14 @@ const setActiveView = (view) => {
   showCreateForm.value = false
   showEditForm.value = false
   searchQuery.value = ''
+  isFuzzySearch.value = false
+  searchResults.value = []
   pagination.currentPage = 1
   
-  // Cargar los agentes de la vista seleccionada
   loadCharacters()
 }
 
+// Modificar loadCharacters para inicializar Fuse.js
 const loadCharacters = async () => {
   if (!currentUser.value?.is_authenticated) {
     loading.value = false
@@ -996,19 +1085,26 @@ const loadCharacters = async () => {
       endpoint = '/api/characters/mine/'
     }
     
-    const response = await fetch(`${endpoint}?search=${searchQuery.value}`)
+    const response = await fetch(endpoint)
     const data = await response.json()
     
+    let characterList = data.results || []
+    
+    // Inicializar Fuse.js con los datos
     if (activeView.value === 'all') {
-      characters.value = data.results || []
+      characters.value = characterList
+      fuseAllCharacters.value = new Fuse(characterList, fuseOptions)
     } else {
-      myCharacters.value = data.results || []
+      myCharacters.value = characterList
+      fuseMyCharacters.value = new Fuse(characterList, fuseOptions)
     }
     
-    // Actualizar paginación
-    const total = activeView.value === 'all' ? characters.value.length : myCharacters.value.length
-    pagination.total = total
-    pagination.totalPages = Math.ceil(total / pagination.pageSize)
+    // Aplicar búsqueda si hay query
+    if (searchQuery.value) {
+      handleSearch()
+    } else {
+      updatePagination(characterList.length)
+    }
     
   } catch (error) {
     console.error('Error loading characters:', error)
@@ -1019,10 +1115,88 @@ const loadCharacters = async () => {
   }
 }
 
+// Función auxiliar para actualizar paginación
+const updatePagination = (total) => {
+  pagination.total = total
+  pagination.totalPages = Math.ceil(total / pagination.pageSize)
+}
+
+// Modificar handleSearch para usar fuzzy search
 const handleSearch = debounce(() => {
   pagination.currentPage = 1
+  showSearchSuggestions.value = false
+  
+  if (!searchQuery.value.trim()) {
+    isFuzzySearch.value = false
+    searchResults.value = []
+    const source = activeView.value === 'all' ? characters.value : myCharacters.value
+    updatePagination(source.length)
+    return
+  }
+  
+  isFuzzySearch.value = true
+  
+  let results = []
+  let fuseInstance = activeView.value === 'all' ? fuseAllCharacters.value : fuseMyCharacters.value
+  
+  if (fuseInstance) {
+    // Búsqueda fuzzy con Fuse.js
+    const searchResultsFuse = fuseInstance.search(searchQuery.value)
+    results = searchResultsFuse.map(result => result.item)
+    
+    // Mostrar sugerencias si hay resultados
+    if (results.length > 0 && searchQuery.value.length >= 2) {
+      showSearchSuggestions.value = true
+    }
+    
+    // Si no hay resultados fuzzy, intentar búsqueda exacta
+    if (results.length === 0) {
+      const source = activeView.value === 'all' ? characters.value : myCharacters.value
+      results = source.filter(character => {
+        const searchLower = searchQuery.value.toLowerCase()
+        return (
+          character.codename?.toLowerCase().includes(searchLower) ||
+          character.first_name?.toLowerCase().includes(searchLower) ||
+          character.last_name?.toLowerCase().includes(searchLower) ||
+          character.faction?.toLowerCase().includes(searchLower) ||
+          character.owner_username?.toLowerCase().includes(searchLower)
+        )
+      })
+    }
+  } else {
+    // Fallback a búsqueda normal si Fuse no está inicializado
+    const source = activeView.value === 'all' ? characters.value : myCharacters.value
+    results = source.filter(character => {
+      const searchLower = searchQuery.value.toLowerCase()
+      return (
+        character.codename?.toLowerCase().includes(searchLower) ||
+        character.first_name?.toLowerCase().includes(searchLower) ||
+        character.last_name?.toLowerCase().includes(searchLower) ||
+        character.faction?.toLowerCase().includes(searchLower) ||
+        character.owner_username?.toLowerCase().includes(searchLower)
+      )
+    })
+  }
+  
+  searchResults.value = results
+  updatePagination(results.length)
+}, 300)
+
+// Añadir método para limpiar búsqueda
+const clearSearch = () => {
+  searchQuery.value = ''
+  isFuzzySearch.value = false
+  searchResults.value = []
+  showSearchSuggestions.value = false
+  pagination.currentPage = 1
   loadCharacters()
-}, 500)
+}
+
+// Añadir método para buscar sugerencia
+const searchSuggestion = (suggestion) => {
+  searchQuery.value = suggestion
+  handleSearch()
+}
 
 const changePage = (page) => {
   if (page < 1 || page > pagination.totalPages) return
@@ -1164,12 +1338,10 @@ const submitCharacterForm = async () => {
   try {
     const formData = { ...characterForm }
 
-    // Convertir fecha de DD/MM/AAAA a YYYY-MM-DD para el backend
     if (formData.birth_date) {
       const parts = formData.birth_date.split('/')
       if (parts.length === 3) {
         const [day, month, year] = parts
-        // Validar que sea una fecha válida
         const date = new Date(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`)
         if (!isNaN(date.getTime())) {
           formData.birth_date = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
@@ -1368,7 +1540,6 @@ const fetchCurrentUser = async () => {
     if (response.ok) {
       const data = await response.json()
       currentUser.value = data
-      // Una vez que tenemos el usuario, cargamos automáticamente los agentes
       if (data.is_authenticated) {
         loadCharacters()
       }
@@ -1382,7 +1553,6 @@ const fetchCurrentUser = async () => {
 const notifications = ref([])
 let notificationId = 0
 
-// Método para añadir notificaciones
 const showNotification = (title, message, type = 'info', duration = 5000) => {
   const id = ++notificationId
   notifications.value.push({
@@ -1394,13 +1564,11 @@ const showNotification = (title, message, type = 'info', duration = 5000) => {
     paused: false
   })
   
-  // Auto-remover después de la duración
   setTimeout(() => {
     removeNotification(id)
   }, duration)
 }
 
-// Método para remover notificaciones
 const removeNotification = (id) => {
   const index = notifications.value.findIndex(n => n.id === id)
   if (index !== -1) {
@@ -1408,7 +1576,6 @@ const removeNotification = (id) => {
   }
 }
 
-// Método para pausar/continuar notificaciones al hacer hover
 const pauseNotification = (id) => {
   const notification = notifications.value.find(n => n.id === id)
   if (notification) {
@@ -1441,7 +1608,6 @@ onMounted(() => {
   updateTime()
   const timeInterval = setInterval(updateTime, 1000)
   
-  // Primero obtenemos el usuario, luego cargamos automáticamente los agentes
   fetchCurrentUser()
   
   return () => {
@@ -3911,5 +4077,136 @@ onMounted(() => {
   font-family: 'Consolas', monospace;
   letter-spacing: 0.3px;
   margin-left: 0.5rem;
+}
+
+/* Estilos para la búsqueda mejorada con fuzzy search */
+.search-clear {
+  background: none;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.search-clear:hover {
+  color: #fc6f03;
+}
+
+.search-clear svg {
+  width: 16px;
+  height: 16px;
+}
+
+.search-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-left: auto;
+}
+
+.fuzzy-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: #4CAF50;
+  background: rgba(76, 175, 80, 0.1);
+  padding: 0.3rem 0.6rem;
+  border-radius: 2px;
+  font-family: 'Consolas', monospace;
+  letter-spacing: 0.3px;
+  animation: pulse 2s infinite;
+  white-space: nowrap;
+}
+
+.fuzzy-indicator svg {
+  width: 14px;
+  height: 14px;
+}
+
+.search-suggestions {
+  margin-top: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(30, 30, 30, 0.8);
+  border: 1px solid rgba(252, 111, 3, 0.3);
+  font-size: 0.85rem;
+  border-radius: 2px;
+  animation: fadeIn 0.3s ease;
+}
+
+.suggestion-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.3rem;
+}
+
+.suggestion-item:last-child {
+  margin-bottom: 0;
+}
+
+.suggestion-label {
+  color: #fc6f03;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  font-family: 'Consolas', monospace;
+  white-space: nowrap;
+}
+
+.suggestion-text {
+  color: #aaa;
+  flex: 1;
+}
+
+.suggestion-text strong {
+  color: #fff;
+  font-weight: 600;
+}
+
+/* Mejorar el contador de búsqueda */
+.search-count {
+  font-size: 0.9rem;
+  color: #888;
+  font-family: 'Consolas', monospace;
+  white-space: nowrap;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.2rem 0.5rem;
+  border-radius: 2px;
+}
+
+/* Animación para fadeIn */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Mejorar el foco del input de búsqueda */
+.search-container:focus-within {
+  border-color: #fc6f03;
+  box-shadow: 0 0 0 2px rgba(252, 111, 3, 0.1), 0 4px 12px rgba(252, 111, 3, 0.1);
+}
+
+/* Responsive para la barra de búsqueda */
+@media (max-width: 768px) {
+  .search-info {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+  }
+  
+  .fuzzy-indicator {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.4rem;
+  }
+  
+  .search-count {
+    font-size: 0.8rem;
+  }
 }
 </style>
