@@ -402,7 +402,6 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-/* Base mobile styles - mobile first */
 .site-header {
   position: fixed;
   top: 0;
@@ -437,7 +436,7 @@ onUnmounted(() => {
   gap: 0.5rem;
 }
 
-/* Mobile Menu Button - NORMALIZADO */
+/* Mobile Menu Button */
 .mobile-menu-btn {
   display: flex;
   align-items: center;
@@ -490,7 +489,7 @@ onUnmounted(() => {
   transform: rotate(-45deg) translate(5px, -5px);
 }
 
-/* Logo Section - AUMENTADO */
+/* Logo Section */
 .logo-section {
   display: flex;
   align-items: center;
@@ -528,7 +527,7 @@ onUnmounted(() => {
   text-transform: uppercase;
 }
 
-/* Mobile SSU Indicator - NORMALIZADO */
+/* Mobile SSU Indicator */
 .mobile-ssu {
   display: flex;
   align-items: center;
@@ -610,19 +609,17 @@ onUnmounted(() => {
   height: 18px;
 }
 
-/* Emojis para mobile - OCULTOS */
 .mobile-nav-emoji,
 .mobile-account-emoji,
 .close-emoji {
   display: none;
 }
 
-/* Desktop Navigation - Hidden on mobile */
 .desktop-nav {
   display: none;
 }
 
-/* Mobile Navigation Menu - ACTUALIZADO */
+/* Mobile Navigation Menu*/
 .mobile-nav {
   position: fixed;
   top: 0;
