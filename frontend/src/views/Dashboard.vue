@@ -11,7 +11,6 @@
     <div class="dashboard-header">
       <div class="header-left">
         <div class="header-logo">
-          <img src="/logo.png" alt="Site Twilight Logo" class="header-logo-img" />
           <div class="header-title">
             <span class="header-main">DASHBOARD CONTROL</span>
             <span class="header-sub">SECURED FACILITY INTERFACE</span>

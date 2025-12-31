@@ -123,12 +123,12 @@ def character_list_user(request):
 def character_detail(request, pk):
     character = get_object_or_404(Character, pk=pk)
     
-    # Verificar si el usuario es el owner o tiene permisos globales
+    """ # Verificar si el usuario es el owner o tiene permisos globales
     is_owner = character.owner == request.user
-    can_view_all = request.user.has_perm("characters.view_all_characters")
+    can_view_all = request.user.has_perm("characters.view_all_characters") """
     
-    if not (is_owner or can_view_all):
-        return JsonResponse({"error": "No tienes permiso para ver este personaje"}, status=403)
+    """ if not (is_owner or can_view_all):
+        return JsonResponse({"error": "No tienes permiso para ver este personaje"}, status=403) """
     
     return JsonResponse({
         "id": character.id,
@@ -143,7 +143,7 @@ def character_detail(request, pk):
         "owner_id": character.owner_id,
         "owner_roblox_id" : character.owner.roblox_id,
         "owner_username": character.owner.roblox_username,
-        "is_owner": is_owner,
+        """ "is_owner": is_owner, """
         
         # Morph data
         "morph": character.morph,
