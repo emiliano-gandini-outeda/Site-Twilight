@@ -528,6 +528,7 @@ onMounted(() => {
   padding: 16px 20px;
   border-bottom: 1px solid #333;
   background: rgba(25, 25, 25, 0.8);
+  overflow-x: hidden;
 }
 
 .sidebar-title {
@@ -537,6 +538,7 @@ onMounted(() => {
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin: 0 0 4px 0;
+  overflow-x: hidden;
 }
 
 .sidebar-subtitle {
@@ -544,12 +546,14 @@ onMounted(() => {
   color: #888;
   font-family: 'Consolas', monospace;
   letter-spacing: 0.3px;
+  overflow-x: hidden;
 }
 
 .sidebar-tools {
   flex: 1;
   padding: 16px 0;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .tool-category {
