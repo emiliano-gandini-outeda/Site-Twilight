@@ -979,12 +979,14 @@
         </transition-group>
       </div>
   </div>
+  <No_Mobile />
 </template>
 
 <script setup>
 import { ref, reactive, onMounted, watch, computed, nextTick } from 'vue'
 import { debounce } from 'lodash'
 import { useRouter } from 'vue-router'
+import No_Mobile from '@/components/No_Mobile.vue'
 
 const router = useRouter()
 
