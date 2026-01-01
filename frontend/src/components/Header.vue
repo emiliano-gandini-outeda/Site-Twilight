@@ -95,7 +95,7 @@
             <div class="dropdown-divider"></div>
             
             <template v-if="user && user.is_authenticated">
-              <a href="#" class="dropdown-item">
+<!--               <a href="#" class="dropdown-item">
                 <div class="item-icon-svg">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="12" cy="12" r="3"></circle>
@@ -103,7 +103,7 @@
                   </svg>
                 </div>
                 <span class="item-text">Settings</span>
-              </a>
+              </a> -->
               <a href="#" class="dropdown-item">
                 <div class="item-icon-svg">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -208,7 +208,7 @@
           <div class="mobile-nav-divider"></div>
           
           <template v-if="user && user.is_authenticated">
-            <a href="#" class="mobile-nav-item">
+<!--             <a href="#" class="mobile-nav-item">
               <div class="mobile-nav-icon-svg">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                   <circle cx="12" cy="12" r="3"></circle>
@@ -216,7 +216,7 @@
                 </svg>
               </div>
               <span class="mobile-nav-text">Settings</span>
-            </a>
+            </a> -->
             <a href="#" class="mobile-nav-item">
               <div class="mobile-nav-icon-svg">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
