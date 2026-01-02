@@ -262,6 +262,7 @@ defineExpose({
   padding: 1.5rem;
   animation: fadeIn 0.3s ease;
   overflow-y: auto;
+  padding-top: 2rem;
 }
 
 .scp-login-modal {
