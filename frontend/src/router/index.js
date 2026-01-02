@@ -7,6 +7,7 @@ import Information from "@/views/Information.vue"
 import Error_404 from "@/views/Error_404.vue"
 import Dashboard from "@/views/Dashboard.vue"
 import Personajes from "@/views/Personajes.vue"
+import Perfil from "@/views/Perfil.vue"
 
 /* import CharacterCreate from "@/views/CharacterCreate.vue"
 import CharacterList from "@/views/CharacterList.vue"
@@ -44,6 +45,15 @@ const routes = [
     meta: {
       requiresAuth: true,
     }
+  },
+  {
+    path: '/users/:id',  // :id capturará el roblox_id
+    name: 'perfil',
+    component: Perfil,
+    meta: {
+      requiresAuth: true,  // Solo usuarios autenticados pueden ver perfiles
+    },
+    props: true,  // Pasa los parámetros de ruta como props al componente
   },
 /*   {
     path: "/characters",
