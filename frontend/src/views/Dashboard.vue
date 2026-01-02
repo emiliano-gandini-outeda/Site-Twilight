@@ -312,6 +312,7 @@ const activeCard = ref(1)
 const currentUser = ref(null)
 const currentTime = ref('')
 const showDeniedModal = ref(false)
+const userPermissions = ref([])
 
 const activateCard = (cardNumber) => {
   activeCard.value = cardNumber
