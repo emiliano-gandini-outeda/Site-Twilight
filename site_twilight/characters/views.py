@@ -1,4 +1,3 @@
-# app/characters/views.py
 import json
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
@@ -6,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from django.utils import timezone
+from django.core.exceptions import ValidationError
 
 from .models import Character
 from .forms import CharacterForm
@@ -123,13 +123,6 @@ def character_list_user(request):
 def character_detail(request, pk):
     character = get_object_or_404(Character, pk=pk)
     
-    """ # Verificar si el usuario es el owner o tiene permisos globales
-    is_owner = character.owner == request.user
-    can_view_all = request.user.has_perm("characters.view_all_characters") """
-    
-    """ if not (is_owner or can_view_all):
-        return JsonResponse({"error": "No tienes permiso para ver este personaje"}, status=403) """
-    
     return JsonResponse({
         "id": character.id,
         "first_name": character.first_name,
@@ -143,7 +136,6 @@ def character_detail(request, pk):
         "owner_id": character.owner_id,
         "owner_roblox_id" : character.owner.roblox_id,
         "owner_username": character.owner.roblox_username,
-        """ "is_owner": is_owner, """
         
         # Morph data
         "morph": character.morph,
@@ -174,78 +166,67 @@ def character_create(request):
     try:
         data = json.loads(request.body)
         
-        # Validar que haya al menos un campo de morph
-        morph_fields = [
-            data.get("morph"),
-            data.get("hat"),
-            data.get("nvg_color"),
-            data.get("shirt"),
-            data.get("pants"),
-            data.get("ntag"),
-            data.get("rtag"),
-        ]
+        # Preparar datos para el formulario
+        form_data = data.copy()
         
-        if not any(morph_fields):
-            return JsonResponse({"error": "Al menos un campo de morph debe estar definido."}, status=400)
+        # Convertir campos booleanos para el formulario
+        if 'rhat' in form_data:
+            if isinstance(form_data['rhat'], str):
+                form_data['rhat'] = form_data['rhat'].lower() in ['true', '1', 'yes']
         
-        # Verificar si el codename ya existe
-        if Character.objects.filter(codename=data.get("codename")).exists():
-            return JsonResponse({"error": "Este codename ya está en uso."}, status=400)
+        # Manejar campos vacíos para valores numéricos
+        for field in ['skin_r', 'skin_g', 'skin_b', 
+                     'cntag_r', 'cntag_g', 'cntag_b',
+                     'crtag_r', 'crtag_g', 'crtag_b']:
+            if field in form_data and form_data[field] == '':
+                form_data[field] = None
         
-        # Manejar fecha de nacimiento (puede ser None o string vacío)
-        birth_date = data.get("birth_date")
-        if birth_date == "":
-            birth_date = None
+        # Crear formulario con los datos
+        form = CharacterForm(form_data)
         
-        # Manejar campos booleanos
-        rhat = data.get("rhat", False)
-        if isinstance(rhat, str):
-            rhat = rhat.lower() in ['true', '1', 'yes']
-        
-        # Convertir campos de color a enteros o None
-        def parse_color_value(value):
-            if value is None or value == "":
-                return None
+        if form.is_valid():
             try:
-                return int(value)
-            except (ValueError, TypeError):
-                return None
-        
-        character = Character.objects.create(
-            owner=request.user,
-            first_name=data.get("first_name", ""),
-            last_name=data.get("last_name", ""),
-            country=data.get("country", ""),
-            birth_date=birth_date,
-            codename=data.get("codename", ""),
-            faction=data.get("faction", ""),
-            lore=data.get("lore", ""),
+                # Guardar con commit=False para poder asignar el owner
+                character = form.save(commit=False)
+                character.owner = request.user
+                
+                # CAMBIO: Ya no verificamos si el codename ya existe
+                # porque ahora pueden haber duplicados
+                
+                # Ejecutar validación completa del modelo
+                character.full_clean()
+                
+                # Guardar en la base de datos
+                character.save()
+                
+                return JsonResponse({
+                    "success": True,
+                    "id": character.id,
+                    "morph_command": character.morph_command(),
+                }, status=201)
+                
+            except ValidationError as e:
+                # Capturar errores de validación del modelo
+                error_dict = {}
+                for field, errors in e.message_dict.items():
+                    error_dict[field] = errors[0] if isinstance(errors, list) else errors
+                
+                return JsonResponse({
+                    "success": False,
+                    "errors": error_dict
+                }, status=400)
+                
+        else:
+            # Retornar errores del formulario
+            errors = {}
+            for field, error_list in form.errors.items():
+                # Tomar solo el primer error por campo para simplificar
+                errors[field] = error_list[0] if error_list else "Error desconocido"
             
-            # Morph data
-            morph=data.get("morph", ""),
-            hat=data.get("hat", ""),
-            nvg_color=data.get("nvg_color", ""),
-            shirt=data.get("shirt", ""),
-            pants=data.get("pants", ""),
-            skin_r=parse_color_value(data.get("skin_r")),
-            skin_g=parse_color_value(data.get("skin_g")),
-            skin_b=parse_color_value(data.get("skin_b")),
-            ntag=data.get("ntag", ""),
-            cntag_r=parse_color_value(data.get("cntag_r")),
-            cntag_g=parse_color_value(data.get("cntag_g")),
-            cntag_b=parse_color_value(data.get("cntag_b")),
-            rtag=data.get("rtag", ""),
-            crtag_r=parse_color_value(data.get("crtag_r")),
-            crtag_g=parse_color_value(data.get("crtag_g")),
-            crtag_b=parse_color_value(data.get("crtag_b")),
-            rhat=rhat,
-        )
-        
-        return JsonResponse({
-            "success": True,
-            "id": character.id,
-            "morph_command": character.morph_command(),
-        }, status=201)
+            return JsonResponse({
+                "success": False,
+                "errors": errors
+            }, status=400)
         
     except json.JSONDecodeError:
         return JsonResponse({"error": "JSON inválido"}, status=400)
@@ -264,105 +245,96 @@ def character_update(request, pk):
         
         data = json.loads(request.body)
         
-        # Verificar si se intenta cambiar el codename y si ya existe
-        new_codename = data.get("codename")
-        if new_codename and new_codename != character.codename:
-            if Character.objects.filter(codename=new_codename).exists():
-                return JsonResponse({"error": "Este codename ya está en uso."}, status=400)
+        # Preparar datos para el formulario
+        form_data = data.copy()
         
-        # Manejar fecha de nacimiento
-        if "birth_date" in data:
-            birth_date = data.get("birth_date")
-            character.birth_date = None if birth_date == "" else birth_date
+        # Si no se envía algún campo, usar el valor actual
+        current_data = {
+            'first_name': character.first_name,
+            'last_name': character.last_name,
+            'country': character.country,
+            'birth_date': character.birth_date,
+            'codename': character.codename,
+            'faction': character.faction,
+            'lore': character.lore,
+            'morph': character.morph,
+            'hat': character.hat,
+            'nvg_color': character.nvg_color,
+            'shirt': character.shirt,
+            'pants': character.pants,
+            'skin_r': character.skin_r,
+            'skin_g': character.skin_g,
+            'skin_b': character.skin_b,
+            'ntag': character.ntag,
+            'cntag_r': character.cntag_r,
+            'cntag_g': character.cntag_g,
+            'cntag_b': character.cntag_b,
+            'rtag': character.rtag,
+            'crtag_r': character.crtag_r,
+            'crtag_g': character.crtag_g,
+            'crtag_b': character.crtag_b,
+            'rhat': character.rhat,
+        }
         
-        # Actualizar campos básicos
-        if "first_name" in data:
-            character.first_name = data.get("first_name", "")
-        if "last_name" in data:
-            character.last_name = data.get("last_name", "")
-        if "country" in data:
-            character.country = data.get("country", "")
-        if "codename" in data:
-            character.codename = data.get("codename", "")
-        if "faction" in data:
-            character.faction = data.get("faction", "")
-        if "lore" in data:
-            character.lore = data.get("lore", "")
+        # Combinar datos actuales con nuevos datos
+        for key, value in current_data.items():
+            if key not in form_data:
+                form_data[key] = value
         
-        # Actualizar campos de morph
-        if "morph" in data:
-            character.morph = data.get("morph", "")
-        if "hat" in data:
-            character.hat = data.get("hat", "")
-        if "nvg_color" in data:
-            character.nvg_color = data.get("nvg_color", "")
-        if "shirt" in data:
-            character.shirt = data.get("shirt", "")
-        if "pants" in data:
-            character.pants = data.get("pants", "")
-        if "ntag" in data:
-            character.ntag = data.get("ntag", "")
-        if "rtag" in data:
-            character.rtag = data.get("rtag", "")
+        # Convertir campos booleanos para el formulario
+        if 'rhat' in form_data:
+            if isinstance(form_data['rhat'], str):
+                form_data['rhat'] = form_data['rhat'].lower() in ['true', '1', 'yes']
         
-        # Actualizar campos de color
-        def update_color_field(field_name, value):
-            if value is None or value == "":
-                setattr(character, field_name, None)
-            else:
-                try:
-                    setattr(character, field_name, int(value))
-                except (ValueError, TypeError):
-                    setattr(character, field_name, None)
+        # Manejar campos vacíos para valores numéricos
+        for field in ['skin_r', 'skin_g', 'skin_b', 
+                     'cntag_r', 'cntag_g', 'cntag_b',
+                     'crtag_r', 'crtag_g', 'crtag_b']:
+            if field in form_data and form_data[field] == '':
+                form_data[field] = None
         
-        if "skin_r" in data:
-            update_color_field("skin_r", data.get("skin_r"))
-        if "skin_g" in data:
-            update_color_field("skin_g", data.get("skin_g"))
-        if "skin_b" in data:
-            update_color_field("skin_b", data.get("skin_b"))
-        if "cntag_r" in data:
-            update_color_field("cntag_r", data.get("cntag_r"))
-        if "cntag_g" in data:
-            update_color_field("cntag_g", data.get("cntag_g"))
-        if "cntag_b" in data:
-            update_color_field("cntag_b", data.get("cntag_b"))
-        if "crtag_r" in data:
-            update_color_field("crtag_r", data.get("crtag_r"))
-        if "crtag_g" in data:
-            update_color_field("crtag_g", data.get("crtag_g"))
-        if "crtag_b" in data:
-            update_color_field("crtag_b", data.get("crtag_b"))
+        # Crear formulario con los datos y la instancia existente
+        form = CharacterForm(form_data, instance=character)
         
-        # Actualizar campo booleano
-        if "rhat" in data:
-            rhat_value = data.get("rhat")
-            if isinstance(rhat_value, str):
-                character.rhat = rhat_value.lower() in ['true', '1', 'yes']
-            else:
-                character.rhat = bool(rhat_value)
-        
-        # Validar que haya al menos un campo de morph
-        morph_fields = [
-            character.morph,
-            character.hat,
-            character.nvg_color,
-            character.shirt,
-            character.pants,
-            character.ntag,
-            character.rtag,
-        ]
-        
-        if not any(morph_fields):
-            return JsonResponse({"error": "Al menos un campo de morph debe estar definido."}, status=400)
-        
-        character.save()
-        
-        return JsonResponse({
-            "success": True,
-            "id": character.id,
-            "morph_command": character.morph_command(),
-        })
+        if form.is_valid():
+            try:
+                # Guardar con commit=False para ejecutar validación
+                character = form.save(commit=False)
+                
+                # Ejecutar validación completa del modelo
+                character.full_clean()
+                
+                # Guardar en la base de datos
+                character.save()
+                
+                return JsonResponse({
+                    "success": True,
+                    "id": character.id,
+                    "morph_command": character.morph_command(),
+                })
+                
+            except ValidationError as e:
+                # Capturar errores de validación del modelo
+                error_dict = {}
+                for field, errors in e.message_dict.items():
+                    error_dict[field] = errors[0] if isinstance(errors, list) else errors
+                
+                return JsonResponse({
+                    "success": False,
+                    "errors": error_dict
+                }, status=400)
+                
+        else:
+            # Retornar errores del formulario
+            errors = {}
+            for field, error_list in form.errors.items():
+                # Tomar solo el primer error por campo para simplificar
+                errors[field] = error_list[0] if error_list else "Error desconocido"
+            
+            return JsonResponse({
+                "success": False,
+                "errors": errors
+            }, status=400)
         
     except json.JSONDecodeError:
         return JsonResponse({"error": "JSON inválido"}, status=400)
