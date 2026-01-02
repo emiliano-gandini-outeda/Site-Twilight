@@ -244,23 +244,22 @@ defineExpose({
 </script>
 
 <style scoped>
-/* Overlay de login required - MODIFICADO para más padding-top */
+/* Overlay de login required - MODIFICADO para ocupar toda la pantalla */
 .login-required-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
+  min-height: 100vh;
+  min-height: 100dvh; /* Soporte para dispositivos móviles */
   background: rgba(0, 0, 0, 0.98);
   backdrop-filter: blur(15px);
   z-index: 9998;
   display: flex;
-  align-items: flex-start; /* Cambiado de center a flex-start */
+  align-items: center;
   justify-content: center;
-  padding-top: 80px; /* AÑADIDO: padding-top para que no quede debajo del header */
-  padding-left: 1.5rem;
-  padding-right: 1.5rem;
-  padding-bottom: 1.5rem;
+  padding: 1.5rem;
   animation: fadeIn 0.3s ease;
   overflow-y: auto;
 }
@@ -273,14 +272,14 @@ defineExpose({
   border: 2px solid #333;
   width: 100%;
   max-width: 700px;
-  max-height: calc(85vh - 80px); /* Ajustado para considerar el padding-top */
+  max-height: 90vh; /* Limitar altura máxima al 90% de la pantalla */
+  min-height: min-content; /* Asegurar que crezca con el contenido */
   overflow: hidden;
   display: flex;
   flex-direction: column;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9);
   position: relative;
   z-index: 9999;
-  margin-top: 0; /* Asegurar que no haya margen superior extra */
 }
 
 .scp-login-modal::before {
@@ -307,6 +306,7 @@ defineExpose({
   gap: 1rem;
   position: relative;
   flex-wrap: wrap;
+  flex-shrink: 0; /* Evitar que el header se encoja */
 }
 
 .modal-icon {
@@ -381,12 +381,13 @@ defineExpose({
 
 /* Contenido del modal */
 .modal-content {
-  flex: 1;
+  flex: 1; /* Ocupar espacio restante */
   padding: 1.5rem;
-  overflow-y: auto;
+  overflow-y: auto; /* Scroll interno si el contenido es muy largo */
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  min-height: 0; /* Importante para que el flex funcione correctamente con scroll */
 }
 
 /* Advertencia de seguridad */
@@ -395,6 +396,7 @@ defineExpose({
   border: 1px solid #444;
   padding: 1.2rem;
   border-radius: 2px;
+  flex-shrink: 0;
 }
 
 .warning-header {
@@ -462,6 +464,7 @@ defineExpose({
   border: 1px solid #444;
   padding: 1.2rem;
   border-radius: 2px;
+  flex-shrink: 0;
 }
 
 .info-grid {
@@ -510,6 +513,8 @@ defineExpose({
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  flex-shrink: 0; /* Evitar que se encoja */
+  margin-bottom: auto; /* Empujar hacia arriba si hay espacio extra */
 }
 
 .action-required {
@@ -569,6 +574,7 @@ defineExpose({
   overflow: hidden;
   transition: all 0.3s ease;
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 .scp-login-button:hover {
@@ -648,6 +654,7 @@ defineExpose({
   color: #888;
   font-size: 0.85rem;
   line-height: 1.4;
+  flex-shrink: 0;
 }
 
 .login-info svg {
@@ -663,6 +670,7 @@ defineExpose({
   padding: 1.2rem 1.5rem;
   background: rgba(25, 25, 25, 0.95);
   border-top: 1px solid #333;
+  flex-shrink: 0; /* Evitar que el footer se encoja */
 }
 
 .footer-grid {
@@ -710,13 +718,14 @@ defineExpose({
 /* Responsive */
 @media (max-width: 768px) {
   .login-required-overlay {
-    padding-top: 60px; /* Menos padding-top en móviles */
-    padding-left: 1rem;
-    padding-right: 1rem;
+    padding: 1rem;
+    align-items: flex-start; /* Alinear al inicio en móviles */
   }
   
   .scp-login-modal {
-    max-height: calc(90vh - 60px);
+    max-height: 95vh; /* Más alto en móviles */
+    margin-top: 1rem;
+    margin-bottom: 1rem;
   }
   
   .modal-header {
@@ -770,7 +779,13 @@ defineExpose({
 
 @media (max-width: 480px) {
   .login-required-overlay {
-    padding-top: 50px; /* Aún menos en pantallas muy pequeñas */
+    padding: 0.5rem;
+  }
+  
+  .scp-login-modal {
+    max-height: 100vh; /* Usar toda la pantalla en móviles pequeños */
+    margin: 0;
+    border-width: 1px;
   }
   
   .modal-title {
@@ -798,6 +813,10 @@ defineExpose({
   
   .button-text {
     margin: 0;
+  }
+  
+  .modal-content {
+    padding: 0.75rem;
   }
 }
 </style>
