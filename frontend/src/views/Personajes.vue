@@ -490,28 +490,31 @@
                   <label class="form-label">Skin Color (RGB)</label>
                   <div class="color-inputs">
                     <input
-                      v-model.number="characterForm.skin_r"
+                      v-model="characterForm.skin_r"
                       type="number"
                       min="0"
                       max="255"
                       class="color-input"
                       placeholder="R"
+                      @input="handleColorInput('skin_r', $event)"
                     />
                     <input
-                      v-model.number="characterForm.skin_g"
+                      v-model="characterForm.skin_g"
                       type="number"
                       min="0"
                       max="255"
                       class="color-input"
                       placeholder="G"
+                      @input="handleColorInput('skin_g', $event)"
                     />
                     <input
-                      v-model.number="characterForm.skin_b"
+                      v-model="characterForm.skin_b"
                       type="number"
                       min="0"
                       max="255"
                       class="color-input"
                       placeholder="B"
+                      @input="handleColorInput('skin_b', $event)"
                     />
                   </div>
                 </div>
@@ -676,11 +679,11 @@
               <div class="detail-grid">
                 <div class="detail-item">
                   <span class="detail-label">Codename:</span>
-                  <span class="detail-value highlight">{{ selectedCharacter.codename }}</span>
+                  <span class="detail-value highlight long-text">{{ selectedCharacter.codename }}</span>
                 </div>
                 <div class="detail-item">
                   <span class="detail-label">Nombre:</span>
-                  <span class="detail-value">{{ selectedCharacter.first_name }} {{ selectedCharacter.last_name }}</span>
+                  <span class="detail-value long-text">{{ selectedCharacter.first_name }} {{ selectedCharacter.last_name }}</span>
                 </div>
                 <div class="detail-item">
                   <span class="detail-label">País:</span>
@@ -692,7 +695,7 @@
                 </div>
                 <div class="detail-item">
                   <span class="detail-label">Facción:</span>
-                  <span class="detail-value faction">{{ selectedCharacter.faction }}</span>
+                  <span class="detail-value faction long-text">{{ selectedCharacter.faction }}</span>
                 </div>
                 <div class="detail-item">
                   <span class="detail-label">Registrado:</span>
@@ -748,7 +751,7 @@
                   <span class="morph-label">Pants:</span>
                   <span class="morph-value">{{ selectedCharacter.pants }}</span>
                 </div>
-                <div class="morph-item" v-if="selectedCharacter.skin_r !== null">
+                <div class="morph-item" v-if="selectedCharacter.skin_r !== null && selectedCharacter.skin_r !== undefined">
                   <span class="morph-label">Skin Color:</span>
                   <div class="color-display">
                     <span class="morph-value">RGB({{ selectedCharacter.skin_r }}, {{ selectedCharacter.skin_g }}, {{ selectedCharacter.skin_b }})</span>
@@ -908,7 +911,7 @@
 import { ref, reactive, onMounted, watch, computed, nextTick } from 'vue'
 import { debounce } from 'lodash'
 import { useRouter } from 'vue-router'
-import Fuse from 'fuse.js' // Añadir esta línea
+import Fuse from 'fuse.js'
 import No_Mobile from '@/components/No_Mobile.vue'
 import Login_Required from '@/components/Login_Required.vue'
 
@@ -942,6 +945,46 @@ const searchResults = ref([])
 const isFuzzySearch = ref(false)
 const showSearchSuggestions = ref(false)
 
+const fieldTranslations = {
+  // Información de identidad
+  'first_name': 'NOMBRE',
+  'last_name': 'APELLIDO',
+  'country': 'PAÍS',
+  'birth_date': 'FECHA DE NACIMIENTO',
+  'codename': 'CODENAME',
+  'faction': 'FACCIÓN',
+  'lore': 'LORE',
+  
+  // Datos morph
+  'morph': 'MORPH',
+  'hat': 'HAT',
+  'nvg_color': 'COLOR NVG',
+  'shirt': 'SHIRT',
+  'pants': 'PANTS',
+  'skin_r': 'SKIN R',
+  'skin_g': 'SKIN G',
+  'skin_b': 'SKIN B',
+  'ntag': 'NTAG',
+  'cntag_r': 'CNTAG R',
+  'cntag_g': 'CNTAG G',
+  'cntag_b': 'CNTAG B',
+  'rtag': 'RTAG',
+  'crtag_r': 'CRTAG R',
+  'crtag_g': 'CRTAG G',
+  'crtag_b': 'CRTAG B',
+  'rhat': 'RHAT',
+  
+  // Campos de color RGB
+  'nvg_r': 'NVG R',
+  'nvg_g': 'NVG G',
+  'nvg_b': 'NVG B',
+}
+
+// Función para traducir nombres de campos
+const translateFieldName = (fieldName) => {
+  return fieldTranslations[fieldName] || fieldName.toUpperCase()
+}
+
 // Configuración de Fuse.js
 const fuseOptions = {
   keys: [
@@ -963,7 +1006,7 @@ const fuseOptions = {
   ignoreFieldNorm: true
 }
 
-// Formulario (mantener igual)
+// Formulario 
 const characterForm = reactive({
   first_name: '',
   last_name: '',
@@ -982,13 +1025,13 @@ const characterForm = reactive({
   skin_g: null,
   skin_b: null,
   ntag: '',
-  cntag_r: null,
-  cntag_g: null,
-  cntag_b: null,
+  cntag_r: 255,
+  cntag_g: 255,
+  cntag_b: 255,
   rtag: '',
-  crtag_r: null,
-  crtag_g: null,
-  crtag_b: null,
+  crtag_r: 255,
+  crtag_g: 255,
+  crtag_b: 255,
   rhat: false,
   lore: ''
 })
@@ -1194,12 +1237,6 @@ const clearSearch = () => {
   loadCharacters()
 }
 
-// Añadir método para buscar sugerencia
-const searchSuggestion = (suggestion) => {
-  searchQuery.value = suggestion
-  handleSearch()
-}
-
 const changePage = (page) => {
   if (page < 1 || page > pagination.totalPages) return
   pagination.currentPage = page
@@ -1240,7 +1277,6 @@ const getFactionColor = (faction) => {
   }
 }
 
-// Este método ya debería existir, pero verifica que esté así:
 const openEditForm = () => {
   if (!selectedCharacter.value || !isCharacterOwner.value) {
     showNotification(
@@ -1253,6 +1289,12 @@ const openEditForm = () => {
   }
   
   try {
+    // DEBUG: Ver qué datos llegan
+    console.log('DEBUG - Datos del character para editar:', selectedCharacter.value)
+    console.log('DEBUG - skin_r:', selectedCharacter.value.skin_r, 'tipo:', typeof selectedCharacter.value.skin_r)
+    console.log('DEBUG - skin_g:', selectedCharacter.value.skin_g, 'tipo:', typeof selectedCharacter.value.skin_g)
+    console.log('DEBUG - skin_b:', selectedCharacter.value.skin_b, 'tipo:', typeof selectedCharacter.value.skin_b)
+    
     // Mapear datos del personaje seleccionado al formulario
     characterForm.first_name = selectedCharacter.value.first_name || ''
     characterForm.last_name = selectedCharacter.value.last_name || ''
@@ -1271,27 +1313,30 @@ const openEditForm = () => {
     characterForm.rtag = selectedCharacter.value.rtag || ''
     characterForm.rhat = selectedCharacter.value.rhat || false
     
-    // Campos de color (si existen en tu API)
-    characterForm.skin_r = selectedCharacter.value.skin_r || null
-    characterForm.skin_g = selectedCharacter.value.skin_g || null
-    characterForm.skin_b = selectedCharacter.value.skin_b || null
-    characterForm.cntag_r = selectedCharacter.value.cntag_r || null
-    characterForm.cntag_g = selectedCharacter.value.cntag_g || null
-    characterForm.cntag_b = selectedCharacter.value.cntag_b || null
-    characterForm.crtag_r = selectedCharacter.value.crtag_r || null
-    characterForm.crtag_g = selectedCharacter.value.crtag_g || null
-    characterForm.crtag_b = selectedCharacter.value.crtag_b || null
+    // CAMPOS DE COLOR - MANEJO CORRECTO DE NULL/VALORES
+    // Para skin color, mantener null si es 0 o null (0 significa que estaba vacío en la BD)
+    characterForm.skin_r = (selectedCharacter.value.skin_r === 0 || selectedCharacter.value.skin_r === null) ? null : selectedCharacter.value.skin_r
+    characterForm.skin_g = (selectedCharacter.value.skin_g === 0 || selectedCharacter.value.skin_g === null) ? null : selectedCharacter.value.skin_g
+    characterForm.skin_b = (selectedCharacter.value.skin_b === 0 || selectedCharacter.value.skin_b === null) ? null : selectedCharacter.value.skin_b
     
-    // Si tienes campos nvg separados
-    if (selectedCharacter.value.nvg_color) {
-      // Parsear el color si viene en formato "255,165,0"
-      const nvgParts = selectedCharacter.value.nvg_color.split(',')
-      if (nvgParts.length === 3) {
-        characterForm.nvg_r = parseInt(nvgParts[0]) || 255
-        characterForm.nvg_g = parseInt(nvgParts[1]) || 165
-        characterForm.nvg_b = parseInt(nvgParts[2]) || 0
-      }
-    }
+    console.log('DEBUG - Después de procesar skin:')
+    console.log('  skin_r:', characterForm.skin_r)
+    console.log('  skin_g:', characterForm.skin_g)
+    console.log('  skin_b:', characterForm.skin_b)
+    
+    // Para cntag y crtag, usar el valor que viene o 255 si es 0/null
+    characterForm.cntag_r = (selectedCharacter.value.cntag_r === 0 || selectedCharacter.value.cntag_r === null) ? 255 : selectedCharacter.value.cntag_r
+    characterForm.cntag_g = (selectedCharacter.value.cntag_g === 0 || selectedCharacter.value.cntag_g === null) ? 255 : selectedCharacter.value.cntag_g
+    characterForm.cntag_b = (selectedCharacter.value.cntag_b === 0 || selectedCharacter.value.cntag_b === null) ? 255 : selectedCharacter.value.cntag_b
+    
+    characterForm.crtag_r = (selectedCharacter.value.crtag_r === 0 || selectedCharacter.value.crtag_r === null) ? 255 : selectedCharacter.value.crtag_r
+    characterForm.crtag_g = (selectedCharacter.value.crtag_g === 0 || selectedCharacter.value.crtag_g === null) ? 255 : selectedCharacter.value.crtag_g
+    characterForm.crtag_b = (selectedCharacter.value.crtag_b === 0 || selectedCharacter.value.crtag_b === null) ? 255 : selectedCharacter.value.crtag_b
+    
+    // NVG - usar valores por defecto si son 0 o null
+    characterForm.nvg_r = (selectedCharacter.value.nvg_r === 0 || selectedCharacter.value.nvg_r === null) ? 255 : selectedCharacter.value.nvg_r
+    characterForm.nvg_g = (selectedCharacter.value.nvg_g === 0 || selectedCharacter.value.nvg_g === null) ? 165 : selectedCharacter.value.nvg_g
+    characterForm.nvg_b = (selectedCharacter.value.nvg_b === 0 || selectedCharacter.value.nvg_b === null) ? 0 : selectedCharacter.value.nvg_b
     
     showEditForm.value = true
     showCreateForm.value = false
@@ -1317,18 +1362,42 @@ const closeFormView = () => {
 }
 
 const resetCharacterForm = () => {
-  Object.keys(characterForm).forEach(key => {
-    if (key === 'rhat') {
-      characterForm[key] = false
-    } else if (key.startsWith('nvg_') || key.startsWith('skin_') || key.startsWith('cntag_') || key.startsWith('crtag_')) {
-      if (key === 'nvg_r') characterForm[key] = 255
-      else if (key === 'nvg_g') characterForm[key] = 165
-      else if (key === 'nvg_b') characterForm[key] = 0
-      else characterForm[key] = null
-    } else {
-      characterForm[key] = ''
-    }
-  })
+  characterForm.first_name = ''
+  characterForm.last_name = ''
+  characterForm.country = ''
+  characterForm.birth_date = ''
+  characterForm.codename = ''
+  characterForm.faction = ''
+  characterForm.morph = ''
+  characterForm.hat = ''
+  characterForm.shirt = ''
+  characterForm.pants = ''
+  characterForm.ntag = ''
+  characterForm.rtag = ''
+  characterForm.lore = ''
+  characterForm.rhat = false
+  
+  // Campos de color - inicializar EXPLÍCITAMENTE
+  // NVG con valores por defecto
+  characterForm.nvg_r = 255
+  characterForm.nvg_g = 165
+  characterForm.nvg_b = 0
+  
+  // SKIN como null (no 0, no valores por defecto)
+  characterForm.skin_r = null
+  characterForm.skin_g = null
+  characterForm.skin_b = null
+  
+  // CNTag y CRTag con valores por defecto (255)
+  characterForm.cntag_r = 255
+  characterForm.cntag_g = 255
+  characterForm.cntag_b = 255
+  
+  characterForm.crtag_r = 255
+  characterForm.crtag_g = 255
+  characterForm.crtag_b = 255
+  
+  console.log('DEBUG - Formulario reseteado, skin establecido como null')
 }
 
 const renderMarkdown = (text) => {
@@ -1402,6 +1471,7 @@ const submitCharacterForm = async () => {
   try {
     const formData = { ...characterForm }
 
+    // Manejar fecha
     if (formData.birth_date) {
       const parts = formData.birth_date.split('/')
       if (parts.length === 3) {
@@ -1415,11 +1485,44 @@ const submitCharacterForm = async () => {
       }
     }
     
+    // CAMBIO CRÍTICO: Procesar campos numéricos para mantener null correctamente
     const numericFields = ['nvg_r', 'nvg_g', 'nvg_b', 'skin_r', 'skin_g', 'skin_b', 'cntag_r', 'cntag_g', 'cntag_b', 'crtag_r', 'crtag_g', 'crtag_b']
+    
+    // Debug: Mostrar valores antes de procesar
+    console.log('DEBUG - Valores de skin antes de procesar:')
+    console.log('  skin_r:', characterForm.skin_r, 'tipo:', typeof characterForm.skin_r)
+    console.log('  skin_g:', characterForm.skin_g, 'tipo:', typeof characterForm.skin_g)
+    console.log('  skin_b:', characterForm.skin_b, 'tipo:', typeof characterForm.skin_b)
+    
     numericFields.forEach(field => {
-      formData[field] = formData[field] === '' ? null : Number(formData[field])
+      const value = formData[field]
+      
+      // Si es null, undefined o string vacío, mantener como null
+      if (value === null || value === undefined || value === '') {
+        formData[field] = null
+        console.log(`DEBUG - Campo ${field}: establecido como NULL`)
+      } 
+      // Si es 0 y es un campo de skin, mantener como null (0 significa "vacío" para skin)
+      else if (field.startsWith('skin_') && value === 0) {
+        formData[field] = null
+        console.log(`DEBUG - Campo ${field} (skin): 0 convertido a NULL`)
+      }
+      // Para otros campos numéricos, convertir a número
+      else {
+        const numValue = Number(value)
+        formData[field] = isNaN(numValue) ? null : numValue
+        console.log(`DEBUG - Campo ${field}: convertido a ${formData[field]} (tipo: ${typeof formData[field]})`)
+      }
     })
     
+    // Debug: Mostrar valores después de procesar
+    console.log('DEBUG - Valores de skin después de procesar:')
+    console.log('  skin_r:', formData.skin_r, 'tipo:', typeof formData.skin_r)
+    console.log('  skin_g:', formData.skin_g, 'tipo:', typeof formData.skin_g)
+    console.log('  skin_b:', formData.skin_b, 'tipo:', typeof formData.skin_b)
+    console.log('DEBUG - Todos los datos a enviar:', formData)
+    
+    // Verificar que al menos un campo de morph esté definido
     const morphFields = [
       formData.morph,
       formData.hat,
@@ -1440,6 +1543,7 @@ const submitCharacterForm = async () => {
       return
     }
     
+    // Determinar endpoint y método
     let endpoint = '/api/characters/create/'
     let method = 'POST'
     
@@ -1460,6 +1564,7 @@ const submitCharacterForm = async () => {
       return
     }
     
+    // Enviar datos
     const response = await fetch(endpoint, {
       method: method,
       headers: {
@@ -1490,12 +1595,13 @@ const submitCharacterForm = async () => {
       // Mostrar errores de validación específicos
       if (data.errors) {
         formErrors.value = data.errors
-        // También mostrar el primer error como notificación
-        const firstError = Object.entries(data.errors)[0]
-        if (firstError) {
+        
+        // Mostrar cada error individualmente con el nombre del campo traducido
+        for (const [field, error] of Object.entries(data.errors)) {
+          const fieldName = translateFieldName(field)
           showNotification(
-            `ERROR EN ${firstError[0].toUpperCase()}`,
-            firstError[1],
+            `ERROR EN ${fieldName}`,
+            translateErrorMessage(error),
             'error',
             5000
           )
@@ -1504,7 +1610,7 @@ const submitCharacterForm = async () => {
         // Error general
         showNotification(
           'ERROR',
-          data.error || `Error ${response.status}: ${response.statusText}`,
+          translateErrorMessage(data.error || `Error ${response.status}: ${response.statusText}`),
           'error',
           6000
         )
@@ -1543,18 +1649,14 @@ const isCharacterOwner = computed(() => {
     return false
   }
   
-  // Verifica si el usuario actual es el owner del personaje
-  // Esto depende de cómo esté estructurada tu data
   if (selectedCharacter.value.owner_id) {
     return currentUser.value.id === selectedCharacter.value.owner_id
   }
   
-  // Si tienes un campo is_owner en la respuesta de la API
   if (selectedCharacter.value.is_owner !== undefined) {
     return selectedCharacter.value.is_owner
   }
   
-  // Si tienes el owner_roblox_id
   if (selectedCharacter.value.owner_roblox_id) {
     return currentUser.value.roblox_id === selectedCharacter.value.owner_roblox_id
   }
@@ -1574,6 +1676,7 @@ const deleteCharacter = async () => {
         'error',
         6000
       )
+      return
     }
     
     const response = await fetch(`/api/characters/${selectedCharacter.value.id}/delete/`, {
@@ -1598,7 +1701,7 @@ const deleteCharacter = async () => {
       const data = await response.json()
       showNotification(
         'ERROR DE ELIMINACIÓN',
-        data.error || 'Error al eliminar el agente',
+        translateErrorMessage(data.error || 'Error al eliminar el agente'),
         'error',
         6000
       )
@@ -1607,7 +1710,7 @@ const deleteCharacter = async () => {
     console.error('Error deleting character:', error)
     showNotification(
       'ERROR DE ELIMINACIÓN',
-      data.error || 'Error al eliminar el agente',
+      'Error al eliminar el agente',
       'error',
       6000
     )
@@ -1678,12 +1781,83 @@ const fetchCurrentUser = async () => {
 const notifications = ref([])
 let notificationId = 0
 
+const errorMessageTranslations = {
+  'This field is required.': 'Este campo es requerido.',
+  'Enter a valid date.': 'Ingrese una fecha válida.',
+  'Ensure this value is less than or equal to 255.': 'El valor debe ser menor o igual a 255.',
+  'Ensure this value is greater than or equal to 0.': 'El valor debe ser mayor o igual a 0.',
+  'At least one morph field must be defined.': 'Al menos un campo de morph debe estar definido.',
+  'The value of skin_r must be between 0 and 255': 'El valor de skin_r debe estar entre 0 y 255',
+  'The value of skin_g must be between 0 and 255': 'El valor de skin_g debe estar entre 0 y 255',
+  'The value of skin_b must be between 0 and 255': 'El valor de skin_b debe estar entre 0 y 255',
+  'The value of cntag_r must be between 0 and 255': 'El valor de cntag_r debe estar entre 0 y 255',
+  'The value of cntag_g must be between 0 and 255': 'El valor de cntag_g debe estar entre 0 y 255',
+  'The value of cntag_b must be between 0 and 255': 'El valor de cntag_b debe estar entre 0 y 255',
+  'The value of crtag_r must be between 0 and 255': 'El valor de crtag_r debe estar entre 0 y 255',
+  'The value of crtag_g must be between 0 and 255': 'El valor de crtag_g debe estar entre 0 y 255',
+  'The value of crtag_b must be between 0 and 255': 'El valor de crtag_b debe estar entre 0 y 255',
+  'This codename is already in use.': 'Este codename ya está en uso.',
+  'El codename no puede exceder los 32 caracteres.': 'El codename no puede exceder los 32 caracteres.',
+  'El nombre no puede exceder los 64 caracteres.': 'El nombre no puede exceder los 64 caracteres.',
+  'El apellido no puede exceder los 64 caracteres.': 'El apellido no puede exceder los 64 caracteres.',
+  'El país no puede exceder los 64 caracteres.': 'El país no puede exceder los 64 caracteres.',
+  'La facción no puede exceder los 32 caracteres.': 'La facción no puede exceder los 32 caracteres.',
+  'El lore no puede exceder los 5000 caracteres.': 'El lore no puede exceder los 5000 caracteres.',
+}
+
+// Función para traducir mensajes de error
+const translateErrorMessage = (error) => {
+  if (!error) return 'Error desconocido'
+  
+  // Buscar coincidencias exactas
+  if (errorMessageTranslations[error]) {
+    return errorMessageTranslations[error]
+  }
+  
+  // Buscar patrones
+  for (const [key, translation] of Object.entries(errorMessageTranslations)) {
+    if (error.includes(key)) {
+      return error.replace(key, translation)
+    }
+  }
+  
+  return error
+}
+
+// Función para manejar inputs de color
+const handleColorInput = (field, event) => {
+  const value = event.target.value
+  
+  // Si el campo está vacío, establecer como null
+  if (value === '' || value === null || value === undefined) {
+    characterForm[field] = null
+    console.log(`DEBUG - Input ${field}: vacío -> establecido como null`)
+  } else {
+    // Convertir a número y limitar entre 0-255
+    const numValue = parseInt(value)
+    if (isNaN(numValue)) {
+      characterForm[field] = null
+      console.log(`DEBUG - Input ${field}: NaN -> establecido como null`)
+    } else {
+      characterForm[field] = Math.min(Math.max(numValue, 0), 255)
+      console.log(`DEBUG - Input ${field}: establecido como ${characterForm[field]}`)
+    }
+  }
+}
+
 const showNotification = (title, message, type = 'info', duration = 5000) => {
   const id = ++notificationId
+  
+  // Traducir el título si es un campo
+  const translatedTitle = fieldTranslations[title] || title
+  
+  // Traducir el mensaje si es un error
+  const translatedMessage = type === 'error' ? translateErrorMessage(message) : message
+  
   notifications.value.push({
     id,
-    title,
-    message,
+    title: translatedTitle,
+    message: translatedMessage,
     type,
     duration,
     paused: false
@@ -1724,7 +1898,6 @@ watch(searchQuery, () => {
 
 watch(showEditForm, (newValue) => {
   if (newValue && selectedCharacter.value) {
-    openEditForm()
   }
 })
 
@@ -3183,12 +3356,14 @@ onMounted(() => {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 1rem;
+  min-height: 0;
 }
 
 .detail-item {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+  min-height: 0;
 }
 
 .detail-label {
@@ -3203,6 +3378,30 @@ onMounted(() => {
   font-size: 1rem;
   color: #ddd;
   font-weight: 500;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  max-height: 100%; 
+  overflow: visible;
+  text-overflow: clip;
+  display: block;
+  line-height: 1.4;
+}
+
+.detail-value:not(.highlight):not(.faction):not(.owner-link) {
+  min-height: 1.4em; /* Altura mínima para una línea */
+  max-height: none; /* Elimina limitación máxima */
+}
+
+.detail-value.long-text {
+  word-break: break-word;
+  overflow: visible;
+  max-height: none;
+  min-height: 2.8em; /* Permite al menos 2 líneas */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: unset; /* Elimina el límite de líneas */
+  overflow: visible;
 }
 
 .detail-value.highlight {
@@ -4180,6 +4379,7 @@ onMounted(() => {
   align-items: center;
   gap: 1rem;
   flex-wrap: wrap;
+  min-height: 0;
 }
 
 .owner-link {

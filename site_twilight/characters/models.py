@@ -125,8 +125,7 @@ class Character(models.Model):
         if self.nvg_color:
             cmds.append(f"permcolornvg {username} {self.nvg_color}")
         
-        # CAMBIO: Añadir comando skin si hay valores RGB
-        if None not in (self.skin_r, self.skin_g, self.skin_b):
+        if all(v is not None for v in [self.skin_r, self.skin_g, self.skin_b]):
             cmds.append(
                 f"permskin {username} "
                 f"{self.skin_r} {self.skin_g} {self.skin_b}"
@@ -137,10 +136,10 @@ class Character(models.Model):
             ntag_escaped = self.ntag.replace('"', '\\"')
             cmds.append(f'permntag {username} "{ntag_escaped}"')
         
-        # CAMBIO: Usar valores por defecto 255 255 255 si están nulos
-        cntag_r = self.cntag_r if self.cntag_r is not None else 255
-        cntag_g = self.cntag_g if self.cntag_g is not None else 255
-        cntag_b = self.cntag_b if self.cntag_b is not None else 255
+        # CNTag - usar defaults solo si son 0
+        cntag_r = self.cntag_r if self.cntag_r != 0 else 255
+        cntag_g = self.cntag_g if self.cntag_g != 0 else 255
+        cntag_b = self.cntag_b if self.cntag_b != 0 else 255
         
         cmds.append(
             f"permcntag {username} "
@@ -152,10 +151,10 @@ class Character(models.Model):
             rtag_escaped = self.rtag.replace('"', '\\"')
             cmds.append(f"permrtag {username} \"{rtag_escaped}\"")
         
-        # CAMBIO: Usar valores por defecto 255 255 255 si están nulos
-        crtag_r = self.crtag_r if self.crtag_r is not None else 255
-        crtag_g = self.crtag_g if self.crtag_g is not None else 255
-        crtag_b = self.crtag_b if self.crtag_b is not None else 255
+        # CRTag - usar defaults solo si son 0
+        crtag_r = self.crtag_r if self.crtag_r != 0 else 255
+        crtag_g = self.crtag_g if self.crtag_g != 0 else 255
+        crtag_b = self.crtag_b if self.crtag_b != 0 else 255
         
         cmds.append(
             f"permcrtag {username} "
@@ -171,14 +170,28 @@ class Character(models.Model):
         return f"{self.codename} ({self.owner})"
     
     def to_dict(self):
-        # Usar defaults para cntag y crtag si son nulos
-        cntag_r = self.cntag_r if self.cntag_r is not None else 255
-        cntag_g = self.cntag_g if self.cntag_g is not None else 255
-        cntag_b = self.cntag_b if self.cntag_b is not None else 255
+        skin_data = {
+            "skin_r": self.skin_r,
+            "skin_g": self.skin_g,
+            "skin_b": self.skin_b,
+        }
         
-        crtag_r = self.crtag_r if self.crtag_r is not None else 255
-        crtag_g = self.crtag_g if self.crtag_g is not None else 255
-        crtag_b = self.crtag_b if self.crtag_b is not None else 255
+        cntag_data = {
+            "cntag_r": 255 if self.cntag_r is None else self.cntag_r,
+            "cntag_g": 255 if self.cntag_g is None else self.cntag_g,
+            "cntag_b": 255 if self.cntag_b is None else self.cntag_b,
+        }
+        
+        crtag_data = {
+            "crtag_r": 255 if self.crtag_r is None else self.crtag_r,
+            "crtag_g": 255 if self.crtag_g is None else self.crtag_g,
+            "crtag_b": 255 if self.crtag_b is None else self.crtag_b,
+        }
+        
+        # Si nvg_color está vacío pero tenemos valores RGB separados
+        nvg_color = self.nvg_color
+        if not nvg_color and self.nvg_r is not None:
+            nvg_color = f"{self.nvg_r},{self.nvg_g},{self.nvg_b}"
         
         return {
             "id": self.id,
@@ -194,20 +207,17 @@ class Character(models.Model):
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "morph": self.morph,
             "hat": self.hat,
-            "nvg_color": self.nvg_color,
+            "nvg_color": nvg_color,
+            "nvg_r": self.nvg_r if self.nvg_r is not None else 255,
+            "nvg_g": self.nvg_g if self.nvg_g is not None else 165,
+            "nvg_b": self.nvg_b if self.nvg_b is not None else 0,
             "shirt": self.shirt,
             "pants": self.pants,
-            "skin_r": self.skin_r,
-            "skin_g": self.skin_g,
-            "skin_b": self.skin_b,
+            **skin_data,
             "ntag": self.ntag,
-            "cntag_r": cntag_r,
-            "cntag_g": cntag_g,
-            "cntag_b": cntag_b,
+            **cntag_data,
             "rtag": self.rtag,
-            "crtag_r": crtag_r, 
-            "crtag_g": crtag_g, 
-            "crtag_b": crtag_b, 
+            **crtag_data,
             "rhat": self.rhat,
             "morph_command": self.morph_command(),
         }
