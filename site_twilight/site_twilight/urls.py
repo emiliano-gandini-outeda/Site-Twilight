@@ -24,6 +24,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("accounts/", include("users.urls")),
     path("api/", include("core.urls")),
+    path("api/", include("users.urls")),
     re_path(r'^(?!admin|accounts|api).*$', views.spa_view),
 ]
 

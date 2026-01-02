@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.utils import timezone
+from datetime import timedelta
 from .permissions import STAFF_PERMISSIONS
 
 # Create your models here.
@@ -42,25 +44,104 @@ class User(AbstractUser):
     first_login = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(auto_now=True)
 
+    # Moderación fields
+    warning_count = models.PositiveIntegerField(default=0)
+    is_banned = models.BooleanField(default=False)
+    ban_reason = models.TextField(blank=True)
+    banned_until = models.DateTimeField(null=True, blank=True)
+    banned_by = models.ForeignKey(
+        'self',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="banned_users"
+    )
 
     # Not RP related, only Django Backend
     is_staff = models.BooleanField(default=False)      # Django admin
     is_superuser = models.BooleanField(default=False)  # Django super admin
 
     def has_permission(self, permission: str) -> bool:
+        print(f"Checking permission '{permission}' for user {self.username}")  # Debug
+        
+        # Check superuser first
+        if self.is_superuser:
+            print("User is superuser - all permissions granted")
+            return True
+        
+        # Check staff permissions
         for role in self.staff_roles.all():
             perms_by_level = STAFF_PERMISSIONS.get(role.scope, {})
             for lvl in range(1, role.level + 1):
                 if permission in perms_by_level.get(lvl, set()):
+                    print(f"Permission '{permission}' found in role {role.scope} level {lvl}")
                     return True
+        
+        print(f"Permission '{permission}' not found for user")
         return False
+
+    def update_warning_count(self):
+        """Actualiza el conteo de warns activos (no expirados, no apelados)"""
+        active_warns = self.warns.filter(
+            appealed=False,
+            expires_at__gt=timezone.now()
+        )
+        self.warning_count = active_warns.count()
+        self.save(update_fields=['warning_count'])
+        return self.warning_count
+
+    def check_ban_status(self):
+        """Verifica si el ban ha expirado y lo limpia si es necesario"""
+        if self.is_banned and self.banned_until:
+            if timezone.now() > self.banned_until:
+                self.is_banned = False
+                self.ban_reason = ""
+                self.banned_until = None
+                self.banned_by = None
+                self.save()
+                return False
+        return self.is_banned
 
     def __str__(self):
         return f'Usuario {self.roblox_username} #{self.roblox_id}'
+    
+    def get_appeal_cooldown(self):
+        """Verifica si el usuario puede apelar (máximo 1 por semana)"""
+        from django.utils import timezone
+        from datetime import timedelta
+        
+        # Buscar la última apelación (warn o ban)
+        last_warn_appeal = self.warns.filter(appealed=True).order_by('-appealed_at').first()
+        last_ban_appeal = self.bans_received.filter(appealed=True).order_by('-appealed_at').first()
+        
+        # Encontrar la apelación más reciente
+        last_appeal_date = None
+        if last_warn_appeal and last_warn_appeal.appealed_at:
+            last_appeal_date = last_warn_appeal.appealed_at
+        if last_ban_appeal and last_ban_appeal.appealed_at:
+            if not last_appeal_date or last_ban_appeal.appealed_at > last_appeal_date:
+                last_appeal_date = last_ban_appeal.appealed_at
+        
+        if last_appeal_date:
+            # Verificar si ha pasado una semana
+            cooldown_end = last_appeal_date + timedelta(days=7)
+            if timezone.now() < cooldown_end:
+                return {
+                    "can_appeal": False,
+                    "cooldown_ends": cooldown_end.isoformat(),
+                    "reason": f"Debes esperar hasta {cooldown_end.strftime('%d/%m/%Y %H:%M')} para apelar nuevamente"
+                }
+        
+        return {
+            "can_appeal": True,
+            "cooldown_ends": None,
+            "reason": None
+        }
 
 class StaffRole(models.Model):
     class Scope(models.TextChoices):
         GLOBAL = "global", "Moderation Lead"
+        MODERATION = "moderation", "Moderación General"
         INGAME = "ingame", "In-Game Moderation"
         DISCORD = "discord", "Discord Moderation"
         ROLEPLAY = "roleplay", "Roleplay Moderation"
@@ -89,6 +170,12 @@ class StaffRole(models.Model):
         return f"{self.user} | {self.scope} L{self.level}"
 
 class Warn(models.Model):
+    class WarnStatus(models.TextChoices):
+        ACTIVE = "active", "Activo"
+        EXPIRED = "expired", "Expirado"
+        APPEALED = "appealed", "Apelado"
+        REMOVED = "removed", "Removido"
+
     target = models.ForeignKey(
         "users.User",
         on_delete=models.CASCADE,
@@ -103,10 +190,447 @@ class Warn(models.Model):
     )
 
     reason = models.TextField()
+    evidence = models.TextField(blank=True, help_text="Enlaces a evidencia (Discord, videos, etc.)")
     created_at = models.DateTimeField(auto_now_add=True)
-
-    # opcional
+    
+    # Sistema de apelación
+    appealed = models.BooleanField(default=False)
+    appealed_at = models.DateTimeField(null=True, blank=True)
+    appealed_by = models.ForeignKey(
+        "users.User",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="appealed_warns"
+    )
+    appeal_response = models.TextField(blank=True, help_text="Respuesta del moderador a la apelación")
+    appeal_responded_by = models.ForeignKey(
+        "users.User",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="responded_appeals"
+    )
+    appeal_responded_at = models.DateTimeField(null=True, blank=True)
+    
+    # Expiración
     expires_at = models.DateTimeField(null=True, blank=True)
+    expires_after_days = models.PositiveIntegerField(default=30, help_text="Días hasta que expire el warn")
+    
+    # Metadatos
+    severity = models.PositiveSmallIntegerField(
+        default=1,
+        choices=[(1, "Bajo"), (2, "Medio"), (3, "Alto")],
+        help_text="Severidad del warn"
+    )
+    status = models.CharField(
+        max_length=20,
+        choices=WarnStatus.choices,
+        default=WarnStatus.ACTIVE
+    )
+    
+    # Nuevos campos para control de apelaciones
+    appeal_message = models.TextField(blank=True, help_text="Mensaje de apelación del usuario")
+    last_appealed = models.DateTimeField(null=True, blank=True, help_text="Última vez que se apeló")
 
+    class Meta:
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['target', 'status']),
+            models.Index(fields=['expires_at']),
+        ]
+
+    def save(self, *args, **kwargs):
+        """Set expires_at if not set"""
+        if not self.expires_at and self.expires_after_days:
+            self.expires_at = timezone.now() + timedelta(days=self.expires_after_days)
+        
+        is_new = self.pk is None
+        super().save(*args, **kwargs)
+        
+        if is_new:
+            # Actualizar conteo de warns del usuario
+            self.target.update_warning_count()
+    
+    def check_expiration(self):
+        """Verifica si el warn ha expirado"""
+        if self.expires_at and timezone.now() > self.expires_at and self.status == self.WarnStatus.ACTIVE:
+            self.status = self.WarnStatus.EXPIRED
+            self.save(update_fields=['status'])
+            self.target.update_warning_count()
+            return True
+        return False
+    
+    def can_be_appealed(self):
+        """Verifica si este warn puede ser apelado"""
+        from django.utils import timezone
+        from datetime import timedelta
+        
+        # No apelar si ya está apelado
+        if self.appealed:
+            return False, "Ya has apelado esta advertencia"
+        
+        # Verificar cooldown del usuario
+        user_cooldown = self.target.get_appeal_cooldown()
+        if not user_cooldown["can_appeal"]:
+            return False, user_cooldown["reason"]
+        
+        # Verificar si el warn está activo
+        if self.status != self.WarnStatus.ACTIVE:
+            return False, "Esta advertencia no está activa"
+        
+        # Verificar si no ha expirado
+        if self.expires_at and timezone.now() > self.expires_at:
+            return False, "Esta advertencia ha expirado"
+        
+        return True, "Puede ser apelado"
+    
+    def appeal(self, appealed_by=None, appeal_message=""):
+        """Marca el warn como apelado con cooldown"""
+        from django.utils import timezone
+        
+        can_appeal, reason = self.can_be_appealed()
+        if not can_appeal:
+            raise ValueError(reason)
+        
+        self.appealed = True
+        self.appealed_at = timezone.now()
+        self.last_appealed = timezone.now()
+        self.appeal_message = appeal_message
+        if appealed_by:
+            self.appealed_by = appealed_by
+        self.save()
+        self.target.update_warning_count()
+        
+        return True
+    
+    def respond_to_appeal(self, response, responder):
+        """Responde a una apelación"""
+        if self.appealed:
+            self.appeal_response = response
+            self.appeal_responded_by = responder
+            self.appeal_responded_at = timezone.now()
+            
+            # Si se acepta la apelación, marcar como removido
+            if "aceptado" in response.lower() or "aceptada" in response.lower():
+                self.status = self.WarnStatus.REMOVED
+                self.target.update_warning_count()
+            
+            self.save()
+    
+    @property
+    def is_active(self):
+        return self.status == self.WarnStatus.ACTIVE and not self.appealed
+    
     def __str__(self):
-        return f"Warn -> {self.target.roblox_username}"
+        return f"Warn #{self.id} -> {self.target.roblox_username}"
+
+
+class Ban(models.Model):
+    class BanType(models.TextChoices):
+        TEMPORARY = "temporary", "Temporal"
+        PERMANENT = "permanent", "Permanente"
+
+    target = models.ForeignKey(
+        "users.User",
+        on_delete=models.CASCADE,
+        related_name="bans_received"
+    )
+
+    created_by = models.ForeignKey(
+        "users.User",
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="issued_bans"
+    )
+
+    reason = models.TextField()
+    evidence = models.TextField(blank=True, help_text="Enlaces a evidencia")
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    # Duración del ban
+    ban_type = models.CharField(
+        max_length=20,
+        choices=BanType.choices,
+        default=BanType.TEMPORARY
+    )
+    duration_days = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        help_text="Duración en días (solo para bans temporales)"
+    )
+    ends_at = models.DateTimeField(null=True, blank=True)
+    
+    # Sistema de apelación
+    can_appeal = models.BooleanField(default=True)
+    appealed = models.BooleanField(default=False)
+    appealed_at = models.DateTimeField(null=True, blank=True)
+    appeal_response = models.TextField(blank=True)
+    appeal_responded_by = models.ForeignKey(  # Asegúrate de que este campo existe
+        "users.User",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="responded_ban_appeals"  # Usa un related_name diferente
+    )
+    appeal_responded_at = models.DateTimeField(null=True, blank=True)
+    
+    # Estado
+    is_active = models.BooleanField(default=True)
+    revoked_at = models.DateTimeField(null=True, blank=True)
+    revoked_by = models.ForeignKey(
+        "users.User",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="revoked_bans"
+    )
+    revocation_reason = models.TextField(blank=True)
+    
+    # Nuevo campo para mensaje de apelación
+    appeal_message = models.TextField(blank=True, help_text="Mensaje de apelación del usuario")
+
+    class Meta:
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['target', 'is_active']),
+            models.Index(fields=['ends_at']),
+        ]
+
+    def save(self, *args, **kwargs):
+        """Configura fechas y actualiza estado del usuario"""
+        if self.ban_type == Ban.BanType.TEMPORARY and self.duration_days and not self.ends_at:
+            self.ends_at = timezone.now() + timedelta(days=self.duration_days)
+        
+        is_new = self.pk is None
+        super().save(*args, **kwargs)
+        
+        if is_new and self.is_active:
+            # Actualizar estado del usuario
+            self.target.is_banned = True
+            self.target.ban_reason = self.reason
+            self.target.banned_until = self.ends_at
+            self.target.banned_by = self.created_by
+            self.target.save()
+    
+    def revoke(self, revoker, reason=""):
+        """Revoca un ban activo"""
+        if self.is_active:
+            self.is_active = False
+            self.revoked_at = timezone.now()
+            self.revoked_by = revoker
+            self.revocation_reason = reason
+            self.save()
+            
+            # Actualizar estado del usuario
+            self.target.is_banned = False
+            self.target.ban_reason = ""
+            self.target.banned_until = None
+            self.target.banned_by = None
+            self.target.save()
+    
+    def check_expiration(self):
+        """Verifica si un ban temporal ha expirado"""
+        if self.ban_type == Ban.BanType.TEMPORARY and self.ends_at and self.is_active:
+            if timezone.now() > self.ends_at:
+                self.revoke(
+                    revoker=None,
+                    reason="Expirado automáticamente"
+                )
+                return True
+        return False
+    
+    def can_be_appealed(self):
+        """Verifica si este ban puede ser apelado"""
+        from django.utils import timezone
+        
+        # Verificar si permite apelación
+        if not self.can_appeal:
+            return False, "Este baneo no permite apelaciones"
+        
+        # No apelar si ya está apelado
+        if self.appealed:
+            return False, "Ya has apelado este baneo"
+        
+        # Verificar si está activo
+        if not self.is_active:
+            return False, "Este baneo no está activo"
+        
+        # Verificar cooldown del usuario
+        user_cooldown = self.target.get_appeal_cooldown()
+        if not user_cooldown["can_appeal"]:
+            return False, user_cooldown["reason"]
+        
+        return True, "Puede ser apelado"
+    
+    def appeal(self, appealed_by=None, appeal_message=""):
+        """Marca el ban como apelado"""
+        from django.utils import timezone
+        
+        can_appeal, reason = self.can_be_appealed()
+        if not can_appeal:
+            raise ValueError(reason)
+        
+        self.appealed = True
+        self.appealed_at = timezone.now()
+        self.appeal_message = appeal_message
+        self.save()
+        
+        return True
+    
+    @property
+    def is_permanent(self):
+        return self.ban_type == Ban.BanType.PERMANENT
+    
+    def __str__(self):
+        ban_type = "Permanente" if self.is_permanent else "Temporal"
+        return f"Ban {ban_type} -> {self.target.roblox_username}"
+    class BanType(models.TextChoices):
+        TEMPORARY = "temporary", "Temporal"
+        PERMANENT = "permanent", "Permanente"
+
+    target = models.ForeignKey(
+        "users.User",
+        on_delete=models.CASCADE,
+        related_name="bans_received"
+    )
+
+    created_by = models.ForeignKey(
+        "users.User",
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="issued_bans"
+    )
+
+    reason = models.TextField()
+    evidence = models.TextField(blank=True, help_text="Enlaces a evidencia")
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    # Duración del ban
+    ban_type = models.CharField(
+        max_length=20,
+        choices=BanType.choices,
+        default=BanType.TEMPORARY
+    )
+    duration_days = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        help_text="Duración en días (solo para bans temporales)"
+    )
+    ends_at = models.DateTimeField(null=True, blank=True)
+    
+    # Sistema de apelación
+    can_appeal = models.BooleanField(default=True)
+    appealed = models.BooleanField(default=False)
+    appealed_at = models.DateTimeField(null=True, blank=True)
+    appeal_response = models.TextField(blank=True)
+    
+    # Estado
+    is_active = models.BooleanField(default=True)
+    revoked_at = models.DateTimeField(null=True, blank=True)
+    revoked_by = models.ForeignKey(
+        "users.User",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="revoked_bans"
+    )
+    revocation_reason = models.TextField(blank=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['target', 'is_active']),
+            models.Index(fields=['ends_at']),
+        ]
+
+    def save(self, *args, **kwargs):
+        """Configura fechas y actualiza estado del usuario"""
+        if self.ban_type == Ban.BanType.TEMPORARY and self.duration_days and not self.ends_at:
+            self.ends_at = timezone.now() + timedelta(days=self.duration_days)
+        
+        is_new = self.pk is None
+        super().save(*args, **kwargs)
+        
+        if is_new and self.is_active:
+            # Actualizar estado del usuario
+            self.target.is_banned = True
+            self.target.ban_reason = self.reason
+            self.target.banned_until = self.ends_at
+            self.target.banned_by = self.created_by
+            self.target.save()
+    
+    def revoke(self, revoker, reason=""):
+        """Revoca un ban activo"""
+        if self.is_active:
+            self.is_active = False
+            self.revoked_at = timezone.now()
+            self.revoked_by = revoker
+            self.revocation_reason = reason
+            self.save()
+            
+            # Actualizar estado del usuario
+            self.target.is_banned = False
+            self.target.ban_reason = ""
+            self.target.banned_until = None
+            self.target.banned_by = None
+            self.target.save()
+    
+    def check_expiration(self):
+        """Verifica si un ban temporal ha expirado"""
+        if self.ban_type == Ban.BanType.TEMPORARY and self.ends_at and self.is_active:
+            if timezone.now() > self.ends_at:
+                self.revoke(
+                    revoker=None,
+                    reason="Expirado automáticamente"
+                )
+                return True
+        return False
+    
+    @property
+    def is_permanent(self):
+        return self.ban_type == Ban.BanType.PERMANENT
+    
+    def __str__(self):
+        ban_type = "Permanente" if self.is_permanent else "Temporal"
+        return f"Ban {ban_type} -> {self.target.roblox_username}"
+
+    appeal_message = models.TextField(blank=True, help_text="Mensaje de apelación del usuario")
+    
+    def can_be_appealed(self):
+        """Verifica si este ban puede ser apelado"""
+        from django.utils import timezone
+        
+        # Verificar si permite apelación
+        if not self.can_appeal:
+            return False, "Este baneo no permite apelaciones"
+        
+        # No apelar si ya está apelado
+        if self.appealed:
+            return False, "Ya has apelado este baneo"
+        
+        # Verificar si está activo
+        if not self.is_active:
+            return False, "Este baneo no está activo"
+        
+        # Verificar cooldown del usuario
+        user_cooldown = self.target.get_appeal_cooldown()
+        if not user_cooldown["can_appeal"]:
+            return False, user_cooldown["reason"]
+        
+        return True, "Puede ser apelado"
+    
+    def appeal(self, appealed_by=None, appeal_message=""):
+        """Marca el ban como apelado"""
+        from django.utils import timezone
+        
+        can_appeal, reason = self.can_be_appealed()
+        if not can_appeal:
+            raise ValueError(reason)
+        
+        self.appealed = True
+        self.appealed_at = timezone.now()
+        self.appeal_message = appeal_message
+        self.save()
+        
+        return True

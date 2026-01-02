@@ -8,6 +8,10 @@ import Error_404 from "@/views/Error_404.vue"
 import Dashboard from "@/views/Dashboard.vue"
 import Personajes from "@/views/Personajes.vue"
 import Perfil from "@/views/Perfil.vue"
+import Moderacion from "@/views/Moderacion.vue"
+import Moderacion_Global from "@/views/Moderacion_Global.vue"
+import Adminpermissions from "@/views/Adminpermissions.vue"
+import Appeals from "@/views/Appeals.vue"
 
 /* import CharacterCreate from "@/views/CharacterCreate.vue"
 import CharacterList from "@/views/CharacterList.vue"
@@ -36,7 +40,6 @@ const routes = [
     path: '/dashboard',
     name: 'dashboard',
     component: Dashboard,
-    meta: { requiresAuth: true }
   },
   {
     path: '/dashboard/personnel',
@@ -54,6 +57,35 @@ const routes = [
       requiresAuth: true,  // Solo usuarios autenticados pueden ver perfiles
     },
     props: true,  // Pasa los parámetros de ruta como props al componente
+  },
+  {
+    path: '/moderation',
+    name: 'Moderacion',
+    component: Moderacion,
+    meta: { 
+      requiresAuth: true,
+    }
+  },
+  {
+    path: '/moderation/global',
+    name: 'Moderacion_Global',
+    component: Moderacion_Global,
+    meta: { 
+      requiresAuth: true,
+      requiresModeration: true 
+    }
+  },
+  {
+    path: '/moderation/admin/permissions',
+    name: 'AdminPermissions',
+    component: Adminpermissions,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/dashboard/appeals',
+    name: 'Appeals',
+    component: Appeals,
+    meta: { requiresAuth: true }
   },
 /*   {
     path: "/characters",
@@ -82,6 +114,110 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition
+    } else {
+      return { top: 0 }
+    }
+  }
 })
+
+// Interceptor de navegación para verificar autenticación
+router.beforeEach(async (to, from, next) => {
+  // Verificar si la ruta requiere autenticación
+  if (to.meta.requiresAuth) {
+    try {
+      // Obtener usuario actual
+      const response = await fetch('/api/auth/user/')
+      const user = await response.json()
+      
+      if (!user.is_authenticated) {
+        // Redirigir a login con parámetro de retorno
+        return next({
+          path: '/login',
+          query: { redirect: to.fullPath }
+        })
+      }
+      
+      // Verificar si la ruta requiere permisos de moderación
+      if (to.meta.requiresModeration) {
+        const hasModerationAccess = await checkModerationAccess(user)
+        if (!hasModerationAccess) {
+          // Redirigir a dashboard o mostrar acceso denegado
+          return next({ 
+            path: '/dashboard',
+            query: { error: 'access_denied' }
+          })
+        }
+      }
+      
+      // Verificar permisos específicos si se requieren
+      if (to.meta.requiresPermission) {
+        const hasPermission = await checkUserPermission(user, to.meta.requiresPermission)
+        if (!hasPermission) {
+          // Redirigir con error de permisos
+          return next({ 
+            path: '/moderation',
+            query: { error: 'insufficient_permissions' }
+          })
+        }
+      }
+      
+      next()
+    } catch (error) {
+      console.error('Auth check error:', error)
+      next('/login')
+    }
+  } else {
+    next()
+  }
+})
+
+// Función para verificar acceso a moderación
+async function checkModerationAccess(user) {
+  if (user.is_superuser || user.is_staff) {
+    return true
+  }
+  
+  try {
+    // Verificar si el usuario tiene algún rol de moderación
+    const response = await fetch('/api/auth/permissions/')
+    const data = await response.json()
+    
+    // Verificar si tiene permisos de moderación
+    const moderationPermissions = [
+      'create_warn',
+      'register_ban',
+      'access_moderation_dashboard',
+      'manage_warns',
+      'view_characters_basic'
+    ]
+    
+    return data.permissions?.some(perm => 
+      moderationPermissions.includes(perm)
+    ) || false
+  } catch (error) {
+    console.error('Permission check error:', error)
+    return false
+  }
+}
+
+// Función para verificar un permiso específico
+async function checkUserPermission(user, permission) {
+  if (user.is_superuser) {
+    return true
+  }
+  
+  try {
+    const response = await fetch('/api/auth/permissions/')
+    const data = await response.json()
+    
+    return data.permissions?.includes(permission) || false
+  } catch (error) {
+    console.error('Specific permission check error:', error)
+    return false
+  }
+}
 
 export default router

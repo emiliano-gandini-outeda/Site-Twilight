@@ -29,8 +29,17 @@
       </div>
     </div>
 
+    
+
     <!-- Contenido Principal - Tarjetas -->
     <main class="cards-container">
+      <div v-if="!currentUser?.is_authenticated" class="auth-modal-overlay">
+        <Login_Required 
+          :redirect-path="'/dashboard/personnel/'"
+          :user="currentUser"
+        />        
+      </div>
+      <div v-else class="authenticated-content">
       <div class="cards-header">
         <h1 class="cards-title">CONTROL PANEL</h1>
         <div class="cards-subtitle">AUTHORIZED FUNCTIONS & TOOLS</div>
@@ -53,7 +62,7 @@
             </div>
           </div>
           <div class="card-content">
-            <p class="card-description">Manage and view authorized personnel files, access levels, and assignments.</p>
+            <p class="card-description">Gestiona y visualiza los expedientes del personal autorizado, sus niveles de acceso y asignaciones.</p>
             <div class="card-meta">
               <span class="meta-label">ACCESS:</span>
               <span class="meta-value authorized">GRANTED</span>
@@ -73,8 +82,116 @@
           </div>
         </div>
 
-        <!-- Tarjetas 2-8: [REDACTED] -->
-        <div class="dashboard-card redacted" v-for="n in 7" :key="n" @click="showAccessDenied(n + 1)">
+        <div class="dashboard-card" :class="{ 'active': activeCard === 2 }" @click="activateCard(2)">
+          <div class="card-header">
+            <div class="card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+            </div>
+            <div class="card-title">APELACIONES</div>
+            <div class="card-status" v-if="activeCard === 1">
+              <span class="status-active">ACTIVE</span>
+            </div>
+          </div>
+          <div class="card-content">
+            <p class="card-description">Administra y revisa las apelaciones de sanciones disciplinarias.</p>
+            <div class="card-meta">
+              <span class="meta-label">ACCESS:</span>
+              <span class="meta-value authorized">GRANTED</span>
+            </div>
+          </div>
+          <div class="card-footer">
+            <div class="card-action">
+              <button class="action-button" @click.stop="goToApeals">
+                <span class="button-text">ACCESS SYSTEM</span>
+                <div class="button-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                  </svg>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tarjeta 3: MOD DASHBOARD (Solo para moderadores) -->
+        <div class="dashboard-card" 
+            :class="{ 
+              'active': activeCard === 3,
+              'restricted-card': !hasModDashboardAccess()
+            }" 
+            @click="handleModDashboardClick && activateCard(3)">
+          
+          <div class="card-header" :class="{ 'restricted-header': !hasModDashboardAccess() }">
+            <div class="card-icon" :class="{ 'restricted-icon': !hasModDashboardAccess() }">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                <template v-if="!hasModDashboardAccess()">
+                  <line x1="4.93" y1="19.07" x2="19.07" y2="4.93"></line>
+                </template>
+              </svg>
+            </div>
+            <div class="card-title" :class="{ 'restricted-title': !hasModDashboardAccess() }">
+              MOD DASHBOARD
+            </div>
+            <div class="card-status">
+              <span v-if="hasModDashboardAccess()" class="status-active">ACTIVE</span>
+              <span v-if="!hasModDashboardAccess()" class="status-red">RESTRICTED</span>
+            </div>
+          </div>
+          
+          <div class="card-content">
+            <p class="card-description" :class="{ 'restricted-description': !hasModDashboardAccess() }">
+              <template v-if="hasModDashboardAccess()">
+                Access the moderation control panel for advanced administrative functions.
+              </template>
+              <template v-if="!hasModDashboardAccess()">
+                This function requires moderator-level permissions and security clearance.
+              </template>
+            </p>
+            <div class="card-meta">
+              <span class="meta-label">ACCESS:</span>
+              <span class="meta-value" :class="hasModDashboardAccess() ? 'authorized' : 'restricted-access'">
+                <template v-if="hasModDashboardAccess()">MODERATORS ONLY</template>
+                <template v-if="!hasModDashboardAccess()">RESTRICTED</template>
+              </span>
+            </div>
+          </div>
+          
+          <div class="card-footer">
+            <div class="card-action">
+              <button 
+                class="action-button" 
+                :class="{ 
+                  'disabled': !hasModDashboardAccess(),
+                  'restricted-button': !hasModDashboardAccess()
+                }" 
+                @click.stop="goToModDashboard"
+                :disabled="!hasModDashboardAccess()"
+              >
+                <span class="button-text">
+                  <template v-if="hasModDashboardAccess()">ACCESS PANEL</template>
+                  <template v-if="!hasModDashboardAccess()">ACCESS DENIED</template>
+                </span>
+                <div class="button-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <template v-if="hasModDashboardAccess()">
+                      <polyline points="9 18 15 12 9 6"></polyline>
+                    </template>
+                    <template v-if="!hasModDashboardAccess()">
+                      <line x1="18" y1="6" x2="6" y2="18"></line>
+                      <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </template>
+                  </svg>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- Tarjetas 5-8: [REDACTED] -->
+        <div class="dashboard-card redacted" v-for="n in 5" :key="n" @click="showAccessDenied(n + 1)">
           <div class="card-header redacted">
             <div class="card-icon redacted">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -138,6 +255,8 @@
           </div>
         </div>
       </div>
+      </div>
+
     </main>
 
     <!-- Modal de Acceso Denegado -->
@@ -179,11 +298,14 @@
       </div>
     </div>
   </div>
+  <No_Mobile />
 </template>
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
+import No_Mobile from '@/components/No_Mobile.vue'
+import Login_Required from '@/components/Login_Required.vue'
 
 const router = useRouter()
 const activeCard = ref(1)
@@ -209,6 +331,10 @@ const goToPersonnel = () => {
   router.push('/dashboard/personnel')
 }
 
+const goToApeals = () => {
+  router.push("/dashboard/appeals")
+} 
+
 const updateTime = () => {
   const now = new Date()
   currentTime.value = now.toLocaleString('en-US', {
@@ -231,6 +357,49 @@ const fetchCurrentUser = async () => {
     }
   } catch (error) {
     console.error('Error fetching user:', error)
+  }
+}
+
+// En tu script setup
+import { computed } from 'vue'
+
+// Método para verificar acceso al Mod Dashboard
+const hasModDashboardAccess = () => {
+  // Verifica si el usuario tiene permisos de moderador
+  // Ajusta según tus permisos específicos
+  if (!currentUser.value || !currentUser.value.is_authenticated) return false
+  
+  // Superusuarios siempre tienen acceso
+  if (currentUser.value.is_superuser) return true
+  
+  // Verificar permisos específicos de moderación
+  const modPermissions = [
+    'create_warn',
+    'register_ban', 
+    'manage_warns',
+    'access_moderation_dashboard',
+    'full_moderation_control'
+  ]
+  
+  // Si tiene al menos uno de estos permisos, es moderador
+  return modPermissions.some(permission => userPermissions.value.includes(permission))
+}
+
+// Manejar clic en la tarjeta
+const handleModDashboardClick = () => {
+  if (hasModDashboardAccess()) {
+    activateCard(9)
+  } else {
+    showAccessDenied(9)
+  }
+}
+
+// Navegar al Mod Dashboard
+const goToModDashboard = () => {
+  if (hasModDashboardAccess()) {
+    router.push('/moderation')
+  } else {
+    showAccessDenied(9)
   }
 }
 
@@ -901,5 +1070,97 @@ onMounted(() => {
   .cards-grid {
     grid-template-columns: repeat(4, 1fr);
   }
+}
+
+/* Estilos para tarjeta restringida */
+.dashboard-card.restricted {
+  cursor: not-allowed;
+  opacity: 0.8;
+  border-color: #aa2222;
+  background: rgba(40, 20, 20, 0.7);
+}
+
+.dashboard-card.restricted:hover {
+  transform: none;
+  box-shadow: 0 0 15px rgba(170, 34, 34, 0.2);
+}
+
+.dashboard-card.accessible {
+  border-color: #333;
+  background: rgba(20, 20, 20, 0.95);
+}
+
+.dashboard-card.accessible:hover {
+  border-color: #444;
+  transform: translateY(-2px);
+}
+
+/* Header restringido */
+.card-header.restricted {
+  background: rgba(40, 20, 20, 0.8);
+  border-bottom-color: #aa2222;
+}
+
+.card-icon.restricted {
+  color: #aa2222;
+}
+
+.restricted-text {
+  color: #aa2222 !important;
+}
+
+/* Estados */
+.status-denied {
+  color: #aa2222;
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 0.7rem;
+}
+
+/* Botón restringido */
+.restricted-btn {
+  background: rgba(170, 34, 34, 0.1) !important;
+  border-color: rgba(170, 34, 34, 0.3) !important;
+  color: #aa2222 !important;
+  cursor: not-allowed !important;
+}
+
+.restricted-btn:hover {
+  background: rgba(170, 34, 34, 0.1) !important;
+  border-color: rgba(170, 34, 34, 0.3) !important;
+  transform: none !important;
+}
+
+/* Texto en rojo para MOD DASHBOARD sin acceso */
+.card-title.restricted-text {
+  color: #aa2222;
+  font-family: 'Consolas', monospace;
+  letter-spacing: 0.5px;
+}
+
+/* Meta value denegado */
+.meta-value.denied {
+  color: #aa2222;
+  font-weight: 700;
+}
+
+/* Efecto de línea diagonal en icono cuando está restringido */
+.card-icon.restricted svg line {
+  animation: denyPulse 2s infinite;
+}
+
+@keyframes denyPulse {
+  0%, 100% { stroke-opacity: 0.6; }
+  50% { stroke-opacity: 1; }
+}
+
+/* Efecto de parpadeo para tarjeta restringida */
+.dashboard-card.restricted {
+  animation: restrictedGlow 3s infinite;
+}
+
+@keyframes restrictedGlow {
+  0%, 100% { box-shadow: 0 0 5px rgba(170, 34, 34, 0.2); }
+  50% { box-shadow: 0 0 15px rgba(170, 34, 34, 0.4); }
 }
 </style>
