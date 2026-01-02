@@ -5,8 +5,6 @@ from .views import accounts, moderation, permissions
 urlpatterns = [
     path("login/roblox/", accounts.roblox_login, name="roblox_login"),
     path("login/roblox/callback/", accounts.roblox_callback, name="roblox_callback"),
-    path('login/roblox/callback', 
-         RedirectView.as_view(url='/accounts/login/roblox/callback/', permanent=True)),
     path("logout/", accounts.logout_view, name="logout"),
     
     # Dashboard
