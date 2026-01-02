@@ -396,9 +396,9 @@
                     type="text"
                     class="form-input"
                     required
-                    :disabled="showEditForm"
+                    maxlength="32"
+                    :disabled="false"
                   />
-                  <div class="form-hint" v-if="showEditForm">El codename no puede ser modificado</div>
                 </div>
                 
                 <div class="form-group">
@@ -648,7 +648,8 @@
               <span>VOLVER</span>
             </button>
             
-            <div class="header-actions" v-if="selectedCharacter.is_owner">
+            <!-- Botones de editar y eliminar (solo para el owner) -->
+            <div class="header-actions" v-if="isCharacterOwner">
               <button class="edit-button" @click="openEditForm">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
@@ -932,6 +933,7 @@ const pagination = reactive({
   total: 0,
   totalPages: 0
 })
+const formErrors = ref({})
 
 // Nuevos estados para fuzzy search
 const fuseAllCharacters = ref(null)
@@ -1238,12 +1240,71 @@ const getFactionColor = (faction) => {
   }
 }
 
+// Este método ya debería existir, pero verifica que esté así:
 const openEditForm = () => {
-  if (selectedCharacter.value) {
-    Object.keys(characterForm).forEach(key => {
-      characterForm[key] = selectedCharacter.value[key] || ''
-    })
+  if (!selectedCharacter.value || !isCharacterOwner.value) {
+    showNotification(
+      'ACCESO DENEGADO',
+      'No tienes permiso para editar este personaje',
+      'error',
+      4000
+    )
+    return
+  }
+  
+  try {
+    // Mapear datos del personaje seleccionado al formulario
+    characterForm.first_name = selectedCharacter.value.first_name || ''
+    characterForm.last_name = selectedCharacter.value.last_name || ''
+    characterForm.country = selectedCharacter.value.country || ''
+    characterForm.birth_date = selectedCharacter.value.birth_date || ''
+    characterForm.codename = selectedCharacter.value.codename || ''
+    characterForm.faction = selectedCharacter.value.faction || ''
+    characterForm.lore = selectedCharacter.value.lore || ''
+    
+    // Morph data
+    characterForm.morph = selectedCharacter.value.morph || ''
+    characterForm.hat = selectedCharacter.value.hat || ''
+    characterForm.shirt = selectedCharacter.value.shirt || ''
+    characterForm.pants = selectedCharacter.value.pants || ''
+    characterForm.ntag = selectedCharacter.value.ntag || ''
+    characterForm.rtag = selectedCharacter.value.rtag || ''
+    characterForm.rhat = selectedCharacter.value.rhat || false
+    
+    // Campos de color (si existen en tu API)
+    characterForm.skin_r = selectedCharacter.value.skin_r || null
+    characterForm.skin_g = selectedCharacter.value.skin_g || null
+    characterForm.skin_b = selectedCharacter.value.skin_b || null
+    characterForm.cntag_r = selectedCharacter.value.cntag_r || null
+    characterForm.cntag_g = selectedCharacter.value.cntag_g || null
+    characterForm.cntag_b = selectedCharacter.value.cntag_b || null
+    characterForm.crtag_r = selectedCharacter.value.crtag_r || null
+    characterForm.crtag_g = selectedCharacter.value.crtag_g || null
+    characterForm.crtag_b = selectedCharacter.value.crtag_b || null
+    
+    // Si tienes campos nvg separados
+    if (selectedCharacter.value.nvg_color) {
+      // Parsear el color si viene en formato "255,165,0"
+      const nvgParts = selectedCharacter.value.nvg_color.split(',')
+      if (nvgParts.length === 3) {
+        characterForm.nvg_r = parseInt(nvgParts[0]) || 255
+        characterForm.nvg_g = parseInt(nvgParts[1]) || 165
+        characterForm.nvg_b = parseInt(nvgParts[2]) || 0
+      }
+    }
+    
     showEditForm.value = true
+    showCreateForm.value = false
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+    
+  } catch (error) {
+    console.error('Error al abrir formulario de edición:', error)
+    showNotification(
+      'ERROR',
+      'No se pudo cargar los datos para editar',
+      'error',
+      4000
+    )
   }
 }
 
@@ -1251,6 +1312,7 @@ const closeFormView = () => {
   showCreateForm.value = false
   showEditForm.value = false
   selectedCharacter.value = null
+  formErrors.value = {}
   resetCharacterForm()
 }
 
@@ -1331,6 +1393,8 @@ const submitCharacterForm = async () => {
       'error',
       6000
     )
+    submitting.value = false
+    return
   }
   
   submitting.value = true
@@ -1372,6 +1436,8 @@ const submitCharacterForm = async () => {
         'error',
         6000
       )
+      submitting.value = false
+      return
     }
     
     let endpoint = '/api/characters/create/'
@@ -1390,6 +1456,8 @@ const submitCharacterForm = async () => {
         'error',
         6000
       )
+      submitting.value = false
+      return
     }
     
     const response = await fetch(endpoint, {
@@ -1402,24 +1470,47 @@ const submitCharacterForm = async () => {
       body: JSON.stringify(formData)
     })
     
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}))
-      throw new Error(errorData.error || `Error ${response.status}: ${response.statusText}`)
-    }
-    
     const data = await response.json()
-    showNotification(
-    'OPERACIÓN EXITOSA',
-    showEditForm.value ? 'Agente actualizado correctamente' : 'Agente registrado correctamente',
-    'success',
-    4000
-    )
-    closeFormView()
-    loadCharacters()
     
-    if (showEditForm.value && selectedCharacter.value) {
-      viewCharacter(selectedCharacter.value)
+    if (response.ok && data.success) {
+      // Éxito
+      showNotification(
+        'OPERACIÓN EXITOSA',
+        showEditForm.value ? 'Agente actualizado correctamente' : 'Agente registrado correctamente',
+        'success',
+        4000
+      )
+      closeFormView()
+      loadCharacters()
+      
+      if (showEditForm.value && selectedCharacter.value) {
+        viewCharacter(selectedCharacter.value)
+      }
+    } else {
+      // Mostrar errores de validación específicos
+      if (data.errors) {
+        formErrors.value = data.errors
+        // También mostrar el primer error como notificación
+        const firstError = Object.entries(data.errors)[0]
+        if (firstError) {
+          showNotification(
+            `ERROR EN ${firstError[0].toUpperCase()}`,
+            firstError[1],
+            'error',
+            5000
+          )
+        }
+      } else {
+        // Error general
+        showNotification(
+          'ERROR',
+          data.error || `Error ${response.status}: ${response.statusText}`,
+          'error',
+          6000
+        )
+      }
     }
+    
   } catch (error) {
     console.error('Error submitting form:', error)
     showNotification(
@@ -1434,8 +1525,42 @@ const submitCharacterForm = async () => {
 }
 
 const confirmDeleteCharacter = () => {
+  if (!selectedCharacter.value || !isCharacterOwner.value) {
+    showNotification(
+      'ACCESO DENEGADO',
+      'No tienes permiso para eliminar este personaje',
+      'error',
+      4000
+    )
+    return
+  }
+  
   showDeleteConfirm.value = true
 }
+
+const isCharacterOwner = computed(() => {
+  if (!currentUser.value?.is_authenticated || !selectedCharacter.value) {
+    return false
+  }
+  
+  // Verifica si el usuario actual es el owner del personaje
+  // Esto depende de cómo esté estructurada tu data
+  if (selectedCharacter.value.owner_id) {
+    return currentUser.value.id === selectedCharacter.value.owner_id
+  }
+  
+  // Si tienes un campo is_owner en la respuesta de la API
+  if (selectedCharacter.value.is_owner !== undefined) {
+    return selectedCharacter.value.is_owner
+  }
+  
+  // Si tienes el owner_roblox_id
+  if (selectedCharacter.value.owner_roblox_id) {
+    return currentUser.value.roblox_id === selectedCharacter.value.owner_roblox_id
+  }
+  
+  return false
+})
 
 const deleteCharacter = async () => {
   if (!selectedCharacter.value) return
@@ -4209,4 +4334,89 @@ onMounted(() => {
     font-size: 0.8rem;
   }
 }
+
+/* Agrega esto a tus estilos */
+.form-input.has-error {
+  border-color: #ff3333;
+  box-shadow: 0 0 0 2px rgba(255, 51, 51, 0.1);
+}
+
+.form-error {
+  color: #ff3333;
+  font-size: 0.85rem;
+  margin-top: 0.3rem;
+  font-family: 'Consolas', monospace;
+  letter-spacing: 0.3px;
+  background: rgba(255, 51, 51, 0.05);
+  padding: 0.3rem 0.5rem;
+  border-radius: 2px;
+  border-left: 2px solid #ff3333;
+}
+
+.form-hint {
+  color: #666;
+  font-size: 0.85rem;
+  margin-top: 0.3rem;
+  font-family: 'Consolas', monospace;
+  letter-spacing: 0.3px;
+}
+
+/* Estilos para los botones de acción en el header */
+.detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.header-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.edit-button, .delete-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  border: 1px solid;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Consolas', monospace;
+}
+
+.edit-button {
+  background: rgba(33, 150, 243, 0.1);
+  border-color: rgba(33, 150, 243, 0.3);
+  color: #2196F3;
+}
+
+.edit-button:hover {
+  background: rgba(33, 150, 243, 0.2);
+  border-color: rgba(33, 150, 243, 0.5);
+}
+
+.delete-button {
+  background: rgba(244, 67, 54, 0.1);
+  border-color: rgba(244, 67, 54, 0.3);
+  color: #f44336;
+}
+
+.delete-button:hover {
+  background: rgba(244, 67, 54, 0.2);
+  border-color: rgba(244, 67, 54, 0.5);
+}
+
+.edit-button svg, .delete-button svg {
+  width: 16px;
+  height: 16px;
+}
+
 </style>
