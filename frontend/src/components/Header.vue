@@ -104,13 +104,13 @@
                 </div>
                 <span class="item-text">Settings</span>
               </a> -->
-              <a href="#" class="dropdown-item">
+              <a href="#" @click.prevent="goToProfile" class="dropdown-item">
                 <div class="item-icon-svg">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
                   </svg>
                 </div>
-                <span class="item-text">Profile</span>
+                <span class="item-text">Perfil</span>
               </a>
               <a href="/accounts/logout/" class="dropdown-item logout">
                 <div class="item-icon-svg">
@@ -217,13 +217,13 @@
               </div>
               <span class="mobile-nav-text">Settings</span>
             </a> -->
-            <a href="#" class="mobile-nav-item">
+            <a href="#" @click.prevent="goToProfile" class="mobile-nav-item">
               <div class="mobile-nav-icon-svg">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
                 </svg>
               </div>
-              <span class="mobile-nav-text">Profile</span>
+              <span class="mobile-nav-text">Perfil</span>
             </a>
             <a href="/accounts/logout/" class="mobile-nav-item logout">
               <div class="mobile-nav-icon-svg">
@@ -307,6 +307,20 @@ const checkSSU = async () => {
   } catch (error) {
     console.error('SSU check failed:', error)
   }
+}
+
+const goToProfile = () => {
+  if (user.value && user.value.is_authenticated && user.value.roblox_id) {
+    // Navegar a la ruta de perfil con el roblox_id del usuario
+    router.push(`/users/${user.value.roblox_id}`)
+  } else if (user.value && user.value.is_authenticated) {
+    // Si el usuario está autenticado pero no tiene roblox_id, redirigir al dashboard
+    router.push('/dashboard')
+  } else {
+    // Si no está autenticado, redirigir al login
+    router.push('/accounts/login/roblox/')
+  }
+  closeMobileMenu()
 }
 
 const openDiscord = () => {
