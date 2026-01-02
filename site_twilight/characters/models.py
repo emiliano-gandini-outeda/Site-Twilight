@@ -16,7 +16,7 @@ class Character(models.Model):
     birth_date = models.DateField()
 
     codename = models.CharField(max_length=32, validators=[MaxLengthValidator(32)])
-    faction = models.CharField(max_length=32, validators=[MaxLengthValidator(32)])
+    faction = models.CharField(max_length=32, validators=[MaxLengthValidator(64)])
 
     lore = models.CharField(max_length=5000, blank=True, validators=[MaxLengthValidator(5000)])
 
