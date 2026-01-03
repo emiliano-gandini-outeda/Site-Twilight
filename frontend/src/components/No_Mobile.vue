@@ -176,28 +176,51 @@ const platform = ref('')
 const currentTime = ref('')
 
 // Detectar si es móvil
+// Detectar si es móvil (recomendada)
 const checkIsMobile = () => {
   screenWidth.value = window.innerWidth
   screenHeight.value = window.innerHeight
   
-  // Umbral para considerar móvil (puedes ajustar este valor)
-  const mobileBreakpoint = 1024
-  
-  // Detectar características móviles
   const userAgent = navigator.userAgent.toLowerCase()
-  const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0
-  const isSmallScreen = screenWidth.value < mobileBreakpoint
-  const isMobileUserAgent = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent)
   
   // Detectar plataforma
   if (/android/i.test(userAgent)) platform.value = 'Android'
   else if (/iphone|ipad|ipod/i.test(userAgent)) platform.value = 'iOS'
   else if (/windows phone/i.test(userAgent)) platform.value = 'Windows Mobile'
   else if (/blackberry/i.test(userAgent)) platform.value = 'BlackBerry'
-  else platform.value = 'Desconocida'
+  else platform.value = 'Escritorio'
   
-  // Considerar móvil si cumple alguna condición
-  isMobile.value = isSmallScreen || isMobileUserAgent || isTouchDevice
+  // Parámetros ajustables
+  const MOBILE_MAX_WIDTH = 768
+  const TABLET_MAX_WIDTH = 1024
+  const MIN_ASPECT_RATIO = 1.3 // Para diferenciar móviles (más altos que anchos)
+  
+  // Calcular aspect ratio
+  const aspectRatio = screenWidth.value / screenHeight.value
+  
+  // Lógica mejorada:
+  const isMobileUserAgent = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini|mobile/i.test(userAgent)
+  const isTabletUserAgent = /ipad|tablet/i.test(userAgent) && !/mobile/i.test(userAgent)
+  
+  // Detectar dispositivo real:
+  if (screenWidth.value >= 1024) {
+    // Pantallas grandes = siempre escritorio
+    isMobile.value = false
+  } else if (screenWidth.value <= MOBILE_MAX_WIDTH && aspectRatio < MIN_ASPECT_RATIO) {
+    // Pantalla pequeña con aspecto de móvil
+    isMobile.value = isMobileUserAgent && !isTabletUserAgent
+  } else if (screenWidth.value <= TABLET_MAX_WIDTH) {
+    // Tablet o pantalla mediana
+    isMobile.value = false // Tratar como escritorio
+  } else {
+    // Cualquier otro caso = escritorio
+    isMobile.value = false
+  }
+  
+  // Sobreescribir si claramente es escritorio por user agent
+  if (/windows|macintosh|linux/i.test(userAgent) && !/mobile|android|iphone/i.test(userAgent)) {
+    isMobile.value = false
+  }
 }
 
 // Actualizar hora actual
