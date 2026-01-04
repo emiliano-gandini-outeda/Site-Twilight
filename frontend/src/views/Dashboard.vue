@@ -366,24 +366,14 @@ import { computed } from 'vue'
 
 // Método para verificar acceso al Mod Dashboard
 const hasModDashboardAccess = () => {
-  // Verifica si el usuario tiene permisos de moderador
-  // Ajusta según tus permisos específicos
+  // Verifica si el usuario está autenticado
   if (!currentUser.value || !currentUser.value.is_authenticated) return false
   
   // Superusuarios siempre tienen acceso
   if (currentUser.value.is_superuser) return true
   
-  // Verificar permisos específicos de moderación
-  const modPermissions = [
-    'create_warn',
-    'register_ban', 
-    'manage_warns',
-    'access_moderation_dashboard',
-    'full_moderation_control'
-  ]
-  
-  // Si tiene al menos uno de estos permisos, es moderador
-  return modPermissions.some(permission => userPermissions.value.includes(permission))
+  // Obtener permisos del usuario actual
+  return userPermissions.value.includes('access_moderation_dashboard')
 }
 
 // Manejar clic en la tarjeta
@@ -392,6 +382,18 @@ const handleModDashboardClick = () => {
     activateCard(9)
   } else {
     showAccessDenied(9)
+  }
+}
+
+const fetchUserPermissions = async () => {
+  try {
+    const response = await fetch('/api/auth/user/permissions/')
+    if (response.ok) {
+      const data = await response.json()
+      userPermissions.value = data.permissions || []
+    }
+  } catch (error) {
+    console.error('Error fetching permissions:', error)
   }
 }
 
@@ -408,6 +410,7 @@ onMounted(() => {
   updateTime()
   const timeInterval = setInterval(updateTime, 1000)
   fetchCurrentUser()
+  fetchUserPermissions()
   
   return () => {
     clearInterval(timeInterval)
