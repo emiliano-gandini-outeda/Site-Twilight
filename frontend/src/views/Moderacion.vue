@@ -19,8 +19,8 @@
             </svg>
           </div>
           <div class="header-title">
-            <span class="header-main">MODERATION CONTROL</span>
-            <span class="header-sub">SECURITY & COMPLIANCE DIVISION</span>
+            <span class="header-main">CONTROL DE MODERACIÓN</span>
+            <span class="header-sub">DIVISIÓN DE SEGURIDAD Y CUMPLIMIENTO</span>
           </div>
         </div>
       </div>
@@ -28,7 +28,7 @@
       <div class="header-right">
         <div class="session-status">
           <div class="session-indicator active"></div>
-          <span class="session-text">{{ userRole?.toUpperCase() || 'UNAUTHORIZED' }}</span>
+          <span class="session-text">{{ userRole?.toUpperCase() || 'NO AUTORIZADO' }}</span>
         </div>
         <div class="current-time">
           {{ currentTime }}
@@ -39,8 +39,8 @@
     <!-- Contenido Principal - Tarjetas de Mods -->
     <main class="moderacion-main">
       <div class="moderacion-header-section">
-        <h1 class="moderacion-title">MODERATION PANEL</h1>
-        <div class="moderacion-subtitle">AUTHORIZED MODERATION FUNCTIONS</div>
+        <h1 class="moderacion-title">PANEL DE MODERACIÓN</h1>
+        <div class="moderacion-subtitle">FUNCIONES DE MODERACIÓN AUTORIZADAS</div>
         
         <!-- Estadísticas Rápidas -->
         <div class="quick-stats">
@@ -55,7 +55,7 @@
               </svg>
             </div>
             <div class="stat-info">
-              <span class="stat-label">ACTIVE WARNS</span>
+              <span class="stat-label">WARNS ACTIVOS</span>
               <span class="stat-value">{{ stats.activeWarns || 0 }}</span>
             </div>
           </div>
@@ -68,7 +68,7 @@
               </svg>
             </div>
             <div class="stat-info">
-              <span class="stat-label">ACTIVE BANS</span>
+              <span class="stat-label">BANS ACTIVOS</span>
               <span class="stat-value">{{ stats.activeBans || 0 }}</span>
             </div>
           </div>
@@ -81,7 +81,7 @@
               </svg>
             </div>
             <div class="stat-info">
-              <span class="stat-label">PENDING APPEALS</span>
+              <span class="stat-label">APELACIONES PENDIENTES</span>
               <span class="stat-value">{{ stats.pendingAppeals || 0 }}</span>
             </div>
           </div>
@@ -96,7 +96,7 @@
               </svg>
             </div>
             <div class="stat-info">
-              <span class="stat-label">TOP WARNED</span>
+              <span class="stat-label">MÁS ADVERTIDOS</span>
               <span class="stat-value">{{ stats.topWarnedUsers || 0 }}</span>
             </div>
           </div>
@@ -107,45 +107,45 @@
       <div class="moderation-grid">
         <!-- Tarjeta 1: Admin -->
         <div class="moderation-card" :class="{ 'active': activeCard === 9 }" @click="activateCard(9)">
-        <div class="card-header">
+          <div class="card-header">
             <div class="card-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
                 <path d="M12 8v4"></path>
                 <path d="M12 16h.01"></path>
-            </svg>
+              </svg>
             </div>
             <div class="card-title">PERMISSION MANAGEMENT</div>
             <div class="card-status" v-if="hasPermission('full_moderation_control')">
-            <span class="status-active">ACCESS GRANTED</span>
+              <span class="status-active">ACCESO CONCEDIDO</span>
             </div>
-        </div>
-        <div class="card-content">
-            <p class="card-description">Manage user permissions, assign moderation roles, and control access levels.</p>
+          </div>
+          <div class="card-content">
+            <p class="card-description">Gestiona permisos de usuario, asigna roles de moderación y controla niveles de acceso.</p>
             <div class="card-meta">
-            <span class="meta-label">REQUIRED PERMISSION:</span>
-            <span class="meta-value" :class="hasPermission('full_moderation_control') ? 'authorized' : 'denied'">
-                {{ hasPermission('full_moderation_control') ? 'full_moderation_control' : 'INSUFFICIENT' }}
-            </span>
+              <span class="meta-label">PERMISO REQUERIDO:</span>
+              <span class="meta-value" :class="hasPermission('full_moderation_control') ? 'authorized' : 'denied'">
+                {{ hasPermission('full_moderation_control') ? 'Control Moderación Total' : 'INSUFICIENTE' }}
+              </span>
             </div>
-        </div>
-        <div class="card-footer">
+          </div>
+          <div class="card-footer">
             <div class="card-action">
-            <button 
+              <button 
                 class="action-button" 
                 @click.stop="goToPermissionManagement"
                 :disabled="!hasPermission('full_moderation_control')"
                 :class="{ 'disabled': !hasPermission('full_moderation_control') }"
-            >
-                <span class="button-text">ACCESS SYSTEM</span>
+              >
+                <span class="button-text">ACCEDER AL SISTEMA</span>
                 <div class="button-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="9 18 15 12 9 6"></polyline>
-                </svg>
+                  </svg>
                 </div>
-            </button>
+              </button>
             </div>
-        </div>
+          </div>
         </div>
 
         <!-- Tarjeta 2: Gestión de Bans -->
@@ -159,15 +159,15 @@
             </div>
             <div class="card-title">BAN MANAGEMENT</div>
             <div class="card-status" v-if="hasPermission('register_ban')">
-              <span class="status-active">ACCESS GRANTED</span>
+              <span class="status-active">ACCESO CONCEDIDO</span>
             </div>
           </div>
           <div class="card-content">
-            <p class="card-description">Issue temporary or permanent bans, manage ban durations and appeal systems.</p>
+            <p class="card-description">Emitir bans temporales o permanentes, gestionar duraciones y sistemas de apelación.</p>
             <div class="card-meta">
-              <span class="meta-label">REQUIRED PERMISSION:</span>
+              <span class="meta-label">PERMISO REQUERIDO:</span>
               <span class="meta-value" :class="hasPermission('register_ban') ? 'authorized' : 'denied'">
-                {{ hasPermission('register_ban') ? 'register_ban' : 'INSUFFICIENT' }}
+                {{ hasPermission('register_ban') ? 'Registrar Ban' : 'INSUFICIENTE' }}
               </span>
             </div>
           </div>
@@ -179,7 +179,7 @@
                 :disabled="!hasPermission('register_ban')"
                 :class="{ 'disabled': !hasPermission('register_ban') }"
               >
-                <span class="button-text">ACCESS SYSTEM</span>
+                <span class="button-text">ACCEDER AL SISTEMA</span>
                 <div class="button-icon">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="9 18 15 12 9 6"></polyline>
@@ -202,15 +202,15 @@
             </div>
             <div class="card-title">MODERATION DASHBOARD</div>
             <div class="card-status" v-if="hasPermission('access_moderation_dashboard')">
-              <span class="status-active">ACCESS GRANTED</span>
+              <span class="status-active">ACCESO CONCEDIDO</span>
             </div>
           </div>
           <div class="card-content">
-            <p class="card-description">Global moderation overview with statistics, user tracking, and system monitoring.</p>
+            <p class="card-description">Vista general de moderación con estadísticas, seguimiento de usuarios y monitoreo del sistema.</p>
             <div class="card-meta">
-              <span class="meta-label">REQUIRED PERMISSION:</span>
+              <span class="meta-label">PERMISO REQUERIDO:</span>
               <span class="meta-value" :class="hasPermission('access_moderation_dashboard') ? 'authorized' : 'denied'">
-                {{ hasPermission('access_moderation_dashboard') ? 'access_moderation_dashboard' : 'INSUFFICIENT' }}
+                {{ hasPermission('access_moderation_dashboard') ? 'Acceso al Dashboard de Moderación' : 'INSUFICIENTE' }}
               </span>
             </div>
           </div>
@@ -222,7 +222,7 @@
                 :disabled="!hasPermission('access_moderation_dashboard')"
                 :class="{ 'disabled': !hasPermission('access_moderation_dashboard') }"
               >
-                <span class="button-text">ACCESS SYSTEM</span>
+                <span class="button-text">ACCEDER AL SISTEMA</span>
                 <div class="button-icon">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="9 18 15 12 9 6"></polyline>
@@ -245,15 +245,15 @@
             </div>
             <div class="card-title">APPEAL MANAGEMENT</div>
             <div class="card-status" v-if="hasPermission('manage_warns')">
-              <span class="status-active">ACCESS GRANTED</span>
+              <span class="status-active">ACCESO CONCEDIDO</span>
             </div>
           </div>
           <div class="card-content">
-            <p class="card-description">Review and respond to user appeals for warnings and ban modifications.</p>
+            <p class="card-description">Revisar y responder a apelaciones de usuarios para advertencias y modificaciones de ban.</p>
             <div class="card-meta">
-              <span class="meta-label">REQUIRED PERMISSION:</span>
+              <span class="meta-label">PERMISO REQUERIDO:</span>
               <span class="meta-value" :class="hasPermission('manage_warns') ? 'authorized' : 'denied'">
-                {{ hasPermission('manage_warns') ? 'manage_warns' : 'INSUFFICIENT' }}
+                {{ hasPermission('manage_warns') ? 'Gestionar Warns' : 'INSUFICIENTE' }}
               </span>
             </div>
           </div>
@@ -265,7 +265,7 @@
                 :disabled="!hasPermission('manage_warns')"
                 :class="{ 'disabled': !hasPermission('manage_warns') }"
               >
-                <span class="button-text">ACCESS SYSTEM</span>
+                <span class="button-text">ACCEDER AL SISTEMA</span>
                 <div class="button-icon">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="9 18 15 12 9 6"></polyline>
@@ -287,15 +287,15 @@
             </div>
             <div class="card-title">IN-GAME MODERATION</div>
             <div class="card-status" v-if="hasPermission('view_characters_basic')">
-              <span class="status-active">ACCESS GRANTED</span>
+              <span class="status-active">ACCESO CONCEDIDO</span>
             </div>
           </div>
           <div class="card-content">
-            <p class="card-description">Monitor in-game characters, verify identities, and manage roleplay compliance.</p>
+            <p class="card-description">Monitorear personajes en juego, verificar identidades y gestionar cumplimiento de roleplay.</p>
             <div class="card-meta">
-              <span class="meta-label">REQUIRED PERMISSION:</span>
+              <span class="meta-label">PERMISO REQUERIDO:</span>
               <span class="meta-value" :class="hasPermission('view_characters_basic') ? 'authorized' : 'denied'">
-                {{ hasPermission('view_characters_basic') ? 'view_characters_basic' : 'INSUFFICIENT' }}
+                {{ hasPermission('view_characters_basic') ? 'Ver Personajes Básico' : 'INSUFICIENTE' }}
               </span>
             </div>
           </div>
@@ -307,7 +307,7 @@
                 :disabled="!hasPermission('view_characters_basic')"
                 :class="{ 'disabled': !hasPermission('view_characters_basic') }"
               >
-                <span class="button-text">ACCESS SYSTEM</span>
+                <span class="button-text">ACCEDER AL SISTEMA</span>
                 <div class="button-icon">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="9 18 15 12 9 6"></polyline>
@@ -330,15 +330,15 @@
             </div>
             <div class="card-title">DISCORD MODERATION</div>
             <div class="card-status" v-if="hasPermission('full_discord_moderation')">
-              <span class="status-active">ACCESS GRANTED</span>
+              <span class="status-active">ACCESO CONCEDIDO</span>
             </div>
           </div>
           <div class="card-content">
-            <p class="card-description">Manage Discord-specific warnings, bans, and community compliance enforcement.</p>
+            <p class="card-description">Gestionar advertencias específicas de Discord, bans y aplicación de cumplimiento comunitario.</p>
             <div class="card-meta">
-              <span class="meta-label">REQUIRED PERMISSION:</span>
+              <span class="meta-label">PERMISO REQUERIDO:</span>
               <span class="meta-value" :class="hasPermission('full_discord_moderation') ? 'authorized' : 'denied'">
-                {{ hasPermission('full_discord_moderation') ? 'full_discord_moderation' : 'INSUFFICIENT' }}
+                {{ hasPermission('full_discord_moderation') ? 'Moderación Discord Completa' : 'INSUFICIENTE' }}
               </span>
             </div>
           </div>
@@ -350,7 +350,7 @@
                 :disabled="!hasPermission('full_discord_moderation')"
                 :class="{ 'disabled': !hasPermission('full_discord_moderation') }"
               >
-                <span class="button-text">ACCESS SYSTEM</span>
+                <span class="button-text">ACCEDER AL SISTEMA</span>
                 <div class="button-icon">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="9 18 15 12 9 6"></polyline>
@@ -371,15 +371,15 @@
             </div>
             <div class="card-title">AUDIT LOGS</div>
             <div class="card-status" v-if="hasPermission('full_moderation_control')">
-              <span class="status-active">ACCESS GRANTED</span>
+              <span class="status-active">ACCESO CONCEDIDO</span>
             </div>
           </div>
           <div class="card-content">
-            <p class="card-description">Complete audit trail of all moderation actions, modifications, and system changes.</p>
+            <p class="card-description">Registro completo de auditoría de todas las acciones de moderación, modificaciones y cambios del sistema.</p>
             <div class="card-meta">
-              <span class="meta-label">REQUIRED PERMISSION:</span>
+              <span class="meta-label">PERMISO REQUERIDO:</span>
               <span class="meta-value" :class="hasPermission('full_moderation_control') ? 'authorized' : 'denied'">
-                {{ hasPermission('full_moderation_control') ? 'full_moderation_control' : 'INSUFFICIENT' }}
+                {{ hasPermission('full_moderation_control') ? 'Control Moderación Total' : 'INSUFICIENTE' }}
               </span>
             </div>
           </div>
@@ -391,7 +391,7 @@
                 :disabled="!hasPermission('full_moderation_control')"
                 :class="{ 'disabled': !hasPermission('full_moderation_control') }"
               >
-                <span class="button-text">ACCESS SYSTEM</span>
+                <span class="button-text">ACCEDER AL SISTEMA</span>
                 <div class="button-icon">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="9 18 15 12 9 6"></polyline>
@@ -413,14 +413,14 @@
             </div>
             <div class="card-title redacted-text">[REDACTED]</div>
             <div class="card-status">
-              <span class="status-redacted">CLASSIFIED</span>
+              <span class="status-redacted">CLASIFICADO</span>
             </div>
           </div>
           <div class="card-content redacted">
-            <p class="card-description redacted-text">This function requires Level 5 clearance and administrative authorization.</p>
+            <p class="card-description redacted-text">Esta función requiere autorización de nivel 5 y autorización administrativa.</p>
             <div class="card-meta">
-              <span class="meta-label">CLEARANCE:</span>
-              <span class="meta-value redacted">LEVEL 5+</span>
+              <span class="meta-label">AUTORIZACIÓN:</span>
+              <span class="meta-value redacted">NIVEL 5+</span>
             </div>
           </div>
           <div class="card-footer redacted">
@@ -432,7 +432,7 @@
                   <line x1="12" y1="16" x2="12.01" y2="16"></line>
                 </svg>
               </div>
-              <span class="warning-text">ADMINISTRATIVE CLEARANCE REQUIRED</span>
+              <span class="warning-text">SE REQUIERE AUTORIZACIÓN ADMINISTRATIVA</span>
             </div>
           </div>
         </div>
@@ -441,39 +441,39 @@
       <!-- Información del Usuario -->
       <div class="user-info-panel">
         <div class="info-header">
-          <h3 class="info-title">MODERATOR PROFILE</h3>
-          <div class="info-subtitle">CURRENT SESSION INFORMATION</div>
+          <h3 class="info-title">PERFIL DE MODERADOR</h3>
+          <div class="info-subtitle">INFORMACIÓN DE SESIÓN ACTUAL</div>
         </div>
         <div class="info-grid">
           <div class="info-item">
-            <span class="info-label">MODERATOR ID:</span>
-            <span class="info-value">{{ currentUser?.roblox_username || 'GUEST' }}</span>
+            <span class="info-label">ID DE MODERADOR:</span>
+            <span class="info-value">{{ currentUser?.roblox_username || 'INVITADO' }}</span>
           </div>
           <div class="info-item">
-            <span class="info-label">CLEARANCE LEVEL:</span>
+            <span class="info-label">NIVEL DE AUTORIZACIÓN:</span>
             <span class="info-value">{{ getClearanceLevel() }}</span>
           </div>
           <div class="info-item">
-            <span class="info-label">PERMISSIONS:</span>
+            <span class="info-label">PERMISOS:</span>
             <span class="info-value permissions">{{ getUserPermissions().length }}</span>
           </div>
           <div class="info-item">
-            <span class="info-label">SCOPES:</span>
+            <span class="info-label">ÁMBITOS:</span>
             <span class="info-value scopes">{{ getUserScopes().length }}</span>
           </div>
           <div class="info-item">
-            <span class="info-label">SESSION START:</span>
+            <span class="info-label">INICIO DE SESIÓN:</span>
             <span class="info-value">{{ sessionStartTime }}</span>
           </div>
           <div class="info-item">
-            <span class="info-label">SESSION DURATION:</span>
+            <span class="info-label">DURACIÓN DE SESIÓN:</span>
             <span class="info-value">{{ sessionDuration }}</span>
           </div>
         </div>
         
         <!-- Permisos Detallados -->
         <div class="permissions-panel" v-if="getUserPermissions().length > 0">
-          <h4 class="permissions-title">ACTIVE PERMISSIONS</h4>
+          <h4 class="permissions-title">PERMISOS ACTIVOS</h4>
           <div class="permissions-grid">
             <span 
               v-for="(permission, index) in getUserPermissions()" 
@@ -481,7 +481,7 @@
               class="permission-tag"
               :class="getPermissionType(permission)"
             >
-              {{ permission }}
+              {{ getPermissionDisplay(permission) }}
             </span>
           </div>
         </div>
@@ -500,28 +500,28 @@
               <line x1="9" y1="9" x2="15" y2="15"></line>
             </svg>
           </div>
-          <h3 class="modal-title">ACCESS RESTRICTED</h3>
+          <h3 class="modal-title">ACCESO RESTRINGIDO</h3>
         </div>
         <div class="modal-body">
-          <p class="modal-text">You do not have the required permissions to access this function.</p>
+          <p class="modal-text">No tienes los permisos requeridos para acceder a esta función.</p>
           <div class="clearance-info">
             <div class="clearance-item">
-              <span class="clearance-label">CURRENT CLEARANCE:</span>
+              <span class="clearance-label">AUTORIZACIÓN ACTUAL:</span>
               <span class="clearance-value">{{ getClearanceLevel() }}</span>
             </div>
             <div class="clearance-item">
-              <span class="clearance-label">REQUIRED PERMISSION:</span>
-              <span class="clearance-value denied">INSUFFICIENT</span>
+              <span class="clearance-label">PERMISO REQUERIDO:</span>
+              <span class="clearance-value denied">INSUFICIENTE</span>
             </div>
             <div class="clearance-item">
-              <span class="clearance-label">STATUS:</span>
-              <span class="clearance-value denied">ACCESS DENIED</span>
+              <span class="clearance-label">ESTADO:</span>
+              <span class="clearance-value denied">ACCESO DENEGADO</span>
             </div>
           </div>
         </div>
         <div class="modal-footer">
           <button class="modal-button" @click="closeModal">
-            <span class="button-text">ACKNOWLEDGE</span>
+            <span class="button-text">ACEPTAR</span>
           </button>
         </div>
       </div>
@@ -549,33 +549,43 @@ const stats = reactive({
   topWarnedUsers: 0
 })
 
-// Permisos del usuario (simulados - en producción vendrían del backend)
-const userPermissions = ref([
-  'create_warn',
-  'access_moderation_dashboard',
-  'view_characters_basic'
-])
+// Permisos del usuario
+const userPermissions = ref([])
 
-// Scopes del usuario (simulados)
-const userScopes = ref([
-  { scope: 'ingame', level: 2 },
-  { scope: 'moderation', level: 1 }
-])
+// Scopes del usuario
+const userScopes = ref([])
+
+// Traducción de permisos
+const permissionTranslations = {
+  'create_warn': 'Crear Warn',
+  'register_ban': 'Registrar Ban',
+  'access_moderation_dashboard': 'Acceso al Dashboard de Moderación',
+  'manage_warns': 'Gestionar Warns',
+  'view_characters_basic': 'Ver Personajes Básico',
+  'full_discord_moderation': 'Moderación Discord Completa',
+  'full_moderation_control': 'Control Moderación Total',
+  'change_ssu_status': 'Cambiar Estado SSU',
+  'edit_rp_files_basic': 'Editar Archivos RP Básico',
+  'edit_rp_files_full': 'Editar Archivos RP Completo',
+  'moderate_factions_basic': 'Moderar Facciones Básico',
+  'moderate_factions_full': 'Moderar Facciones Completo',
+  'supervise_actors_basic': 'Supervisar Actores Básico',
+  'supervise_actors_full': 'Supervisar Actores Completo'
+}
 
 // Computed
 const userRole = computed(() => {
   if (!currentUser.value) return null
-  if (currentUser.value.is_superuser) return 'ADMINISTRATOR'
-  if (currentUser.value.is_staff) return 'MODERATOR'
-  if (userPermissions.value.length > 0) return 'JUNIOR_MODERATOR'
-  return 'GUEST'
+  if (currentUser.value.is_superuser) return 'ADMINISTRADOR'
+  if (currentUser.value.is_staff) return 'MODERADOR'
+  if (userPermissions.value.length > 0) return 'MODERADOR JUNIOR'
+  return 'INVITADO'
 })
 
 // Métodos
 const activateCard = (cardNumber) => {
   activeCard.value = cardNumber
   
-  // Verificar permisos antes de permitir acceso
   const requiredPermissions = {
     1: 'create_warn',
     2: 'register_ban',
@@ -584,7 +594,8 @@ const activateCard = (cardNumber) => {
     5: 'view_characters_basic',
     6: 'full_discord_moderation',
     7: 'full_moderation_control',
-    8: 'admin_only' // Clasificado
+    8: 'admin_only',
+    9: 'full_moderation_control'
   }
   
   const required = requiredPermissions[cardNumber]
@@ -611,13 +622,13 @@ const hasPermission = (permission) => {
 }
 
 const getClearanceLevel = () => {
-  if (!currentUser.value) return 'GUEST'
-  if (currentUser.value.is_superuser) return 'LEVEL 5'
-  if (userScopes.value.some(s => s.scope === 'global')) return 'LEVEL 4'
-  if (userPermissions.value.includes('full_moderation_control')) return 'LEVEL 3'
-  if (userPermissions.value.includes('register_ban')) return 'LEVEL 2'
-  if (userPermissions.value.length > 0) return 'LEVEL 1'
-  return 'LEVEL 0'
+  if (!currentUser.value) return 'INVITADO'
+  if (currentUser.value.is_superuser) return 'NIVEL 5'
+  if (userScopes.value.some(s => s.scope === 'global')) return 'NIVEL 4'
+  if (userPermissions.value.includes('full_moderation_control')) return 'NIVEL 3'
+  if (userPermissions.value.includes('register_ban')) return 'NIVEL 2'
+  if (userPermissions.value.length > 0) return 'NIVEL 1'
+  return 'NIVEL 0'
 }
 
 const goToPermissionManagement = () => {
@@ -634,6 +645,10 @@ const getUserPermissions = () => {
 
 const getUserScopes = () => {
   return userScopes.value
+}
+
+const getPermissionDisplay = (permission) => {
+  return permissionTranslations[permission] || permission
 }
 
 const getPermissionType = (permission) => {
@@ -704,7 +719,7 @@ const goToAuditLogs = () => {
 // Tiempo y sesión
 const updateTime = () => {
   const now = new Date()
-  currentTime.value = now.toLocaleString('en-US', {
+  currentTime.value = now.toLocaleString('es-ES', {
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',
@@ -741,7 +756,7 @@ const fetchCurrentUser = async () => {
       }
     }
   } catch (error) {
-    console.error('Error fetching user:', error)
+    console.error('Error obteniendo usuario:', error)
   }
 }
 
@@ -756,13 +771,12 @@ const fetchModerationStats = async () => {
       stats.topWarnedUsers = data.top_warned_users?.length || 0
     }
   } catch (error) {
-    console.error('Error fetching moderation stats:', error)
+    console.error('Error obteniendo estadísticas de moderación:', error)
   }
 }
 
 const fetchUserPermissions = async () => {
   try {
-
     const response = await fetch('/api/auth/permissions/')
     if (response.ok) {
       const data = await response.json()
@@ -770,7 +784,7 @@ const fetchUserPermissions = async () => {
       userScopes.value = data.scopes || []
     }
   } catch (error) {
-    console.error('Error fetching permissions:', error)
+    console.error('Error obteniendo permisos:', error)
   }
 }
 
