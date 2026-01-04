@@ -44,7 +44,7 @@
         <!-- Título y Subtítulo -->
         <div class="ssu-header-section">
           <h1 class="ssu-title">SYSTEM SECURITY UNIT</h1>
-          <div class="ssu-subtitle">CONTROL DE SEGURIDAD DEL SITIO</div>
+          <div class="ssu-subtitle">CONTROL DEl SERVIDOR DEL SITIO</div>
           
           <!-- Estado Actual -->
           <div class="current-status" :class="{'on': ssuStatus, 'off': !ssuStatus}">
