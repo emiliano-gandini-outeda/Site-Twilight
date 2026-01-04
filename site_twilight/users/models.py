@@ -140,11 +140,13 @@ class User(AbstractUser):
 
 class StaffRole(models.Model):
     class Scope(models.TextChoices):
-        GLOBAL = "global", "Moderation Lead"
+        GLOBAL = "global", "Administración Global"
         MODERATION = "moderation", "Moderación General"
-        INGAME = "ingame", "In-Game Moderation"
-        DISCORD = "discord", "Discord Moderation"
-        ROLEPLAY = "roleplay", "Roleplay Moderation"
+        INGAME = "ingame", "Moderación In-Game"
+        DISCORD = "discord", "Moderación Discord"
+        RP_ROLEPLAY = "rp_roleplay", "Equipo Roleplay"
+        RP_FACTION = "rp_faction", "Moderación Facciones"
+        RP_ACTORS = "rp_actors", "Supervisión Actores"
 
     user = models.ForeignKey(
         "users.User",
@@ -158,16 +160,65 @@ class StaffRole(models.Model):
     )
 
     level = models.PositiveSmallIntegerField(
-        help_text="Higher level = more permissions"
+        help_text="Nivel más alto = más permisos",
+        default=1
     )
 
     assigned_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         unique_together = ("user", "scope")
+        verbose_name = "Rol de Staff"
+        verbose_name_plural = "Roles de Staff"
 
     def __str__(self):
-        return f"{self.user} | {self.scope} L{self.level}"
+        nivel_texto = self.get_level_display()
+        return f"{self.user} | {self.get_scope_display()} {nivel_texto}"
+    
+    def get_scope_display(self):
+        """Return human-readable scope name"""
+        return dict(self.Scope.choices).get(self.scope, self.scope)
+    
+    def get_level_display(self):
+        """Return human-readable level name based on scope"""
+        level_names = {
+            "global": {
+                1: "SSU Host",
+                2: "Admin+"
+            },
+            "moderation": {
+                1: "Junior",
+                2: "Official",
+                3: "Qualified",
+                4: "Senior"
+            },
+            "ingame": {
+                1: "Junior",
+                2: "Official",
+                3: "Qualified"
+            },
+            "discord": {
+                1: "Junior",
+                2: "Official",
+                3: "Qualified",
+                4: "Senior"
+            },
+            "rp_roleplay": {
+                1: "RP Team",
+                2: "RP Lead"
+            },
+            "rp_faction": {
+                1: "Faction Team",
+                2: "RP Lead"
+            },
+            "rp_actors": {
+                1: "SCP Team",
+                2: "SCP Lead"
+            }
+        }
+        
+        scope_levels = level_names.get(self.scope, {})
+        return scope_levels.get(self.level, f"Nivel {self.level}")
 
 class Warn(models.Model):
     class WarnStatus(models.TextChoices):

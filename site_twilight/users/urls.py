@@ -1,14 +1,26 @@
 from django.urls import path
-from django.views.generic import RedirectView
 from .views import accounts, moderation, permissions
+from .views.permissions import (
+    api_get_user_permissions,
+    api_get_current_user,
+    api_update_user_permissions,
+    api_get_user_permissions_admin,
+    api_get_staff_users,
+    api_get_permissions_structure
+)
 
 urlpatterns = [
     path("login/roblox/", accounts.roblox_login, name="roblox_login"),
     path("login/roblox/callback/", accounts.roblox_callback, name="roblox_callback"),
     path("logout/", accounts.logout_view, name="logout"),
+    path('auth/user/', permissions.api_get_current_user, name='current_user'),
     
     # Dashboard
     path('moderation/dashboard/', moderation.api_moderation_dashboard, name='moderation_dashboard'),
+    
+    # Staff management
+    path("staff/users/", api_get_staff_users, name="api_get_staff_users"),
+    path("staff/permissions/structure/", api_get_permissions_structure, name="api_get_permissions_structure"),
     
     # Warns
     path('moderation/warns/', moderation.api_list_warns, name='list_warns'),
@@ -38,9 +50,9 @@ urlpatterns = [
     path('moderation/characters/', moderation.api_characters_for_moderation, name='characters_moderation'),
     
     # Permissions
-    path('auth/permissions/', permissions.api_get_user_permissions, name='user_permissions'),
-    path('auth/user/', permissions.api_get_current_user, name='current_user'),
-]
+    path("auth/user/permissions/", api_get_user_permissions, name="api_get_user_permissions"),
+    path("auth/user/<int:user_id>/permissions/", api_update_user_permissions, name="api_update_user_permissions"),
+    path("auth/user/<int:user_id>/permissions/view/", api_get_user_permissions_admin, name="api_get_user_permissions_admin"),]
 """     
     path("api/staff/moderation/", views.api_moderation_dashboard),
     path("api/staff/discord/", views.api_discord_moderation_panel),
