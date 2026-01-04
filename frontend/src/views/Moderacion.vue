@@ -239,7 +239,7 @@
             </div>
           </div>
           <div class="card-content">
-            <p class="card-description">Gestionar el estado del Sistema de Seguridad Urbana (SSU), supervisar unidades y coordinar operaciones.</p>
+            <p class="card-description">Gestionar el estado del Servidor (SSU).</p>
             <div class="card-meta">
               <span class="meta-label">PERMISO REQUERIDO:</span>
               <span class="meta-value" :class="hasPermission('change_ssu_status') ? 'authorized' : 'denied'">
