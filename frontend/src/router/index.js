@@ -12,10 +12,8 @@ import Moderacion from "@/views/Moderacion.vue"
 import Moderacion_Global from "@/views/Moderacion_Global.vue"
 import Adminpermissions from "@/views/Adminpermissions.vue"
 import Appeals from "@/views/Appeals.vue"
+import Moderacion_SSU from "@/views/Moderacion_SSU.vue"
 
-/* import CharacterCreate from "@/views/CharacterCreate.vue"
-import CharacterList from "@/views/CharacterList.vue"
-import CharacterDetail from "@/views/CharacterDetail.vue" */
 
 const routes = [
   { path: "/", name: "Landing", component: Landing },
@@ -87,22 +85,12 @@ const routes = [
     component: Appeals,
     meta: { requiresAuth: true }
   },
-/*   {
-    path: "/characters",
-    name: "CharacterList",
-    component: CharacterList,
-  },
   {
-    path: "/characters/new",
-    name: "CharacterCreate",
-    component: CharacterCreate,
+    path: "/moderation/ssu",
+    name: "Moderacion_SSU",
+    component: Moderacion_SSU,
+    meta: { requiresAuth: true },
   },
-  {
-    path: "/characters/:id",
-    name: "CharacterDetail",
-    component: CharacterDetail,
-    props: true,
-  }, */
   // IMPORTANTE: El catch-all debe ser la ÚLTIMA ruta
   {
     path: '/:pathMatch(.*)*',

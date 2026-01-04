@@ -42,51 +42,10 @@
         <h1 class="moderacion-title">PANEL DE MODERACIÓN</h1>
         <div class="moderacion-subtitle">FUNCIONES DE MODERACIÓN AUTORIZADAS</div>
         
-        <!-- Estadísticas Rápidas -->
+        <!-- Estadísticas Rápidas - MODIFICADO -->
         <div class="quick-stats">
-          <div class="stat-item">
-            <div class="stat-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                <polyline points="14 2 14 8 20 8"></polyline>
-                <line x1="16" y1="13" x2="8" y2="13"></line>
-                <line x1="16" y1="17" x2="8" y2="17"></line>
-                <polyline points="10 9 9 9 8 9"></polyline>
-              </svg>
-            </div>
-            <div class="stat-info">
-              <span class="stat-label">WARNS ACTIVOS</span>
-              <span class="stat-value">{{ stats.activeWarns || 0 }}</span>
-            </div>
-          </div>
-          
-          <div class="stat-item">
-            <div class="stat-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-              </svg>
-            </div>
-            <div class="stat-info">
-              <span class="stat-label">BANS ACTIVOS</span>
-              <span class="stat-value">{{ stats.activeBans || 0 }}</span>
-            </div>
-          </div>
-          
-          <div class="stat-item">
-            <div class="stat-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-              </svg>
-            </div>
-            <div class="stat-info">
-              <span class="stat-label">APELACIONES PENDIENTES</span>
-              <span class="stat-value">{{ stats.pendingAppeals || 0 }}</span>
-            </div>
-          </div>
-          
-          <div class="stat-item">
+          <!-- SSU Status -->
+          <div class="stat-item ssu-status" :class="{'on': ssuStatus, 'off': !ssuStatus}">
             <div class="stat-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
@@ -96,8 +55,39 @@
               </svg>
             </div>
             <div class="stat-info">
-              <span class="stat-label">MÁS ADVERTIDOS</span>
-              <span class="stat-value">{{ stats.topWarnedUsers || 0 }}</span>
+              <span class="stat-label">SSU STATUS</span>
+              <span class="stat-value ssu-value" :class="{'on': ssuStatus, 'off': !ssuStatus}">
+                {{ ssuStatus ? 'ACTIVE' : 'INACTIVE' }}
+              </span>
+              <div class="ssu-indicator-light" :class="{'active': ssuStatus}"></div>
+            </div>
+          </div>
+          
+          <!-- Apelaciones Pendientes -->
+          <div class="stat-item">
+            <div class="stat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                <path d="M13 8H7"></path>
+                <path d="M17 12H7"></path>
+              </svg>
+            </div>
+            <div class="stat-info">
+              <span class="stat-label">APELACIONES PENDIENTES</span>
+              <span class="stat-value">{{ stats.pendingAppeals || 0 }}</span>
+            </div>
+          </div>
+          
+          <!-- Auditorías Recientes -->
+          <div class="stat-item">
+            <div class="stat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+              </svg>
+            </div>
+            <div class="stat-info">
+              <span class="stat-label">[REDACTED]</span>
+              <span class="stat-value">-</span>
             </div>
           </div>
         </div>
@@ -105,8 +95,8 @@
 
       <!-- Grid de Funciones de Moderación -->
       <div class="moderation-grid">
-        <!-- Tarjeta 1: Admin -->
-        <div class="moderation-card" :class="{ 'active': activeCard === 9 }" @click="activateCard(9)">
+        <!-- Tarjeta 1: Permission Management -->
+        <div class="moderation-card" :class="{ 'active': activeCard === 1 }" @click="activateCard(1)">
           <div class="card-header">
             <div class="card-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -148,50 +138,8 @@
           </div>
         </div>
 
-        <!-- Tarjeta 2: Gestión de Bans -->
+        <!-- Tarjeta 2: Moderation Dashboard -->
         <div class="moderation-card" :class="{ 'active': activeCard === 2 }" @click="activateCard(2)">
-          <div class="card-header">
-            <div class="card-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-              </svg>
-            </div>
-            <div class="card-title">BAN MANAGEMENT</div>
-            <div class="card-status" v-if="hasPermission('register_ban')">
-              <span class="status-active">ACCESO CONCEDIDO</span>
-            </div>
-          </div>
-          <div class="card-content">
-            <p class="card-description">Emitir bans temporales o permanentes, gestionar duraciones y sistemas de apelación.</p>
-            <div class="card-meta">
-              <span class="meta-label">PERMISO REQUERIDO:</span>
-              <span class="meta-value" :class="hasPermission('register_ban') ? 'authorized' : 'denied'">
-                {{ hasPermission('register_ban') ? 'Registrar Ban' : 'INSUFICIENTE' }}
-              </span>
-            </div>
-          </div>
-          <div class="card-footer">
-            <div class="card-action">
-              <button 
-                class="action-button" 
-                @click.stop="goToBanManagement"
-                :disabled="!hasPermission('register_ban')"
-                :class="{ 'disabled': !hasPermission('register_ban') }"
-              >
-                <span class="button-text">ACCEDER AL SISTEMA</span>
-                <div class="button-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="9 18 15 12 9 6"></polyline>
-                  </svg>
-                </div>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Tarjeta 3: Dashboard de Moderación -->
-        <div class="moderation-card" :class="{ 'active': activeCard === 3 }" @click="activateCard(3)">
           <div class="card-header">
             <div class="card-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -233,136 +181,8 @@
           </div>
         </div>
 
-        <!-- Tarjeta 4: Gestión de Apelaciones -->
-        <div class="moderation-card" :class="{ 'active': activeCard === 4 }" @click="activateCard(4)">
-          <div class="card-header">
-            <div class="card-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                <path d="M13 8H7"></path>
-                <path d="M17 12H7"></path>
-              </svg>
-            </div>
-            <div class="card-title">APPEAL MANAGEMENT</div>
-            <div class="card-status" v-if="hasPermission('manage_warns')">
-              <span class="status-active">ACCESO CONCEDIDO</span>
-            </div>
-          </div>
-          <div class="card-content">
-            <p class="card-description">Revisar y responder a apelaciones de usuarios para advertencias y modificaciones de ban.</p>
-            <div class="card-meta">
-              <span class="meta-label">PERMISO REQUERIDO:</span>
-              <span class="meta-value" :class="hasPermission('manage_warns') ? 'authorized' : 'denied'">
-                {{ hasPermission('manage_warns') ? 'Gestionar Warns' : 'INSUFICIENTE' }}
-              </span>
-            </div>
-          </div>
-          <div class="card-footer">
-            <div class="card-action">
-              <button 
-                class="action-button" 
-                @click.stop="goToAppealManagement"
-                :disabled="!hasPermission('manage_warns')"
-                :class="{ 'disabled': !hasPermission('manage_warns') }"
-              >
-                <span class="button-text">ACCEDER AL SISTEMA</span>
-                <div class="button-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="9 18 15 12 9 6"></polyline>
-                  </svg>
-                </div>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Tarjeta 5: Moderación en Juego -->
-        <div class="moderation-card" :class="{ 'active': activeCard === 5 }" @click="activateCard(5)">
-          <div class="card-header">
-            <div class="card-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
-                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
-              </svg>
-            </div>
-            <div class="card-title">IN-GAME MODERATION</div>
-            <div class="card-status" v-if="hasPermission('view_characters_basic')">
-              <span class="status-active">ACCESO CONCEDIDO</span>
-            </div>
-          </div>
-          <div class="card-content">
-            <p class="card-description">Monitorear personajes en juego, verificar identidades y gestionar cumplimiento de roleplay.</p>
-            <div class="card-meta">
-              <span class="meta-label">PERMISO REQUERIDO:</span>
-              <span class="meta-value" :class="hasPermission('view_characters_basic') ? 'authorized' : 'denied'">
-                {{ hasPermission('view_characters_basic') ? 'Ver Personajes Básico' : 'INSUFICIENTE' }}
-              </span>
-            </div>
-          </div>
-          <div class="card-footer">
-            <div class="card-action">
-              <button 
-                class="action-button" 
-                @click.stop="goToInGameModeration"
-                :disabled="!hasPermission('view_characters_basic')"
-                :class="{ 'disabled': !hasPermission('view_characters_basic') }"
-              >
-                <span class="button-text">ACCEDER AL SISTEMA</span>
-                <div class="button-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="9 18 15 12 9 6"></polyline>
-                  </svg>
-                </div>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Tarjeta 6: Moderación de Discord -->
-        <div class="moderation-card" :class="{ 'active': activeCard === 6 }" @click="activateCard(6)">
-          <div class="card-header">
-            <div class="card-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                <line x1="10" y1="9" x2="14" y2="9"></line>
-                <line x1="12" y1="7" x2="12" y2="11"></line>
-              </svg>
-            </div>
-            <div class="card-title">DISCORD MODERATION</div>
-            <div class="card-status" v-if="hasPermission('full_discord_moderation')">
-              <span class="status-active">ACCESO CONCEDIDO</span>
-            </div>
-          </div>
-          <div class="card-content">
-            <p class="card-description">Gestionar advertencias específicas de Discord, bans y aplicación de cumplimiento comunitario.</p>
-            <div class="card-meta">
-              <span class="meta-label">PERMISO REQUERIDO:</span>
-              <span class="meta-value" :class="hasPermission('full_discord_moderation') ? 'authorized' : 'denied'">
-                {{ hasPermission('full_discord_moderation') ? 'Moderación Discord Completa' : 'INSUFICIENTE' }}
-              </span>
-            </div>
-          </div>
-          <div class="card-footer">
-            <div class="card-action">
-              <button 
-                class="action-button" 
-                @click.stop="goToDiscordModeration"
-                :disabled="!hasPermission('full_discord_moderation')"
-                :class="{ 'disabled': !hasPermission('full_discord_moderation') }"
-              >
-                <span class="button-text">ACCEDER AL SISTEMA</span>
-                <div class="button-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="9 18 15 12 9 6"></polyline>
-                  </svg>
-                </div>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Tarjeta 7: Logs de Auditoría -->
-        <div class="moderation-card" :class="{ 'active': activeCard === 7 }" @click="activateCard(7)">
+        <!-- Tarjeta 3: Audit Logs -->
+        <div class="moderation-card" :class="{ 'active': activeCard === 3 }" @click="activateCard(3)">
           <div class="card-header">
             <div class="card-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -398,6 +218,155 @@
                   </svg>
                 </div>
               </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tarjeta 4: SSU Management -->
+        <div class="moderation-card" :class="{ 'active': activeCard === 4 }" @click="activateCard(4)">
+          <div class="card-header">
+            <div class="card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+            </div>
+            <div class="card-title">SSU MANAGEMENT</div>
+            <div class="card-status" v-if="hasPermission('change_ssu_status')">
+              <span class="status-active">ACCESO CONCEDIDO</span>
+            </div>
+          </div>
+          <div class="card-content">
+            <p class="card-description">Gestionar el estado del Sistema de Seguridad Urbana (SSU), supervisar unidades y coordinar operaciones.</p>
+            <div class="card-meta">
+              <span class="meta-label">PERMISO REQUERIDO:</span>
+              <span class="meta-value" :class="hasPermission('change_ssu_status') ? 'authorized' : 'denied'">
+                {{ hasPermission('change_ssu_status') ? 'Cambiar Estado SSU' : 'INSUFICIENTE' }}
+              </span>
+            </div>
+          </div>
+          <div class="card-footer">
+            <div class="card-action">
+              <button 
+                class="action-button" 
+                @click.stop="goToSSUManagement"
+                :disabled="!hasPermission('change_ssu_status')"
+                :class="{ 'disabled': !hasPermission('change_ssu_status') }"
+              >
+                <span class="button-text">ACCEDER AL SISTEMA</span>
+                <div class="button-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                  </svg>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tarjeta 5: [REDACTED] -->
+        <div class="moderation-card redacted" :class="{ 'active': activeCard === 5 }" @click="showAccessDenied(5)">
+          <div class="card-header redacted">
+            <div class="card-icon redacted">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M4.93 4.93l14.14 14.14"></path>
+              </svg>
+            </div>
+            <div class="card-title redacted-text">[REDACTED]</div>
+            <div class="card-status">
+              <span class="status-redacted">CLASIFICADO</span>
+            </div>
+          </div>
+          <div class="card-content redacted">
+            <p class="card-description redacted-text">Esta función requiere autorización de nivel 5 y autorización administrativa.</p>
+            <div class="card-meta">
+              <span class="meta-label">AUTORIZACIÓN:</span>
+              <span class="meta-value redacted">NIVEL 5+</span>
+            </div>
+          </div>
+          <div class="card-footer redacted">
+            <div class="clearance-warning">
+              <div class="warning-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#aa2222" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="8" x2="12" y2="12"></line>
+                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+              </div>
+              <span class="warning-text">SE REQUIERE AUTORIZACIÓN ADMINISTRATIVA</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tarjeta 6: [REDACTED] -->
+        <div class="moderation-card redacted" :class="{ 'active': activeCard === 6 }" @click="showAccessDenied(6)">
+          <div class="card-header redacted">
+            <div class="card-icon redacted">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M4.93 4.93l14.14 14.14"></path>
+              </svg>
+            </div>
+            <div class="card-title redacted-text">[REDACTED]</div>
+            <div class="card-status">
+              <span class="status-redacted">CLASIFICADO</span>
+            </div>
+          </div>
+          <div class="card-content redacted">
+            <p class="card-description redacted-text">Esta función requiere autorización de nivel 5 y autorización administrativa.</p>
+            <div class="card-meta">
+              <span class="meta-label">AUTORIZACIÓN:</span>
+              <span class="meta-value redacted">NIVEL 5+</span>
+            </div>
+          </div>
+          <div class="card-footer redacted">
+            <div class="clearance-warning">
+              <div class="warning-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#aa2222" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="8" x2="12" y2="12"></line>
+                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+              </div>
+              <span class="warning-text">SE REQUIERE AUTORIZACIÓN ADMINISTRATIVA</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tarjeta 7: [REDACTED] -->
+        <div class="moderation-card redacted" :class="{ 'active': activeCard === 7 }" @click="showAccessDenied(7)">
+          <div class="card-header redacted">
+            <div class="card-icon redacted">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M4.93 4.93l14.14 14.14"></path>
+              </svg>
+            </div>
+            <div class="card-title redacted-text">[REDACTED]</div>
+            <div class="card-status">
+              <span class="status-redacted">CLASIFICADO</span>
+            </div>
+          </div>
+          <div class="card-content redacted">
+            <p class="card-description redacted-text">Esta función requiere autorización de nivel 5 y autorización administrativa.</p>
+            <div class="card-meta">
+              <span class="meta-label">AUTORIZACIÓN:</span>
+              <span class="meta-value redacted">NIVEL 5+</span>
+            </div>
+          </div>
+          <div class="card-footer redacted">
+            <div class="clearance-warning">
+              <div class="warning-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#aa2222" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="8" x2="12" y2="12"></line>
+                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+              </div>
+              <span class="warning-text">SE REQUIERE AUTORIZACIÓN ADMINISTRATIVA</span>
             </div>
           </div>
         </div>
@@ -542,11 +511,12 @@ const currentTime = ref('')
 const sessionStartTime = ref('')
 const sessionDuration = ref('00:00:00')
 const showDeniedModal = ref(false)
+const ssuStatus = ref(false) // Añadido estado SSU
 const stats = reactive({
   activeWarns: 0,
   activeBans: 0,
   pendingAppeals: 0,
-  topWarnedUsers: 0
+  recentAudits: 0 // Cambiado de topWarnedUsers a recentAudits
 })
 
 // Permisos del usuario
@@ -587,19 +557,18 @@ const activateCard = (cardNumber) => {
   activeCard.value = cardNumber
   
   const requiredPermissions = {
-    1: 'create_warn',
-    2: 'register_ban',
-    3: 'access_moderation_dashboard',
-    4: 'manage_warns',
-    5: 'view_characters_basic',
-    6: 'full_discord_moderation',
-    7: 'full_moderation_control',
-    8: 'admin_only',
-    9: 'full_moderation_control'
+    1: 'full_moderation_control',
+    2: 'access_moderation_dashboard',
+    3: 'full_moderation_control',
+    4: 'change_ssu_status',
+    5: 'admin_only',
+    6: 'admin_only',
+    7: 'admin_only',
+    8: 'admin_only'
   }
   
   const required = requiredPermissions[cardNumber]
-  if (required && !hasPermission(required) && cardNumber !== 8) {
+  if (required && !hasPermission(required) && cardNumber >= 5) {
     showAccessDenied(cardNumber)
   }
 }
@@ -635,7 +604,31 @@ const goToPermissionManagement = () => {
   if (hasPermission('full_moderation_control')) {
     router.push('/moderation/admin/permissions')
   } else {
-    showAccessDenied(9)
+    showAccessDenied(1)
+  }
+}
+
+const goToGlobalModeration = () => {
+  if (hasPermission('access_moderation_dashboard')) {
+    router.push('/moderation/global')
+  } else {
+    showAccessDenied(2)
+  }
+}
+
+const goToAuditLogs = () => {
+  if (hasPermission('full_moderation_control')) {
+    router.push('/moderation/audit')
+  } else {
+    showAccessDenied(3)
+  }
+}
+
+const goToSSUManagement = () => {
+  if (hasPermission('change_ssu_status')) {
+    router.push('/moderation/ssu')
+  } else {
+    showAccessDenied(4)
   }
 }
 
@@ -659,60 +652,16 @@ const getPermissionType = (permission) => {
   return 'permission-basic'
 }
 
-// Navegación
-const goToWarnManagement = () => {
-  if (hasPermission('create_warn')) {
-    router.push('/moderation/warns')
-  } else {
-    showAccessDenied(1)
-  }
-}
-
-const goToBanManagement = () => {
-  if (hasPermission('register_ban')) {
-    router.push('/moderation/bans')
-  } else {
-    showAccessDenied(2)
-  }
-}
-
-const goToGlobalModeration = () => {
-  if (hasPermission('access_moderation_dashboard')) {
-    router.push('/moderation/global')
-  } else {
-    showAccessDenied(3)
-  }
-}
-
-const goToAppealManagement = () => {
-  if (hasPermission('manage_warns')) {
-    router.push('/moderation/appeals')
-  } else {
-    showAccessDenied(4)
-  }
-}
-
-const goToInGameModeration = () => {
-  if (hasPermission('view_characters_basic')) {
-    router.push('/moderation/ingame')
-  } else {
-    showAccessDenied(5)
-  }
-}
-
-const goToDiscordModeration = () => {
-  if (hasPermission('full_discord_moderation')) {
-    router.push('/moderation/discord')
-  } else {
-    showAccessDenied(6)
-  }
-}
-
-const goToAuditLogs = () => {
-  if (hasPermission('full_moderation_control')) {
-    router.push('/moderation/audit')
-  } else {
-    showAccessDenied(7)
+// Check SSU status
+const checkSSU = async () => {
+  try {
+    const response = await fetch('/api/ssu/')
+    if (response.ok) {
+      const data = await response.json()
+      ssuStatus.value = data.ssu_status
+    }
+  } catch (error) {
+    console.error('SSU check failed:', error)
   }
 }
 
@@ -753,6 +702,7 @@ const fetchCurrentUser = async () => {
         sessionStartTime.value = new Date().toISOString()
         fetchModerationStats()
         fetchUserPermissions()
+        checkSSU()
       }
     }
   } catch (error) {
@@ -768,7 +718,7 @@ const fetchModerationStats = async () => {
       stats.activeWarns = data.stats?.active_warns || 0
       stats.activeBans = data.stats?.active_bans || 0
       stats.pendingAppeals = data.stats?.pending_appeals || 0
-      stats.topWarnedUsers = data.top_warned_users?.length || 0
+      stats.recentAudits = data.recent_audits?.length || 0
     }
   } catch (error) {
     console.error('Error obteniendo estadísticas de moderación:', error)
@@ -777,7 +727,7 @@ const fetchModerationStats = async () => {
 
 const fetchUserPermissions = async () => {
   try {
-    const response = await fetch('/api/auth/permissions/')
+    const response = await fetch('/api/auth/user/permissions/')
     if (response.ok) {
       const data = await response.json()
       userPermissions.value = data.permissions || []
@@ -795,8 +745,12 @@ onMounted(() => {
   
   fetchCurrentUser()
   
+  // Check SSU status every 15 seconds
+  const ssuInterval = setInterval(checkSSU, 15000)
+  
   return () => {
     clearInterval(timeInterval)
+    clearInterval(ssuInterval)
   }
 })
 </script>
@@ -1020,7 +974,7 @@ onMounted(() => {
   margin-bottom: 30px;
 }
 
-/* Estadísticas Rápidas */
+/* Estadísticas Rápidas - MODIFICADO */
 .quick-stats {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -1036,12 +990,39 @@ onMounted(() => {
   align-items: center;
   gap: 12px;
   transition: all 0.3s ease;
+  position: relative;
 }
 
 .stat-item:hover {
   border-color: #444;
   transform: translateY(-2px);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Estilos específicos para SSU Status */
+.stat-item.ssu-status.on {
+  border-color: #00aa00;
+  background: rgba(0, 40, 0, 0.3);
+}
+
+.stat-item.ssu-status.off {
+  border-color: #aa0000;
+  background: rgba(40, 0, 0, 0.3);
+}
+
+.stat-item.ssu-status .stat-icon {
+  background: rgba(30, 30, 30, 0.8);
+  border-color: #444;
+}
+
+.stat-item.ssu-status.on .stat-icon {
+  background: rgba(0, 40, 0, 0.3);
+  border-color: #00aa00;
+}
+
+.stat-item.ssu-status.off .stat-icon {
+  background: rgba(40, 0, 0, 0.3);
+  border-color: #aa0000;
 }
 
 .stat-icon {
@@ -1063,6 +1044,7 @@ onMounted(() => {
 
 .stat-info {
   flex: 1;
+  position: relative;
 }
 
 .stat-label {
@@ -1082,6 +1064,37 @@ onMounted(() => {
   color: #fff;
   font-family: 'Consolas', monospace;
   letter-spacing: 0.5px;
+}
+
+/* Valores SSU específicos */
+.stat-value.ssu-value.on {
+  color: #00ff00;
+  text-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+}
+
+.stat-value.ssu-value.off {
+  color: #ff3333;
+  text-shadow: 0 0 10px rgba(255, 51, 51, 0.3);
+}
+
+/* Indicador de luz SSU */
+.ssu-indicator-light {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #333;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.ssu-indicator-light.active {
+  background: #00ff00;
+  box-shadow: 0 0 6px #00ff00;
+  animation: pulse 2s infinite;
 }
 
 /* Grid de Moderación */

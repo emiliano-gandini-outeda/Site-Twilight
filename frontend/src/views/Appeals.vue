@@ -169,20 +169,33 @@
               </p>
             </div>
             <div v-if="appealCooldown && !appealCooldown.can_appeal" class="cooldown-warning">
-                <div class="cooldown-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <polyline points="12 6 12 12 16 14"></polyline>
-                    </svg>
-                </div>
-                <div class="cooldown-content">
-                    <h4 class="cooldown-title">APELACIÓN EN ENFRIAMIENTO</h4>
-                    <p class="cooldown-text">{{ appealCooldown.reason }}</p>
-                    <p class="cooldown-time" v-if="appealCooldown.cooldown_ends">
-                    Podrás apelar nuevamente: {{ formatDateFull(appealCooldown.cooldown_ends) }}
-                    </p>
-                </div>
-            </div>
+              <div class="cooldown-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <polyline points="12 6 12 12 16 14"></polyline>
+                  </svg>
+              </div>
+              <div class="cooldown-content">
+                  <h4 class="cooldown-title">APELACIÓN EN ENFRIAMIENTO</h4>
+                  
+                  <!-- Solo mostrar UN mensaje, no dos -->
+                  <div class="cooldown-message">
+                      <!-- Opción 1: Si el backend envía un mensaje formateado -->
+                      <p v-if="appealCooldown.message" class="cooldown-text">
+                          {{ appealCooldown.message }}
+                      </p>
+                      <!-- Opción 2: Si tenemos fecha de cooldown -->
+                      <p v-else-if="appealCooldown.cooldown_ends" class="cooldown-text">
+                          Podrás apelar nuevamente: {{ formatDateInUserTimeZone(appealCooldown.cooldown_ends) }}
+                      </p>
+                      
+                      <!-- Opción 3: Mensaje genérico -->
+                      <p v-else class="cooldown-text">
+                          Debes esperar para poder apelar nuevamente
+                      </p>
+                  </div>
+              </div>
+          </div>
             <div v-if="loadingWarnings" class="loading-state">
               <div class="loading-spinner"></div>
               <p class="loading-text">Cargando advertencias...</p>
@@ -270,7 +283,10 @@
                   
                   <div v-if="warning.evidence" class="evidence-section">
                     <h5>Evidencia Presentada:</h5>
-                    <p class="evidence-text">{{ warning.evidence }}</p>
+                    <p class="evidence-text">{{ truncateText(warning.evidence, 100) }}</p>
+                    <button v-if="warning.evidence.length > 100" class="view-evidence-link" @click="viewEvidence(warning)">
+                      Ver evidencia completa
+                    </button>
                   </div>
                   
                   <div v-if="warning.appealed" class="appeal-section">
@@ -412,7 +428,10 @@
                   
                   <div v-if="ban.evidence" class="evidence-section">
                     <h5>Evidencia Presentada:</h5>
-                    <p class="evidence-text">{{ ban.evidence }}</p>
+                    <p class="evidence-text">{{ truncateText(ban.evidence, 100) }}</p>
+                    <button v-if="ban.evidence.length > 100" class="view-evidence-link" @click="viewEvidence(ban)">
+                      Ver evidencia completa
+                    </button>
                   </div>
                   
                   <div v-if="ban.appealed" class="appeal-section">
@@ -759,6 +778,95 @@
       </div>
     </div>
 
+    <!-- Modal: Ver Evidencia -->
+    <div v-if="showEvidenceModal" class="modal-overlay" @click.self="closeEvidenceModal">
+      <div class="modal-content evidence-modal">
+        <div class="modal-header">
+          <h3 class="modal-title">EVIDENCIA PRESENTADA</h3>
+          <button class="modal-close" @click="closeEvidenceModal">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+        
+        <div class="modal-body">
+          <div class="evidence-content">
+            <div class="evidence-header">
+              <div class="evidence-type">
+                <span class="type-badge">{{ evidenceModal.type === 'warning' ? 'ADVERTENCIA' : 'BANEO' }}</span>
+                <span class="evidence-id">#{{ evidenceModal.id }}</span>
+              </div>
+              <div class="evidence-meta">
+                <span class="meta-item">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                  </svg>
+                  {{ formatDate(evidenceModal.created_at) }}
+                </span>
+              </div>
+            </div>
+            
+            <div class="evidence-text">
+              <pre>{{ evidenceModal.evidence }}</pre>
+            </div>
+            
+            <div v-if="hasValidLinks" class="evidence-actions">
+              <button 
+                class="copy-button"
+                @click="copyEvidenceLinks"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                <span>COPIAR ENLACES</span>
+              </button>
+              
+              <button 
+                class="open-button"
+                @click="openEvidenceLinks"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                  <polyline points="15 3 21 3 21 9"></polyline>
+                  <line x1="10" y1="14" x2="21" y2="3"></line>
+                </svg>
+                <span>ABRIR ENLACES</span>
+              </button>
+            </div>
+          </div>
+          
+          <div class="evidence-notice">
+            <div class="notice-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+            </div>
+            <div class="notice-content">
+              <h4>INFORMACIÓN IMPORTANTE</h4>
+              <p>
+                • Esta es la evidencia presentada por el moderador<br>
+                • Los enlaces pueden llevar a Discord, YouTube, Imgur, etc.<br>
+                • Solo copia o abre enlaces de fuentes confiables<br>
+                • Para más detalles, contacta al equipo de moderación
+              </p>
+            </div>
+          </div>
+          
+          <div class="modal-actions">
+            <button class="close-button" @click="closeEvidenceModal">
+              CERRAR
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Sistema de notificaciones -->
     <div class="scp-notifications">
       <transition-group name="notification-slide">
@@ -802,78 +910,6 @@
         </div>
       </transition-group>
     </div>
-    <!-- Modal: Ver Evidencia -->
-    <div v-if="showEvidenceModal" class="modal-overlay" @click.self="closeEvidenceModal">
-    <div class="modal-content evidence-modal">
-        <div class="modal-header">
-        <h3 class="modal-title">EVIDENCIA PRESENTADA</h3>
-        <button class="modal-close" @click="closeEvidenceModal">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-        </button>
-        </div>
-        
-        <div class="modal-body">
-        <div class="evidence-content">
-            <div class="evidence-type">
-            <span class="type-badge">ENLACES Y REFERENCIAS</span>
-            </div>
-            
-            <div class="evidence-text">
-            <pre>{{ currentEvidence }}</pre>
-            </div>
-            
-            <div class="evidence-actions">
-            <button 
-                v-if="currentEvidence.includes('http')"
-                class="copy-button"
-                @click="copyEvidenceLinks"
-            >
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                </svg>
-                <span>COPIAR ENLACES</span>
-            </button>
-            
-            <button 
-                v-if="hasValidLinks"
-                class="open-button"
-                @click="openEvidenceLinks"
-            >
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                <polyline points="15 3 21 3 21 9"></polyline>
-                <line x1="10" y1="14" x2="21" y2="3"></line>
-                </svg>
-                <span>ABRIR ENLACES</span>
-            </button>
-            </div>
-        </div>
-        
-        <div class="evidence-notice">
-            <div class="notice-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"></circle>
-                <line x1="12" y1="8" x2="12" y2="12"></line>
-                <line x1="12" y1="16" x2="12.01" y2="16"></line>
-            </svg>
-            </div>
-            <div class="notice-content">
-            <h4>INFORMACIÓN IMPORTANTE</h4>
-            <p>
-                • Esta es la evidencia presentada por el moderador<br>
-                • Los enlaces pueden llevar a Discord, YouTube, Imgur, etc.<br>
-                • Solo copia o abre enlaces de fuentes confiables<br>
-                • Para más detalles, contacta al equipo de moderación
-            </p>
-            </div>
-        </div>
-        </div>
-    </div>
-    </div>
   </div>
 </template>
 
@@ -892,12 +928,11 @@ const loadingBans = ref(false)
 const loadingHistory = ref(false)
 const submittingAppeal = ref(false)
 const appealCooldown = ref(null)
-const showEvidenceModal = ref(false)
-const currentEvidence = ref('')
 
 // Modales
 const showAppealModal = ref(false)
 const showResponseModal = ref(false)
+const showEvidenceModal = ref(false)
 
 // Datos
 const warnings = ref([])
@@ -911,50 +946,6 @@ const appealModal = reactive({
   reason: ''
 })
 
-// Agrega estas funciones en el script
-const hasValidLinks = computed(() => {
-  if (!currentEvidence.value) return false
-  const urlPattern = /https?:\/\/[^\s]+/g
-  return urlPattern.test(currentEvidence.value)
-})
-
-const extractLinks = () => {
-  if (!currentEvidence.value) return []
-  const urlPattern = /https?:\/\/[^\s]+/g
-  return currentEvidence.value.match(urlPattern) || []
-}
-
-const copyEvidenceLinks = async () => {
-  const links = extractLinks()
-  if (links.length === 0) {
-    showNotification('INFO', 'No se encontraron enlaces', 'info', 3000)
-    return
-  }
-  
-  const textToCopy = links.join('\n')
-  try {
-    await navigator.clipboard.writeText(textToCopy)
-    showNotification('ÉXITO', 'Enlaces copiados al portapapeles', 'success', 3000)
-  } catch (error) {
-    console.error('Error copiando enlaces:', error)
-    showNotification('ERROR', 'Error al copiar enlaces', 'error', 3000)
-  }
-}
-
-const openEvidenceLinks = () => {
-  const links = extractLinks()
-  if (links.length === 0) {
-    showNotification('INFO', 'No se encontraron enlaces', 'info', 3000)
-    return
-  }
-  
-  links.forEach(link => {
-    window.open(link, '_blank', 'noopener,noreferrer')
-  })
-  
-  showNotification('INFO', `Abriendo ${links.length} enlace(s)`, 'info', 3000)
-}
-
 const responseModal = reactive({
   id: null,
   type: null,
@@ -964,6 +955,13 @@ const responseModal = reactive({
   moderator: '',
   responded_at: null,
   notes: ''
+})
+
+const evidenceModal = reactive({
+  id: null,
+  type: null,
+  evidence: '',
+  created_at: null
 })
 
 // Formulario
@@ -990,6 +988,12 @@ const appealableBans = computed(() => {
   )
 })
 
+const hasValidLinks = computed(() => {
+  if (!evidenceModal.evidence) return false
+  const urlPattern = /https?:\/\/[^\s]+/g
+  return urlPattern.test(evidenceModal.evidence)
+})
+
 // Métodos
 const setActiveTab = (tab) => {
   activeTab.value = tab
@@ -1005,8 +1009,6 @@ const setActiveTab = (tab) => {
       break
   }
 }
-
-// Reemplaza las funciones de carga:
 
 const loadWarnings = async () => {
   if (!currentUser.value) return
@@ -1153,9 +1155,62 @@ const getAppealStatus = (appeal) => {
   }
 }
 
+const truncateText = (text, maxLength) => {
+  if (!text || text.length <= maxLength) return text
+  return text.substring(0, maxLength) + '...'
+}
+
+const viewEvidence = (item) => {
+  evidenceModal.id = item.id
+  evidenceModal.type = 'warning' in item ? 'warning' : 'ban'
+  evidenceModal.evidence = item.evidence || ''
+  evidenceModal.created_at = item.created_at
+  showEvidenceModal.value = true
+}
+
 const closeEvidenceModal = () => {
   showEvidenceModal.value = false
-  currentEvidence.value = ''
+  evidenceModal.id = null
+  evidenceModal.type = null
+  evidenceModal.evidence = ''
+  evidenceModal.created_at = null
+}
+
+const extractLinks = () => {
+  if (!evidenceModal.evidence) return []
+  const urlPattern = /https?:\/\/[^\s]+/g
+  return evidenceModal.evidence.match(urlPattern) || []
+}
+
+const copyEvidenceLinks = async () => {
+  const links = extractLinks()
+  if (links.length === 0) {
+    showNotification('INFO', 'No se encontraron enlaces', 'info', 3000)
+    return
+  }
+  
+  const textToCopy = links.join('\n')
+  try {
+    await navigator.clipboard.writeText(textToCopy)
+    showNotification('ÉXITO', 'Enlaces copiados al portapapeles', 'success', 3000)
+  } catch (error) {
+    console.error('Error copiando enlaces:', error)
+    showNotification('ERROR', 'Error al copiar enlaces', 'error', 3000)
+  }
+}
+
+const openEvidenceLinks = () => {
+  const links = extractLinks()
+  if (links.length === 0) {
+    showNotification('INFO', 'No se encontraron enlaces', 'info', 3000)
+    return
+  }
+  
+  links.forEach(link => {
+    window.open(link, '_blank', 'noopener,noreferrer')
+  })
+  
+  showNotification('INFO', `Abriendo ${links.length} enlace(s)`, 'info', 3000)
 }
 
 const openAppealModal = (item, type) => {
@@ -1263,6 +1318,10 @@ const viewHistoryDetails = (item) => {
   viewAppealResponse(item)
 }
 
+const viewExpiry = (item) => {
+  showNotification('INFO', `Expira: ${formatDateFull(item.expires_at)}`, 'info', 5000)
+}
+
 const getSeverityText = (severity) => {
   switch(severity) {
     case 1: return 'BAJA'
@@ -1301,22 +1360,51 @@ const formatDateShort = (dateString) => {
 
 const formatDateFull = (dateString) => {
   if (!dateString) return ''
+  
   const date = new Date(dateString)
+  
+  // Usar la zona horaria local del usuario automáticamente
   return date.toLocaleString('es-ES', {
     day: '2-digit',
     month: 'long',
     year: 'numeric',
     hour: '2-digit',
-    minute: '2-digit'
+    minute: '2-digit',
+    hour12: false
   })
 }
 
-const viewEvidence = (item) => {
-  showNotification('INFO', `Evidencia: ${item.evidence}`, 'info', 5000)
+const getUserTimeZone = () => {
+  return Intl.DateTimeFormat().resolvedOptions().timeZone
 }
 
-const viewExpiry = (item) => {
-  showNotification('INFO', `Expira: ${formatDateFull(item.expires_at)}`, 'info', 5000)
+// Función para formatear fecha en la zona horaria del usuario
+const formatDateInUserTimeZone = (dateString, format = 'full') => {
+  if (!dateString) return ''
+  
+  const date = new Date(dateString)
+  const userTimeZone = getUserTimeZone()
+  
+  const options = {
+    timeZone: userTimeZone,
+    day: '2-digit',
+    month: format === 'short' ? '2-digit' : 'long',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false
+  }
+  
+  if (format === 'short') {
+    // Para formato corto: DD/MM/YYYY HH:mm
+    return date.toLocaleString('es-ES', {
+      ...options,
+      month: '2-digit'
+    }).replace(',', '')
+  }
+  
+  // Formato completo: DD de Mes de YYYY, HH:mm
+  return date.toLocaleString('es-ES', options)
 }
 
 const isExpiringSoon = (dateString) => {
@@ -2071,155 +2159,6 @@ onMounted(() => {
   flex-wrap: wrap;
 }
 
-/* Modal de evidencia */
-.evidence-modal {
-  max-width: 800px;
-}
-
-.evidence-content {
-  margin-bottom: 2rem;
-}
-
-.evidence-type {
-  margin-bottom: 1rem;
-}
-
-.type-badge {
-  display: inline-block;
-  padding: 0.3rem 0.6rem;
-  background: rgba(33, 150, 243, 0.1);
-  border: 1px solid rgba(33, 150, 243, 0.3);
-  color: #2196F3;
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-  font-family: 'Consolas', monospace;
-  border-radius: 2px;
-}
-
-.evidence-text {
-  background: rgba(40, 40, 40, 0.6);
-  border: 1px solid #444;
-  padding: 1.5rem;
-  border-radius: 2px;
-  max-height: 300px;
-  overflow-y: auto;
-  margin-bottom: 1.5rem;
-}
-
-.evidence-text pre {
-  color: #ccc;
-  white-space: pre-wrap;
-  word-break: break-word;
-  font-family: 'Consolas', 'Courier New', monospace;
-  font-size: 0.9rem;
-  line-height: 1.5;
-  margin: 0;
-}
-
-.evidence-actions {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-}
-
-.copy-button,
-.open-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.8rem 1.5rem;
-  font-size: 0.85rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border: none;
-  font-family: 'Consolas', monospace;
-}
-
-.copy-button {
-  background: rgba(33, 150, 243, 0.1);
-  border: 1px solid rgba(33, 150, 243, 0.3);
-  color: #2196F3;
-}
-
-.copy-button:hover {
-  background: rgba(33, 150, 243, 0.2);
-  border-color: rgba(33, 150, 243, 0.5);
-}
-
-.open-button {
-  background: rgba(76, 175, 80, 0.1);
-  border: 1px solid rgba(76, 175, 80, 0.3);
-  color: #4CAF50;
-}
-
-.open-button:hover {
-  background: rgba(76, 175, 80, 0.2);
-  border-color: rgba(76, 175, 80, 0.5);
-}
-
-.copy-button svg,
-.open-button svg {
-  width: 16px;
-  height: 16px;
-}
-
-.evidence-notice {
-  display: flex;
-  gap: 1rem;
-  padding: 1.5rem;
-  background: rgba(255, 51, 51, 0.05);
-  border: 1px solid rgba(255, 51, 51, 0.2);
-  border-radius: 2px;
-}
-
-.notice-icon {
-  width: 24px;
-  height: 24px;
-  color: #ff3333;
-  flex-shrink: 0;
-}
-
-.notice-content h4 {
-  color: #ff3333;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-  margin: 0 0 0.5rem 0;
-  font-family: 'Consolas', monospace;
-  font-size: 0.9rem;
-}
-
-.notice-content p {
-  color: #ccc;
-  font-size: 0.85rem;
-  line-height: 1.5;
-  margin: 0;
-}
-
-/* Scrollbar personalizada para el texto de evidencia */
-.evidence-text::-webkit-scrollbar {
-  width: 8px;
-}
-
-.evidence-text::-webkit-scrollbar-track {
-  background: rgba(40, 40, 40, 0.6);
-  border-radius: 4px;
-}
-
-.evidence-text::-webkit-scrollbar-thumb {
-  background: rgba(100, 100, 100, 0.6);
-  border-radius: 4px;
-}
-
-.evidence-text::-webkit-scrollbar-thumb:hover {
-  background: rgba(120, 120, 120, 0.8);
-}
-
 .appealed-badge,
 .expiring-badge,
 .permanent-badge,
@@ -2416,6 +2355,23 @@ onMounted(() => {
   background: rgba(40, 40, 40, 0.6);
   border: 1px solid #444;
   border-radius: 2px;
+  margin-bottom: 0.5rem;
+}
+
+.view-evidence-link {
+  background: none;
+  border: none;
+  color: #2196F3;
+  font-size: 0.85rem;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+  font-family: 'Consolas', monospace;
+  transition: color 0.3s ease;
+}
+
+.view-evidence-link:hover {
+  color: #64B5F6;
 }
 
 .response-section {
@@ -2583,27 +2539,63 @@ onMounted(() => {
   padding-bottom: 0;
 }
 
-.history-moderator {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-top: 1rem;
-  padding-top: 1rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.moderator-label {
+.appeal-date {
+  display: block;
   font-size: 0.8rem;
   color: #888;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
+  margin-top: 0.5rem;
   font-family: 'Consolas', monospace;
 }
 
-.moderator-name {
-  font-size: 0.9rem;
-  color: #ddd;
+.response-meta {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.response-moderator {
+  color: #2196F3;
   font-weight: 500;
+}
+
+.pending-notice {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(255, 152, 0, 0.1);
+  border: 1px solid rgba(255, 152, 0, 0.3);
+  border-radius: 2px;
+  margin-top: 1rem;
+}
+
+.pending-icon {
+  width: 24px;
+  height: 24px;
+  color: #FF9800;
+  flex-shrink: 0;
+}
+
+.pending-text {
+  flex: 1;
+}
+
+.pending-text strong {
+  color: #FF9800;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  font-family: 'Consolas', monospace;
+  font-size: 0.9rem;
+  display: block;
+  margin-bottom: 0.3rem;
+}
+
+.pending-text p {
+  color: #ccc;
+  font-size: 0.85rem;
+  margin: 0;
+  line-height: 1.4;
 }
 
 .history-footer {
@@ -2620,23 +2612,44 @@ onMounted(() => {
   font-family: 'Consolas', monospace;
 }
 
-.view-details-button {
-  padding: 0.5rem 1rem;
-  background: rgba(33, 150, 243, 0.1);
-  border: 1px solid rgba(33, 150, 243, 0.3);
-  color: #2196F3;
-  font-size: 0.85rem;
+.history-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.view-evidence-button,
+.view-expiry-button {
+  padding: 0.3rem 0.6rem;
+  font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.3px;
   cursor: pointer;
   transition: all 0.3s ease;
+  border: none;
   font-family: 'Consolas', monospace;
 }
 
-.view-details-button:hover {
+.view-evidence-button {
+  background: rgba(33, 150, 243, 0.1);
+  border: 1px solid rgba(33, 150, 243, 0.3);
+  color: #2196F3;
+}
+
+.view-evidence-button:hover {
   background: rgba(33, 150, 243, 0.2);
   border-color: rgba(33, 150, 243, 0.5);
+}
+
+.view-expiry-button {
+  background: rgba(76, 175, 80, 0.1);
+  border: 1px solid rgba(76, 175, 80, 0.3);
+  color: #4CAF50;
+}
+
+.view-expiry-button:hover {
+  background: rgba(76, 175, 80, 0.2);
+  border-color: rgba(76, 175, 80, 0.5);
 }
 
 /* Modales - similares a Moderacion_Global */
@@ -2969,6 +2982,172 @@ onMounted(() => {
   color: #fff;
 }
 
+/* Modal de evidencia */
+.evidence-modal {
+  max-width: 800px;
+}
+
+.evidence-content {
+  margin-bottom: 2rem;
+}
+
+.evidence-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #444;
+}
+
+.evidence-type {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.evidence-id {
+  font-size: 0.9rem;
+  color: #888;
+  font-family: 'Consolas', monospace;
+}
+
+.evidence-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: #aaa;
+}
+
+.evidence-meta svg {
+  width: 14px;
+  height: 14px;
+}
+
+.evidence-text {
+  background: rgba(40, 40, 40, 0.6);
+  border: 1px solid #444;
+  padding: 1.5rem;
+  border-radius: 2px;
+  max-height: 300px;
+  overflow-y: auto;
+  margin-bottom: 1.5rem;
+}
+
+.evidence-text pre {
+  color: #ccc;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.evidence-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.copy-button,
+.open-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  font-family: 'Consolas', monospace;
+}
+
+.copy-button {
+  background: rgba(33, 150, 243, 0.1);
+  border: 1px solid rgba(33, 150, 243, 0.3);
+  color: #2196F3;
+}
+
+.copy-button:hover {
+  background: rgba(33, 150, 243, 0.2);
+  border-color: rgba(33, 150, 243, 0.5);
+}
+
+.open-button {
+  background: rgba(76, 175, 80, 0.1);
+  border: 1px solid rgba(76, 175, 80, 0.3);
+  color: #4CAF50;
+}
+
+.open-button:hover {
+  background: rgba(76, 175, 80, 0.2);
+  border-color: rgba(76, 175, 80, 0.5);
+}
+
+.copy-button svg,
+.open-button svg {
+  width: 16px;
+  height: 16px;
+}
+
+.evidence-notice {
+  display: flex;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: rgba(255, 51, 51, 0.05);
+  border: 1px solid rgba(255, 51, 51, 0.2);
+  border-radius: 2px;
+  margin-bottom: 1.5rem;
+}
+
+.notice-icon {
+  width: 24px;
+  height: 24px;
+  color: #ff3333;
+  flex-shrink: 0;
+}
+
+.notice-content h4 {
+  color: #ff3333;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  margin: 0 0 0.5rem 0;
+  font-family: 'Consolas', monospace;
+  font-size: 0.9rem;
+}
+
+.notice-content p {
+  color: #ccc;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Scrollbar personalizada para el texto de evidencia */
+.evidence-text::-webkit-scrollbar {
+  width: 8px;
+}
+
+.evidence-text::-webkit-scrollbar-track {
+  background: rgba(40, 40, 40, 0.6);
+  border-radius: 4px;
+}
+
+.evidence-text::-webkit-scrollbar-thumb {
+  background: rgba(100, 100, 100, 0.6);
+  border-radius: 4px;
+}
+
+.evidence-text::-webkit-scrollbar-thumb:hover {
+  background: rgba(120, 120, 120, 0.8);
+}
+
 /* Sistema de notificaciones SCP */
 .scp-notifications {
   position: fixed;
@@ -3020,98 +3199,6 @@ onMounted(() => {
   align-items: center;
   gap: 0.8rem;
   margin-bottom: 0.8rem;
-}
-
-/* Estilos para el historial */
-.pending-notice {
-  display: flex;
-  gap: 1rem;
-  padding: 1rem;
-  background: rgba(255, 152, 0, 0.1);
-  border: 1px solid rgba(255, 152, 0, 0.3);
-  border-radius: 2px;
-  margin-top: 1rem;
-}
-
-.pending-icon {
-  width: 24px;
-  height: 24px;
-  color: #FF9800;
-  flex-shrink: 0;
-}
-
-.pending-text {
-  flex: 1;
-}
-
-.pending-text strong {
-  color: #FF9800;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-  font-family: 'Consolas', monospace;
-  font-size: 0.9rem;
-  display: block;
-  margin-bottom: 0.3rem;
-}
-
-.pending-text p {
-  color: #ccc;
-  font-size: 0.85rem;
-  margin: 0;
-  line-height: 1.4;
-}
-
-.response-meta {
-  display: flex;
-  gap: 1rem;
-  margin-top: 0.5rem;
-  font-size: 0.8rem;
-  color: #888;
-}
-
-.response-moderator {
-  color: #2196F3;
-  font-weight: 500;
-}
-
-.history-actions {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.view-evidence-button,
-.view-expiry-button {
-  padding: 0.3rem 0.6rem;
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border: none;
-  font-family: 'Consolas', monospace;
-}
-
-.view-evidence-button {
-  background: rgba(33, 150, 243, 0.1);
-  border: 1px solid rgba(33, 150, 243, 0.3);
-  color: #2196F3;
-}
-
-.view-evidence-button:hover {
-  background: rgba(33, 150, 243, 0.2);
-  border-color: rgba(33, 150, 243, 0.5);
-}
-
-.view-expiry-button {
-  background: rgba(76, 175, 80, 0.1);
-  border: 1px solid rgba(76, 175, 80, 0.3);
-  color: #4CAF50;
-}
-
-.view-expiry-button:hover {
-  background: rgba(76, 175, 80, 0.2);
-  border-color: rgba(76, 175, 80, 0.5);
 }
 
 .notification-icon {
@@ -3235,6 +3322,51 @@ onMounted(() => {
   transform: translateX(100%);
 }
 
+/* Cooldown warning */
+.cooldown-warning {
+  display: flex;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: rgba(255, 152, 0, 0.1);
+  border: 1px solid rgba(255, 152, 0, 0.3);
+  margin: 1rem 0 2rem 0;
+  align-items: flex-start;
+}
+
+.cooldown-icon {
+  width: 24px;
+  height: 24px;
+  color: #FF9800;
+  flex-shrink: 0;
+}
+
+.cooldown-content {
+  flex: 1;
+}
+
+.cooldown-title {
+  color: #FF9800;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  margin: 0 0 0.5rem 0;
+  font-family: 'Consolas', monospace;
+  font-size: 0.9rem;
+}
+
+.cooldown-text {
+  color: #ccc;
+  margin: 0 0 0.5rem 0;
+  line-height: 1.5;
+}
+
+.cooldown-time {
+  color: #FF9800;
+  font-weight: 600;
+  margin: 0;
+  font-family: 'Consolas', monospace;
+  font-size: 0.9rem;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .appeals-header,
@@ -3299,56 +3431,20 @@ onMounted(() => {
   .submit-button {
     width: 100%;
   }
+  
+  .evidence-actions {
+    flex-direction: column;
+  }
+  
+  .copy-button,
+  .open-button {
+    width: 100%;
+  }
 }
 
 @media (min-width: 769px) and (max-width: 1024px) {
   .appeals-main {
     padding: 1.5rem;
   }
-}
-
-/* Cooldown warning */
-.cooldown-warning {
-  display: flex;
-  gap: 1rem;
-  padding: 1.5rem;
-  background: rgba(255, 152, 0, 0.1);
-  border: 1px solid rgba(255, 152, 0, 0.3);
-  margin: 1rem 0 2rem 0;
-  align-items: flex-start;
-}
-
-.cooldown-icon {
-  width: 24px;
-  height: 24px;
-  color: #FF9800;
-  flex-shrink: 0;
-}
-
-.cooldown-content {
-  flex: 1;
-}
-
-.cooldown-title {
-  color: #FF9800;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-  margin: 0 0 0.5rem 0;
-  font-family: 'Consolas', monospace;
-  font-size: 0.9rem;
-}
-
-.cooldown-text {
-  color: #ccc;
-  margin: 0 0 0.5rem 0;
-  line-height: 1.5;
-}
-
-.cooldown-time {
-  color: #FF9800;
-  font-weight: 600;
-  margin: 0;
-  font-family: 'Consolas', monospace;
-  font-size: 0.9rem;
 }
 </style>
