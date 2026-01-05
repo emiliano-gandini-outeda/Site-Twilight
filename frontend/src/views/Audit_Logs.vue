@@ -763,7 +763,7 @@ const displayedLogs = computed(() => {
         log.target_user?.roblox_username?.toLowerCase().includes(searchLower) ||
         log.target_user?.roblox_id?.toString().includes(searchLower) ||
         getActionDisplay(log.action_type).toLowerCase().includes(searchLower) ||
-        JSON.stringify(log.details).toLowerCase().includes(searchLower) ||
+        (log.details && JSON.stringify(log.details).toLowerCase().includes(searchLower)) ||
         log.ip_address?.toLowerCase().includes(searchLower)
       )
     })
@@ -785,7 +785,7 @@ const displayedLogs = computed(() => {
 
 const totalLogs = computed(() => logs.value.length)
 
-// Métodos de permisos (similares a Moderacion_Global.vue)
+// Métodos de permisos
 const fetchUserPermissions = async () => {
   try {
     const response = await fetch('/api/auth/user/permissions/')
@@ -846,12 +846,43 @@ const loadLogs = async () => {
   
   loading.value = true
   try {
-    // Cargar logs
-    const logsResponse = await fetch('/api/audit/logs/')
+    // Construir URL con parámetros de filtro
+    const params = new URLSearchParams({
+      page: pagination.currentPage,
+      page_size: pagination.pageSize,
+      sort: filters.sort
+    })
+    
+    if (filters.actionType !== 'all') {
+      params.append('action_type', filters.actionType)
+    }
+    
+    if (filters.userId !== 'all') {
+      params.append('user_id', filters.userId)
+    }
+    
+    if (filters.startDate) {
+      params.append('start_date', filters.startDate)
+    }
+    
+    if (filters.endDate) {
+      params.append('end_date', filters.endDate)
+    }
+    
+    // Cargar logs desde la API
+    const logsResponse = await fetch(`/api/audit/logs/?${params.toString()}`)
     if (logsResponse.ok) {
       const data = await logsResponse.json()
       logs.value = data.logs || []
-      updatePagination(logs.value.length)
+      
+      // Actualizar paginación desde la respuesta del servidor
+      if (data.pagination) {
+        pagination.total = data.pagination.total
+        pagination.totalPages = data.pagination.total_pages
+        pagination.currentPage = data.pagination.page
+      } else {
+        updatePagination(logs.value.length)
+      }
     }
     
     // Cargar usuarios para el filtro
@@ -919,12 +950,14 @@ const clearSearch = () => {
 // Filtros
 const applyFilters = () => {
   pagination.currentPage = 1
+  loadLogs() // Cargar logs con nuevos filtros
 }
 
 // Paginación
 const changePage = (page) => {
   if (page < 1 || page > pagination.totalPages) return
   pagination.currentPage = page
+  loadLogs() // Cargar la página específica desde el servidor
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
@@ -1070,10 +1103,25 @@ const getDetailsPreview = (log) => {
   }
   
   const details = log.details
-  if (details.reason) return `Razón: ${details.reason.substring(0, 50)}...`
-  if (details.message) return `Mensaje: ${details.message.substring(0, 50)}...`
-  if (details.scope) return `Ámbito: ${details.scope} - Nivel: ${details.level}`
-  if (details.status) return `Estado: ${details.status}`
+  
+  // Extraer información de detalles si está disponible
+  if (typeof details === 'string') {
+    try {
+      const parsedDetails = JSON.parse(details)
+      if (parsedDetails.reason) return `Razón: ${parsedDetails.reason.substring(0, 50)}...`
+      if (parsedDetails.message) return `Mensaje: ${parsedDetails.message.substring(0, 50)}...`
+      if (parsedDetails.scope) return `Ámbito: ${parsedDetails.scope}`
+      if (parsedDetails.status) return `Estado: ${parsedDetails.status}`
+      return 'Ver detalles...'
+    } catch {
+      return details.substring(0, 60) + (details.length > 60 ? '...' : '')
+    }
+  } else if (typeof details === 'object') {
+    if (details.reason) return `Razón: ${details.reason.substring(0, 50)}...`
+    if (details.message) return `Mensaje: ${details.message.substring(0, 50)}...`
+    if (details.scope) return `Ámbito: ${details.scope} - Nivel: ${details.level}`
+    if (details.status) return `Estado: ${details.status}`
+  }
   
   return 'Ver detalles...'
 }
@@ -1082,6 +1130,18 @@ const formatJsonDetails = (details) => {
   if (!details || Object.keys(details).length === 0) {
     return '{}'
   }
+  
+  // Si los detalles son una cadena, intentar formatearlos como JSON
+  if (typeof details === 'string') {
+    try {
+      const parsedDetails = JSON.parse(details)
+      return JSON.stringify(parsedDetails, null, 2)
+    } catch {
+      return details
+    }
+  }
+  
+  // Si ya es un objeto, formatearlo
   return JSON.stringify(details, null, 2)
 }
 
