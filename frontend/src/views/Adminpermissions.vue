@@ -310,7 +310,7 @@
           </div>
 
           <!-- Panel de edición de staff -->
-          <div v-if="selectedStaff && editingStaff" class="staff-edit-panel">
+          <div v-if="selectedStaff && editingStaff" class="staff-edit-panel" ref="editPanelRef">
             <div class="edit-panel-header">
               <h3 class="edit-title">
                 Editar Staff: {{ selectedStaff.roblox_username }}
@@ -751,6 +751,7 @@ const editingStaff = ref(false)
 const staffRoles = ref([])
 const originalRoles = ref([])
 const individualPermissions = ref([])
+const editPanelRef = ref(null)
 
 // Agregar staff
 const userSearchQuery = ref('')
@@ -952,6 +953,20 @@ const selectStaff = (staff) => {
   
   // Load staff roles
   loadStaffRoles(staff.id)
+  
+  // Scroll to edit panel after a short delay (para asegurar que el DOM esté actualizado)
+  nextTick(() => {
+    scrollToEditPanel()
+  })
+}
+
+const scrollToEditPanel = () => {
+  if (editPanelRef.value) {
+    editPanelRef.value.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start'
+    })
+  }
 }
 
 const loadStaffRoles = async (userId) => {
@@ -973,6 +988,11 @@ const editStaff = (staff) => {
   selectedStaff.value = staff
   editingStaff.value = true
   loadStaffRoles(staff.id)
+  
+  // Scroll to edit panel
+  nextTick(() => {
+    scrollToEditPanel()
+  })
 }
 
 const cancelEdit = () => {
