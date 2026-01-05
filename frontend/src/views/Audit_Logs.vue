@@ -184,513 +184,548 @@
           </div>
         </div>
 
-        <!-- Layout principal con tabla y detalles -->
-        <div class="main-layout">
-          <!-- Columna izquierda - Tabla de logs -->
-          <div class="table-column">
-            <!-- Barra de búsqueda y acciones -->
-            <div class="action-bar">
-              <div class="search-container">
-                <div class="search-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="11" cy="11" r="8"></circle>
-                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                  </svg>
-                </div>
-                <input
-                  v-model="searchQuery"
-                  @input="handleSearch"
-                  type="text"
-                  placeholder="Buscar por usuario, acción, detalles..."
-                  class="search-input"
-                />
-                
-                <button 
-                  v-if="searchQuery" 
-                  @click="clearSearch"
-                  class="search-clear"
-                  title="Limpiar búsqueda"
-                >
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                  </svg>
-                </button>
-                
-                <div class="search-info">
-                  <div class="search-count" v-if="displayedLogs.length > 0">
-                    {{ displayedLogs.length }} {{ displayedLogs.length === 1 ? 'registro' : 'registros' }} encontrados
-                  </div>
-                </div>
-              </div>
-              
-              <div class="action-buttons">
-                <button 
-                  class="action-button primary"
-                  @click="exportLogs"
-                  :disabled="loading"
-                  title="Exportar logs a CSV"
-                >
-                  <div class="action-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                      <polyline points="7 10 12 15 17 10"></polyline>
-                      <line x1="12" y1="15" x2="12" y2="3"></line>
-                    </svg>
-                  </div>
-                  <span>EXPORTAR</span>
-                </button>
-                
-                <button 
-                  class="action-button secondary"
-                  @click="refreshLogs"
-                  :disabled="loading"
-                >
-                  <div class="action-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M23 4v6h-6"></path>
-                      <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
-                    </svg>
-                  </div>
-                  <span>ACTUALIZAR</span>
-                </button>
-                
-                <button 
-                  class="action-button danger"
-                  @click="cleanOldLogs"
-                  :disabled="loading"
-                  title="Eliminar logs antiguos (más de 30 días)"
-                >
-                  <div class="action-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <polyline points="3 6 5 6 21 6"></polyline>
-                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                    </svg>
-                  </div>
-                  <span>LIMPIAR</span>
-                </button>
+        <!-- Barra de búsqueda y acciones -->
+        <div class="action-bar">
+          <div class="search-container">
+            <div class="search-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+            </div>
+            <input
+              v-model="searchQuery"
+              @input="handleSearch"
+              type="text"
+              placeholder="Buscar por usuario, acción, detalles..."
+              class="search-input"
+            />
+            
+            <button 
+              v-if="searchQuery" 
+              @click="clearSearch"
+              class="search-clear"
+              title="Limpiar búsqueda"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+            
+            <div class="search-info">
+              <div class="search-count" v-if="displayedLogs.length > 0">
+                {{ displayedLogs.length }} {{ displayedLogs.length === 1 ? 'registro' : 'registros' }} encontrados
               </div>
             </div>
+          </div>
+          
+          <div class="action-buttons">
+            <button 
+              class="action-button primary"
+              @click="exportLogs"
+              :disabled="loading"
+              title="Exportar logs a CSV"
+            >
+              <div class="action-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+              </div>
+              <span>EXPORTAR</span>
+            </button>
+            
+            <button 
+              class="action-button secondary"
+              @click="refreshLogs"
+              :disabled="loading"
+            >
+              <div class="action-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M23 4v6h-6"></path>
+                  <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                </svg>
+              </div>
+              <span>ACTUALIZAR</span>
+            </button>
+            
+            <button 
+              class="action-button danger"
+              @click="cleanOldLogs"
+              :disabled="loading"
+              title="Eliminar logs antiguos (más de 30 días)"
+            >
+              <div class="action-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                </svg>
+              </div>
+              <span>LIMPIAR</span>
+            </button>
+          </div>
+        </div>
 
-            <!-- Filtros avanzados -->
-            <div class="filters-container">
-              <div class="filter-group">
-                <label class="filter-label">Tipo de Acción:</label>
-                <select v-model="filters.actionType" class="filter-select" @change="applyFilters">
-                  <option value="all">Todos los tipos</option>
-                  <optgroup label="Usuarios y Permisos">
-                    <option value="user_login">Inicio de sesión</option>
-                    <option value="user_logout">Cierre de sesión</option>
-                    <option value="permissions_update">Actualización de permisos</option>
-                    <option value="role_assigned">Rol asignado</option>
-                    <option value="role_removed">Rol removido</option>
-                  </optgroup>
-                  <optgroup label="Moderación">
-                    <option value="warn_created">Advertencia creada</option>
-                    <option value="warn_updated">Advertencia actualizada</option>
-                    <option value="warn_removed">Advertencia eliminada</option>
-                    <option value="warn_appealed">Advertencia apelada</option>
-                    <option value="warn_appeal_responded">Respuesta a apelación</option>
-                    <option value="ban_created">Baneo creado</option>
-                    <option value="ban_revoked">Baneo revocado</option>
-                    <option value="ban_appealed">Baneo apelado</option>
-                    <option value="ban_appeal_responded">Respuesta a apelación de baneo</option>
-                  </optgroup>
-                  <optgroup label="Personajes">
-                    <option value="character_created">Personaje creado</option>
-                    <option value="character_updated">Personaje actualizado</option>
-                    <option value="character_deleted">Personaje eliminado</option>
-                  </optgroup>
-                  <optgroup label="Sistema">
-                    <option value="ssu_status_changed">Estado SSU cambiado</option>
-                    <option value="rp_file_edited">Archivo RP editado</option>
-                    <option value="faction_moderated">Facción moderada</option>
-                    <option value="actor_supervised">Actor supervisado</option>
-                  </optgroup>
-                </select>
-              </div>
-              
-              <div class="filter-group">
-                <label class="filter-label">Usuario:</label>
-                <select v-model="filters.userId" class="filter-select" @change="applyFilters">
-                  <option value="all">Todos los usuarios</option>
-                  <option v-for="user in availableUsers" :key="user.id" :value="user.id">
-                    {{ user.roblox_username }} ({{ user.roblox_id }})
-                  </option>
-                </select>
-              </div>
-              
-              <div class="filter-group">
-                <label class="filter-label">Rango de fecha:</label>
-                <input 
-                  type="date" 
-                  v-model="filters.startDate" 
-                  class="filter-date"
-                  @change="applyFilters"
-                />
-                <span class="date-separator">a</span>
-                <input 
-                  type="date" 
-                  v-model="filters.endDate" 
-                  class="filter-date"
-                  @change="applyFilters"
-                />
-              </div>
-              
-              <div class="filter-group">
-                <label class="filter-label">Ordenar por:</label>
-                <select v-model="filters.sort" class="filter-select" @change="applyFilters">
-                  <option value="-created_at">Más recientes primero</option>
-                  <option value="created_at">Más antiguos primero</option>
-                  <option value="action_type">Tipo de acción (A-Z)</option>
-                  <option value="-action_type">Tipo de acción (Z-A)</option>
-                </select>
-              </div>
-            </div>
+        <!-- Filtros avanzados -->
+        <div class="filters-container">
+          <div class="filter-group">
+            <label class="filter-label">Tipo de Acción:</label>
+            <select v-model="filters.actionType" class="filter-select" @change="applyFilters">
+              <option value="all">Todos los tipos</option>
+              <optgroup label="Usuarios y Permisos">
+                <option value="user_login">Inicio de sesión</option>
+                <option value="user_logout">Cierre de sesión</option>
+                <option value="permissions_update">Actualización de permisos</option>
+                <option value="role_assigned">Rol asignado</option>
+                <option value="role_removed">Rol removido</option>
+              </optgroup>
+              <optgroup label="Moderación">
+                <option value="warn_created">Advertencia creada</option>
+                <option value="warn_updated">Advertencia actualizada</option>
+                <option value="warn_removed">Advertencia eliminada</option>
+                <option value="warn_appealed">Advertencia apelada</option>
+                <option value="warn_appeal_responded">Respuesta a apelación</option>
+                <option value="ban_created">Baneo creado</option>
+                <option value="ban_revoked">Baneo revocado</option>
+                <option value="ban_appealed">Baneo apelado</option>
+                <option value="ban_appeal_responded">Respuesta a apelación de baneo</option>
+              </optgroup>
+              <optgroup label="Personajes">
+                <option value="character_created">Personaje creado</option>
+                <option value="character_updated">Personaje actualizado</option>
+                <option value="character_deleted">Personaje eliminado</option>
+              </optgroup>
+              <optgroup label="Sistema">
+                <option value="ssu_status_changed">Estado SSU cambiado</option>
+                <option value="rp_file_edited">Archivo RP editado</option>
+                <option value="faction_moderated">Facción moderada</option>
+                <option value="actor_supervised">Actor supervisado</option>
+              </optgroup>
+            </select>
+          </div>
+          
+          <div class="filter-group">
+            <label class="filter-label">Usuario:</label>
+            <select v-model="filters.userId" class="filter-select" @change="applyFilters">
+              <option value="all">Todos los usuarios</option>
+              <option v-for="user in availableUsers" :key="user.id" :value="user.id">
+                {{ user.roblox_username }} ({{ user.roblox_id }})
+              </option>
+            </select>
+          </div>
+          
+          <div class="filter-group">
+            <label class="filter-label">Rango de fecha:</label>
+            <input 
+              type="date" 
+              v-model="filters.startDate" 
+              class="filter-date"
+              @change="applyFilters"
+            />
+            <span class="date-separator">a</span>
+            <input 
+              type="date" 
+              v-model="filters.endDate" 
+              class="filter-date"
+              @change="applyFilters"
+            />
+          </div>
+          
+          <div class="filter-group">
+            <label class="filter-label">Ordenar por:</label>
+            <select v-model="filters.sort" class="filter-select" @change="applyFilters">
+              <option value="-created_at">Más recientes primero</option>
+              <option value="created_at">Más antiguos primero</option>
+              <option value="action_type">Tipo de acción (A-Z)</option>
+              <option value="-action_type">Tipo de acción (Z-A)</option>
+            </select>
+          </div>
+        </div>
 
-            <!-- Tabla de Logs -->
-            <div class="table-container">
-              <div v-if="loading" class="loading-state">
-                <div class="loading-spinner"></div>
-                <p class="loading-text">Cargando registros de auditoría...</p>
-              </div>
-              
-              <div v-else-if="displayedLogs.length > 0" class="logs-table">
-                <table class="scp-table">
-                  <thead>
-                    <tr>
-                      <th>ID</th>
-                      <th>ACCIÓN</th>
-                      <th>USUARIO</th>
-                      <th>AFECTADO</th>
-                      <th>DETALLES</th>
-                      <th>IP</th>
-                      <th>FECHA</th>
-                      <th>ACCIONES</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr 
-                      v-for="log in displayedLogs" 
-                      :key="log.id" 
-                      class="table-row"
-                      :class="{ 'selected': selectedLog?.id === log.id }"
-                      @click="selectLog(log)"
+        <!-- Tabla de Logs -->
+        <div class="table-container">
+          <div v-if="loading" class="loading-state">
+            <div class="loading-spinner"></div>
+            <p class="loading-text">Cargando registros de auditoría...</p>
+          </div>
+          
+          <div v-else-if="displayedLogs.length > 0" class="logs-table">
+            <table class="scp-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>ACCIÓN</th>
+                  <th>USUARIO</th>
+                  <th>AFECTADO</th>
+                  <th>DETALLES</th>
+                  <th>FECHA</th>
+                  <th>ACCIONES</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr 
+                  v-for="log in paginatedLogs" 
+                  :key="log.id" 
+                  class="table-row"
+                  :class="{ 'selected': selectedLog?.id === log.id }"
+                  @click="selectLog(log)"
+                >
+                  <td class="id-cell">
+                    <span class="id-badge">#{{ log.id }}</span>
+                  </td>
+                  <td class="action-cell">
+                    <span class="action-badge" :class="getActionClass(log.action_type)">
+                      {{ getActionDisplay(log.action_type) }}
+                    </span>
+                  </td>
+                  <td class="user-cell">
+                    <div class="user-info" v-if="log.action_user">
+                      <span class="username">{{ log.action_user.roblox_username }}</span>
+                      <span class="user-id">ID: {{ log.action_user.roblox_id }}</span>
+                    </div>
+                    <span v-else class="unknown">Sistema</span>
+                  </td>
+                  <td class="target-cell">
+                    <div v-if="log.target_user" class="target-info">
+                      <span class="username">{{ log.target_user.roblox_username }}</span>
+                      <span class="user-id">ID: {{ log.target_user.roblox_id }}</span>
+                    </div>
+                    <span v-else class="no-target">N/A</span>
+                  </td>
+                  <td class="details-cell">
+                    <div class="details-content">
+                      <div class="details-preview" title="Ver detalles completos">
+                        <span class="details-text">{{ getDetailsPreview(log) }}</span>
+                        <svg class="details-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                          <circle cx="12" cy="12" r="10"></circle>
+                          <line x1="12" y1="16" x2="12" y2="12"></line>
+                          <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="date-cell">
+                    <span class="date-full">{{ formatDateFull(log.created_at) }}</span>
+                    <span class="date-relative">{{ formatRelativeTime(log.created_at) }}</span>
+                  </td>
+                  <td class="actions-cell">
+                    <button class="table-action view" @click.stop="selectLog(log)" title="Ver Detalles">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                      </svg>
+                    </button>
+                    <button 
+                      v-if="hasAdminPermission()"
+                      class="table-action delete" 
+                      @click.stop="deleteLog(log)"
+                      title="Eliminar Registro"
                     >
-                      <td class="id-cell">
-                        <span class="id-badge">#{{ log.id }}</span>
-                      </td>
-                      <td class="action-cell">
-                        <span class="action-badge" :class="getActionClass(log.action_type)">
-                          {{ getActionDisplay(log.action_type) }}
-                        </span>
-                      </td>
-                      <td class="user-cell">
-                        <div class="user-info" v-if="log.action_user">
-                          <span class="username">{{ log.action_user.roblox_username }}</span>
-                          <span class="user-id">ID: {{ log.action_user.roblox_id }}</span>
-                        </div>
-                        <span v-else class="unknown">Sistema</span>
-                      </td>
-                      <td class="target-cell">
-                        <div v-if="log.target_user" class="target-info">
-                          <span class="username">{{ log.target_user.roblox_username }}</span>
-                          <span class="user-id">ID: {{ log.target_user.roblox_id }}</span>
-                        </div>
-                        <span v-else class="no-target">N/A</span>
-                      </td>
-                      <td class="details-cell">
-                        <div class="details-content">
-                          <div class="details-preview" title="Ver detalles completos">
-                            <span class="details-text">{{ getDetailsPreview(log) }}</span>
-                            <svg class="details-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                              <circle cx="12" cy="12" r="10"></circle>
-                              <line x1="12" y1="16" x2="12" y2="12"></line>
-                              <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                            </svg>
-                          </div>
-                        </div>
-                      </td>
-                      <td class="ip-cell">
-                        <span class="ip-address" :title="log.user_agent">
-                          {{ log.ip_address || 'N/A' }}
-                        </span>
-                      </td>
-                      <td class="date-cell">
-                        <span class="date-full">{{ formatDateFull(log.created_at) }}</span>
-                        <span class="date-relative">{{ formatRelativeTime(log.created_at) }}</span>
-                      </td>
-                      <td class="actions-cell">
-                        <button class="table-action view" @click.stop="selectLog(log)" title="Ver Detalles">
-                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                            <circle cx="12" cy="12" r="3"></circle>
-                          </svg>
-                        </button>
-                        <button 
-                          v-if="hasAdminPermission()"
-                          class="table-action delete" 
-                          @click.stop="deleteLog(log)"
-                          title="Eliminar Registro"
-                        >
-                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="3 6 5 6 21 6"></polyline>
-                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                          </svg>
-                        </button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              
-              <div v-else class="empty-state">
-                <div class="empty-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#ff3333" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                    <polyline points="7 10 12 15 17 10"></polyline>
-                    <line x1="12" y1="15" x2="12" y2="3"></line>
-                  </svg>
-                </div>
-                <h3 class="empty-title">No se encontraron registros</h3>
-                <p class="empty-text" v-if="searchQuery">
-                  No hay registros que coincidan con tu búsqueda
-                </p>
-                <p class="empty-text" v-else>
-                  No hay registros de auditoría disponibles
-                </p>
-              </div>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                      </svg>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <div v-else class="empty-state">
+            <div class="empty-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#ff3333" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+            </div>
+            <h3 class="empty-title">No se encontraron registros</h3>
+            <p class="empty-text" v-if="searchQuery">
+              No hay registros que coincidan con tu búsqueda
+            </p>
+            <p class="empty-text" v-else>
+              No hay registros de auditoría disponibles
+            </p>
+          </div>
 
-              <!-- Paginación -->
-              <div v-if="pagination.totalPages > 1" class="pagination-controls">
+          <!-- Paginación de la tabla -->
+          <div v-if="displayedLogs.length > pagination.pageSize" class="table-pagination">
+            <div class="pagination-info-row">
+              <span class="pagination-stats">
+                Mostrando {{ ((pagination.currentPage - 1) * pagination.pageSize) + 1 }} a 
+                {{ Math.min(pagination.currentPage * pagination.pageSize, displayedLogs.length) }} 
+                de {{ displayedLogs.length }} registros
+              </span>
+              <div class="pagination-controls-row">
                 <button 
-                  class="pagination-button" 
+                  class="pagination-nav first"
                   :disabled="pagination.currentPage === 1"
-                  @click="changePage(pagination.currentPage - 1)"
+                  @click="goToPage(1)"
+                  title="Primera página"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="11 17 6 12 11 7"></polyline>
+                    <polyline points="18 17 13 12 18 7"></polyline>
+                  </svg>
+                </button>
+                <button 
+                  class="pagination-nav prev"
+                  :disabled="pagination.currentPage === 1"
+                  @click="goToPage(pagination.currentPage - 1)"
+                  title="Página anterior"
                 >
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="15 18 9 12 15 6"></polyline>
                   </svg>
-                  <span>ANTERIOR</span>
                 </button>
                 
                 <div class="page-numbers">
-                  <span class="page-info">Página {{ pagination.currentPage }} de {{ pagination.totalPages }}</span>
+                  <button 
+                    v-for="page in visiblePages" 
+                    :key="page"
+                    class="page-number"
+                    :class="{ 'active': page === pagination.currentPage }"
+                    @click="goToPage(page)"
+                  >
+                    {{ page }}
+                  </button>
+                  <span v-if="hasEllipsis" class="page-ellipsis">...</span>
                 </div>
                 
                 <button 
-                  class="pagination-button" 
+                  class="pagination-nav next"
                   :disabled="pagination.currentPage === pagination.totalPages"
-                  @click="changePage(pagination.currentPage + 1)"
+                  @click="goToPage(pagination.currentPage + 1)"
+                  title="Página siguiente"
                 >
-                  <span>SIGUIENTE</span>
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="9 18 15 12 9 6"></polyline>
                   </svg>
                 </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Columna derecha - Panel de detalles -->
-          <div class="details-column">
-            <div class="details-panel">
-              <div class="details-panel-header">
-                <h3 class="details-title">
-                  📋 DETALLES DEL REGISTRO
-                  <span v-if="selectedLog" class="details-id">#{{ selectedLog.id }}</span>
-                </h3>
                 <button 
-                  v-if="selectedLog" 
-                  class="close-details" 
-                  @click="selectedLog = null"
-                  title="Cerrar detalles"
+                  class="pagination-nav last"
+                  :disabled="pagination.currentPage === pagination.totalPages"
+                  @click="goToPage(pagination.totalPages)"
+                  title="Última página"
                 >
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                    <polyline points="13 17 18 12 13 7"></polyline>
+                    <polyline points="6 17 11 12 6 7"></polyline>
                   </svg>
                 </button>
               </div>
+            </div>
+            
+            <div class="page-size-selector">
+              <span class="page-size-label">Registros por página:</span>
+              <select v-model="pagination.pageSize" @change="updatePageSize" class="page-size-select">
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel de detalles debajo de la tabla -->
+        <div class="details-panel-container">
+          <div class="details-panel">
+            <div class="details-panel-header">
+              <h3 class="details-title">
+                📋 DETALLES DEL REGISTRO
+                <span v-if="selectedLog" class="details-id">#{{ selectedLog.id }}</span>
+                <span v-else class="details-placeholder">(Selecciona un registro)</span>
+              </h3>
+              <button 
+                v-if="selectedLog" 
+                class="close-details" 
+                @click="selectedLog = null"
+                title="Cerrar detalles"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+            </div>
+            
+            <div class="details-panel-content">
+              <!-- Estado vacío -->
+              <div v-if="!selectedLog" class="no-selection">
+                <div class="no-selection-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#ff3333" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                    <polyline points="10 9 9 9 8 9"></polyline>
+                  </svg>
+                </div>
+                <h4 class="no-selection-title">SELECCIONA UN REGISTRO</h4>
+                <p class="no-selection-text">
+                  Haz clic en cualquier registro de la tabla para ver sus detalles completos aquí.
+                </p>
+              </div>
               
-              <div class="details-panel-content">
-                <!-- Estado vacío -->
-                <div v-if="!selectedLog" class="no-selection">
-                  <div class="no-selection-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#ff3333" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                      <polyline points="14 2 14 8 20 8"></polyline>
-                      <line x1="16" y1="13" x2="8" y2="13"></line>
-                      <line x1="16" y1="17" x2="8" y2="17"></line>
-                      <polyline points="10 9 9 9 8 9"></polyline>
-                    </svg>
+              <!-- Contenido del log seleccionado -->
+              <div v-else class="log-details-content">
+                <div class="details-grid">
+                  <div class="detail-item">
+                    <span class="detail-label">ID del Registro:</span>
+                    <span class="detail-value">#{{ selectedLog.id }}</span>
                   </div>
-                  <h4 class="no-selection-title">SELECCIONA UN REGISTRO</h4>
-                  <p class="no-selection-text">
-                    Haz clic en cualquier registro de la tabla para ver sus detalles completos aquí.
-                  </p>
+                  <div class="detail-item">
+                    <span class="detail-label">Acción:</span>
+                    <span class="detail-value action-badge" :class="getActionClass(selectedLog.action_type)">
+                      {{ getActionDisplay(selectedLog.action_type) }}
+                      <span class="action-code">({{ selectedLog.action_type }})</span>
+                    </span>
+                  </div>
+                  <div class="detail-item">
+                    <span class="detail-label">Realizado por:</span>
+                    <span class="detail-value" v-if="selectedLog.action_user">
+                      <strong>{{ selectedLog.action_user.roblox_username }}</strong> (ID: {{ selectedLog.action_user.roblox_id }})
+                    </span>
+                    <span v-else class="unknown">Sistema</span>
+                  </div>
+                  <div class="detail-item">
+                    <span class="detail-label">Usuario afectado:</span>
+                    <span class="detail-value" v-if="selectedLog.target_user">
+                      <strong>{{ selectedLog.target_user.roblox_username }}</strong> (ID: {{ selectedLog.target_user.roblox_id }})
+                    </span>
+                    <span v-else class="no-target">Ninguno</span>
+                  </div>
+                  <div class="detail-item">
+                    <span class="detail-label">Fecha y Hora:</span>
+                    <span class="detail-value">{{ formatDateFull(selectedLog.created_at) }}</span>
+                  </div>
+                  <div class="detail-item">
+                    <span class="detail-label">User Agent:</span>
+                    <span class="detail-value user-agent">{{ selectedLog.user_agent || 'N/A' }}</span>
+                  </div>
                 </div>
                 
-                <!-- Contenido del log seleccionado -->
-                <div v-else class="log-details-content">
-                  <div class="details-grid">
-                    <div class="detail-item">
-                      <span class="detail-label">ID del Registro:</span>
-                      <span class="detail-value">#{{ selectedLog.id }}</span>
+                <!-- Sección de advertencias -->
+                <div v-if="selectedLog.target_warn" class="details-section">
+                  <h4 class="section-title">📝 ADVERTENCIA RELACIONADA</h4>
+                  <div class="section-content warning-section">
+                    <div class="related-item">
+                      <span class="item-label">ID de Advertencia:</span>
+                      <span class="item-value">#{{ selectedLog.target_warn.id }}</span>
                     </div>
-                    <div class="detail-item">
-                      <span class="detail-label">Acción:</span>
-                      <span class="detail-value action-badge" :class="getActionClass(selectedLog.action_type)">
-                        {{ getActionDisplay(selectedLog.action_type) }}
-                        <span class="action-code">({{ selectedLog.action_type }})</span>
+                    <div class="related-item">
+                      <span class="item-label">Razón:</span>
+                      <span class="item-value reason-text">{{ selectedLog.target_warn.reason }}</span>
+                    </div>
+                    <div class="related-item">
+                      <span class="item-label">Severidad:</span>
+                      <span class="item-value severity-badge" :class="`severity-${selectedLog.target_warn.severity}`">
+                        {{ getSeverityText(selectedLog.target_warn.severity) }}
                       </span>
                     </div>
-                    <div class="detail-item">
-                      <span class="detail-label">Realizado por:</span>
-                      <span class="detail-value" v-if="selectedLog.action_user">
-                        <strong>{{ selectedLog.action_user.roblox_username }}</strong> (ID: {{ selectedLog.action_user.roblox_id }})
+                  </div>
+                </div>
+                
+                <!-- Sección de baneos -->
+                <div v-if="selectedLog.target_ban" class="details-section">
+                  <h4 class="section-title">🔒 BANEO RELACIONADO</h4>
+                  <div class="section-content ban-section">
+                    <div class="related-item">
+                      <span class="item-label">ID de Baneo:</span>
+                      <span class="item-value">#{{ selectedLog.target_ban.id }}</span>
+                    </div>
+                    <div class="related-item">
+                      <span class="item-label">Razón:</span>
+                      <span class="item-value reason-text">{{ selectedLog.target_ban.reason }}</span>
+                    </div>
+                    <div class="related-item">
+                      <span class="item-label">Tipo:</span>
+                      <span class="item-value type-badge" :class="`type-${selectedLog.target_ban.ban_type}`">
+                        {{ selectedLog.target_ban.ban_type === 'temporary' ? 'TEMPORAL' : 'PERMANENTE' }}
                       </span>
-                      <span v-else class="unknown">Sistema</span>
-                    </div>
-                    <div class="detail-item">
-                      <span class="detail-label">Usuario afectado:</span>
-                      <span class="detail-value" v-if="selectedLog.target_user">
-                        <strong>{{ selectedLog.target_user.roblox_username }}</strong> (ID: {{ selectedLog.target_user.roblox_id }})
-                      </span>
-                      <span v-else class="no-target">Ninguno</span>
-                    </div>
-                    <div class="detail-item">
-                      <span class="detail-label">Fecha y Hora:</span>
-                      <span class="detail-value">{{ formatDateFull(selectedLog.created_at) }}</span>
-                    </div>
-                    <div class="detail-item">
-                      <span class="detail-label">Dirección IP:</span>
-                      <span class="detail-value">{{ selectedLog.ip_address || 'N/A' }}</span>
-                    </div>
-                    <div class="detail-item">
-                      <span class="detail-label">User Agent:</span>
-                      <span class="detail-value user-agent">{{ selectedLog.user_agent || 'N/A' }}</span>
                     </div>
                   </div>
-                  
-                  <!-- Sección de advertencias -->
-                  <div v-if="selectedLog.target_warn" class="details-section">
-                    <h4 class="section-title">📝 ADVERTENCIA RELACIONADA</h4>
-                    <div class="section-content warning-section">
-                      <div class="related-item">
-                        <span class="item-label">ID de Advertencia:</span>
-                        <span class="item-value">#{{ selectedLog.target_warn.id }}</span>
-                      </div>
-                      <div class="related-item">
-                        <span class="item-label">Razón:</span>
-                        <span class="item-value reason-text">{{ selectedLog.target_warn.reason }}</span>
-                      </div>
-                      <div class="related-item">
-                        <span class="item-label">Severidad:</span>
-                        <span class="item-value severity-badge" :class="`severity-${selectedLog.target_warn.severity}`">
-                          {{ getSeverityText(selectedLog.target_warn.severity) }}
-                        </span>
-                      </div>
+                </div>
+                
+                <!-- Sección de personajes -->
+                <div v-if="selectedLog.target_character" class="details-section">
+                  <h4 class="section-title">🎭 PERSONAJE RELACIONADO</h4>
+                  <div class="section-content character-section">
+                    <div class="related-item">
+                      <span class="item-label">ID de Personaje:</span>
+                      <span class="item-value">#{{ selectedLog.target_character.id }}</span>
+                    </div>
+                    <div class="related-item">
+                      <span class="item-label">Nombre en clave:</span>
+                      <span class="item-value codename">{{ selectedLog.target_character.codename }}</span>
+                    </div>
+                    <div class="related-item">
+                      <span class="item-label">Facción:</span>
+                      <span class="item-value faction">{{ selectedLog.target_character.faction || 'No especificada' }}</span>
                     </div>
                   </div>
-                  
-                  <!-- Sección de baneos -->
-                  <div v-if="selectedLog.target_ban" class="details-section">
-                    <h4 class="section-title">🔒 BANEO RELACIONADO</h4>
-                    <div class="section-content ban-section">
-                      <div class="related-item">
-                        <span class="item-label">ID de Baneo:</span>
-                        <span class="item-value">#{{ selectedLog.target_ban.id }}</span>
-                      </div>
-                      <div class="related-item">
-                        <span class="item-label">Razón:</span>
-                        <span class="item-value reason-text">{{ selectedLog.target_ban.reason }}</span>
-                      </div>
-                      <div class="related-item">
-                        <span class="item-label">Tipo:</span>
-                        <span class="item-value type-badge" :class="`type-${selectedLog.target_ban.ban_type}`">
-                          {{ selectedLog.target_ban.ban_type === 'temporary' ? 'TEMPORAL' : 'PERMANENTE' }}
-                        </span>
-                      </div>
+                </div>
+                
+                <!-- Procesador de JSON con vistas mejoradas -->
+                <div class="details-section">
+                  <h4 class="section-title">📄 DETALLES ADICIONALES</h4>
+                  <div class="json-processor">
+                    <div class="json-view-selector">
+                      <button 
+                        class="json-view-btn" 
+                        :class="{ 'active': jsonView === 'raw' }"
+                        @click="jsonView = 'raw'"
+                      >
+                        📋 Vista JSON
+                      </button>
+                      <button 
+                        class="json-view-btn" 
+                        :class="{ 'active': jsonView === 'parsed' }"
+                        @click="jsonView = 'parsed'"
+                      >
+                        👁️ Vista Legible
+                      </button>
+                      <button 
+                        class="json-view-btn copy-btn"
+                        @click="copyToClipboard(formatJsonDetails(selectedLog.details))"
+                      >
+                        📤 Copiar
+                      </button>
                     </div>
-                  </div>
-                  
-                  <!-- Sección de personajes -->
-                  <div v-if="selectedLog.target_character" class="details-section">
-                    <h4 class="section-title">🎭 PERSONAJE RELACIONADO</h4>
-                    <div class="section-content character-section">
-                      <div class="related-item">
-                        <span class="item-label">ID de Personaje:</span>
-                        <span class="item-value">#{{ selectedLog.target_character.id }}</span>
-                      </div>
-                      <div class="related-item">
-                        <span class="item-label">Nombre en clave:</span>
-                        <span class="item-value codename">{{ selectedLog.target_character.codename }}</span>
-                      </div>
-                      <div class="related-item">
-                        <span class="item-label">Facción:</span>
-                        <span class="item-value faction">{{ selectedLog.target_character.faction || 'No especificada' }}</span>
-                      </div>
+                    
+                    <div v-if="jsonView === 'raw'" class="json-container">
+                      <pre class="json-details">{{ formatJsonDetails(selectedLog.details) }}</pre>
                     </div>
-                  </div>
-                  
-                  <!-- Procesador de JSON con vistas mejoradas -->
-                  <div class="details-section">
-                    <h4 class="section-title">📄 DETALLES ADICIONALES</h4>
-                    <div class="json-processor">
-                      <div class="json-view-selector">
-                        <button 
-                          class="json-view-btn" 
-                          :class="{ 'active': jsonView === 'raw' }"
-                          @click="jsonView = 'raw'"
-                        >
-                          📋 Vista JSON
-                        </button>
-                        <button 
-                          class="json-view-btn" 
-                          :class="{ 'active': jsonView === 'parsed' }"
-                          @click="jsonView = 'parsed'"
-                        >
-                          👁️ Vista Legible
-                        </button>
-                        <button 
-                          class="json-view-btn copy-btn"
-                          @click="copyToClipboard(formatJsonDetails(selectedLog.details))"
-                        >
-                          📤 Copiar
-                        </button>
-                      </div>
-                      
-                      <div v-if="jsonView === 'raw'" class="json-container">
-                        <pre class="json-details">{{ formatJsonDetails(selectedLog.details) }}</pre>
-                      </div>
-                      
-                      <div v-else class="parsed-details">
-                        <div v-if="hasParsedDetails" class="parsed-content">
-                          <div v-for="(value, key) in parsedDetails" :key="key" class="parsed-item">
-                            <span class="parsed-key">{{ formatKey(key) }}:</span>
-                            <span class="parsed-value">{{ formatValue(value) }}</span>
-                          </div>
-                        </div>
-                        <div v-else class="no-parsed-details">
-                          <p>No hay detalles adicionales o no se pueden procesar.</p>
-                          <button @click="jsonView = 'raw'" class="show-raw-btn">
-                            Ver JSON original
-                          </button>
+                    
+                    <div v-else class="parsed-details">
+                      <div v-if="hasParsedDetails" class="parsed-content">
+                        <div v-for="(value, key) in parsedDetails" :key="key" class="parsed-item">
+                          <span class="parsed-key">{{ formatKey(key) }}:</span>
+                          <span class="parsed-value">{{ formatValue(value) }}</span>
                         </div>
                       </div>
+                      <div v-else class="no-parsed-details">
+                        <p>No hay detalles adicionales o no se pueden procesar.</p>
+                        <button @click="jsonView = 'raw'" class="show-raw-btn">
+                          Ver JSON original
+                        </button>
+                      </div>
                     </div>
                   </div>
-                  
-                  <!-- Acciones administrativas -->
-                  <div class="details-actions" v-if="hasAdminPermission()">
-                    <button 
-                      class="action-button danger full-width"
-                      @click="deleteSelectedLog"
-                    >
-                      🗑️ ELIMINAR REGISTRO
-                    </button>
-                  </div>
+                </div>
+                
+                <!-- Acciones administrativas -->
+                <div class="details-actions" v-if="hasAdminPermission()">
+                  <button 
+                    class="action-button danger full-width"
+                    @click="deleteSelectedLog"
+                  >
+                    🗑️ ELIMINAR REGISTRO
+                  </button>
                 </div>
               </div>
             </div>
@@ -777,7 +812,7 @@ const filters = reactive({
 // Paginación
 const pagination = reactive({
   currentPage: 1,
-  pageSize: 50,
+  pageSize: 25,
   total: 0,
   totalPages: 0
 })
@@ -851,7 +886,7 @@ const displayedLogs = computed(() => {
         log.target_user?.roblox_id?.toString().includes(searchLower) ||
         getActionDisplay(log.action_type).toLowerCase().includes(searchLower) ||
         (log.details && JSON.stringify(log.details).toLowerCase().includes(searchLower)) ||
-        log.ip_address?.toLowerCase().includes(searchLower)
+        log.user_agent?.toLowerCase().includes(searchLower)
       )
     })
   }
@@ -867,10 +902,42 @@ const displayedLogs = computed(() => {
     filtered.sort((a, b) => getActionDisplay(b.action_type).localeCompare(getActionDisplay(a.action_type)))
   }
   
+  // Actualizar paginación
+  pagination.total = filtered.length
+  pagination.totalPages = Math.ceil(filtered.length / pagination.pageSize)
+  
   return filtered
 })
 
 const totalLogs = computed(() => logs.value.length)
+
+const paginatedLogs = computed(() => {
+  const start = (pagination.currentPage - 1) * pagination.pageSize
+  const end = start + pagination.pageSize
+  return displayedLogs.value.slice(start, end)
+})
+
+const visiblePages = computed(() => {
+  const pages = []
+  const maxVisible = 5
+  let start = Math.max(1, pagination.currentPage - Math.floor(maxVisible / 2))
+  let end = Math.min(pagination.totalPages, start + maxVisible - 1)
+  
+  if (end - start + 1 < maxVisible) {
+    start = Math.max(1, end - maxVisible + 1)
+  }
+  
+  for (let i = start; i <= end; i++) {
+    pages.push(i)
+  }
+  
+  return pages
+})
+
+const hasEllipsis = computed(() => {
+  return pagination.totalPages > visiblePages.value.length && 
+         visiblePages.value[visiblePages.value.length - 1] < pagination.totalPages
+})
 
 const parsedDetails = computed(() => {
   if (!selectedLog.value || !selectedLog.value.details) {
@@ -1019,8 +1086,6 @@ const loadLogs = async () => {
         pagination.total = data.pagination.total
         pagination.totalPages = data.pagination.total_pages
         pagination.currentPage = data.pagination.page
-      } else {
-        updatePagination(logs.value.length)
       }
     }
     
@@ -1052,11 +1117,6 @@ const loadAvailableUsers = async () => {
   } catch (error) {
     console.error('Error cargando usuarios:', error)
   }
-}
-
-const updatePagination = (total) => {
-  pagination.total = total
-  pagination.totalPages = Math.ceil(total / pagination.pageSize)
 }
 
 const updateActivityStatus = () => {
@@ -1093,11 +1153,16 @@ const applyFilters = () => {
 }
 
 // Paginación
-const changePage = (page) => {
+const goToPage = (page) => {
   if (page < 1 || page > pagination.totalPages) return
   pagination.currentPage = page
   loadLogs() // Cargar la página específica desde el servidor
   window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+const updatePageSize = () => {
+  pagination.currentPage = 1
+  pagination.totalPages = Math.ceil(displayedLogs.value.length / pagination.pageSize)
 }
 
 // Acciones
@@ -1810,137 +1875,6 @@ watch(currentUser, (newUser) => {
   padding: 40px;
 }
 
-/* Layout principal con dos columnas */
-.main-layout {
-  display: flex;
-  gap: 2rem;
-  min-height: 600px;
-}
-
-.table-column {
-  flex: 2;
-  min-width: 0; /* Para que no se desborde */
-}
-
-.details-column {
-  flex: 1;
-  min-width: 400px;
-  max-width: 500px;
-}
-
-/* Panel de detalles */
-.details-panel {
-  background: rgba(20, 20, 20, 0.95);
-  border: 1px solid #333;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  position: sticky;
-  top: 2rem;
-}
-
-.details-panel-header {
-  padding: 1.5rem;
-  border-bottom: 1px solid #333;
-  background: rgba(30, 30, 30, 0.9);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.details-title {
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: #ff3333;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin: 0;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.details-id {
-  background: rgba(255, 51, 51, 0.1);
-  color: #ff3333;
-  padding: 0.2rem 0.6rem;
-  border-radius: 2px;
-  font-size: 0.9rem;
-  font-family: 'Consolas', monospace;
-}
-
-.close-details {
-  background: none;
-  border: none;
-  color: #888;
-  cursor: pointer;
-  padding: 0.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-  border-radius: 2px;
-}
-
-.close-details:hover {
-  background: rgba(255, 51, 51, 0.1);
-  color: #ff3333;
-}
-
-.close-details svg {
-  width: 18px;
-  height: 18px;
-}
-
-.details-panel-content {
-  flex: 1;
-  overflow-y: auto;
-  padding: 1.5rem;
-}
-
-/* Estado sin selección */
-.no-selection {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  height: 100%;
-  padding: 3rem 1rem;
-  color: #666;
-}
-
-.no-selection-icon {
-  width: 80px;
-  height: 80px;
-  color: #ff3333;
-  opacity: 0.5;
-  margin-bottom: 1.5rem;
-}
-
-.no-selection-title {
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: #ff3333;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin: 0 0 1rem 0;
-}
-
-.no-selection-text {
-  font-size: 0.95rem;
-  color: #888;
-  line-height: 1.5;
-  max-width: 300px;
-}
-
-/* Contenido de detalles del log */
-.log-details-content {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
 /* Pestañas de contenido */
 .tab-header {
   padding: 2rem 0;
@@ -2283,6 +2217,136 @@ watch(currentUser, (newUser) => {
   max-width: 400px;
 }
 
+/* Paginación de la tabla */
+.table-pagination {
+  padding: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(25, 25, 25, 0.8);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.pagination-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.pagination-stats {
+  font-size: 0.9rem;
+  color: #888;
+  font-family: 'Consolas', monospace;
+}
+
+.pagination-controls-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pagination-nav {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(30, 30, 30, 0.9);
+  border: 1px solid #444;
+  color: #aaa;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+}
+
+.pagination-nav:hover:not(:disabled) {
+  background: rgba(40, 40, 40, 0.95);
+  border-color: #666;
+  color: #ddd;
+}
+
+.pagination-nav:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.pagination-nav svg {
+  width: 16px;
+  height: 16px;
+}
+
+.page-numbers {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.page-number {
+  min-width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(30, 30, 30, 0.9);
+  border: 1px solid #444;
+  color: #aaa;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.page-number:hover:not(.active) {
+  background: rgba(40, 40, 40, 0.95);
+  border-color: #666;
+  color: #ddd;
+}
+
+.page-number.active {
+  background: rgba(255, 51, 51, 0.1);
+  border-color: #ff3333;
+  color: #ff3333;
+}
+
+.page-ellipsis {
+  color: #666;
+  padding: 0 0.5rem;
+  font-size: 0.9rem;
+}
+
+.page-size-selector {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.page-size-label {
+  font-size: 0.85rem;
+  color: #888;
+}
+
+.page-size-select {
+  background: rgba(40, 40, 40, 0.8);
+  border: 1px solid #444;
+  color: #fff;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.85rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.page-size-select:hover {
+  border-color: #555;
+}
+
+.page-size-select:focus {
+  border-color: #ff3333;
+}
+
 /* Tablas SCP */
 .scp-table {
   width: 100%;
@@ -2408,17 +2472,6 @@ watch(currentUser, (newUser) => {
   flex-shrink: 0;
 }
 
-.ip-cell {
-  min-width: 120px;
-}
-
-.ip-address {
-  font-family: 'Consolas', monospace;
-  font-size: 0.85rem;
-  color: #aaa;
-  cursor: help;
-}
-
 .date-cell {
   min-width: 180px;
 }
@@ -2482,62 +2535,125 @@ watch(currentUser, (newUser) => {
   height: 16px;
 }
 
-/* Paginación */
-.pagination-controls {
+/* Panel de detalles debajo de la tabla */
+.details-panel-container {
+  margin-top: 2rem;
+}
+
+.details-panel {
+  background: rgba(20, 20, 20, 0.95);
+  border: 1px solid #333;
+  display: flex;
+  flex-direction: column;
+}
+
+.details-panel-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid #333;
+  background: rgba(30, 30, 30, 0.9);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.5rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(25, 25, 25, 0.8);
 }
 
-.pagination-button {
+.details-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #ff3333;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.details-id {
+  background: rgba(255, 51, 51, 0.1);
+  color: #ff3333;
+  padding: 0.2rem 0.6rem;
+  border-radius: 2px;
+  font-size: 0.9rem;
+  font-family: 'Consolas', monospace;
+}
+
+.details-placeholder {
+  color: #888;
+  font-style: italic;
+  font-weight: normal;
+  font-size: 1rem;
+}
+
+.close-details {
+  background: none;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  padding: 0.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  padding: 0.6rem 1.2rem;
-  background: rgba(30, 30, 30, 0.9);
-  border: 1px solid #444;
-  color: #aaa;
-  font-family: 'Consolas', monospace;
-  font-size: 0.85rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-  cursor: pointer;
   transition: all 0.3s ease;
-  min-width: 140px;
+  border-radius: 2px;
 }
 
-.pagination-button:hover:not(:disabled) {
-  background: rgba(40, 40, 40, 0.95);
-  border-color: #666;
-  color: #ddd;
+.close-details:hover {
+  background: rgba(255, 51, 51, 0.1);
+  color: #ff3333;
 }
 
-.pagination-button:disabled {
-  opacity: 0.3;
-  cursor: not-allowed;
+.close-details svg {
+  width: 18px;
+  height: 18px;
 }
 
-.pagination-button svg {
-  width: 16px;
-  height: 16px;
+.details-panel-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
 }
 
-.page-numbers {
+/* Estado sin selección */
+.no-selection {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 1rem;
+  justify-content: center;
+  text-align: center;
+  height: 100%;
+  padding: 3rem 1rem;
+  color: #666;
 }
 
-.page-info {
-  font-family: 'Consolas', monospace;
-  font-size: 0.9rem;
+.no-selection-icon {
+  width: 80px;
+  height: 80px;
+  color: #ff3333;
+  opacity: 0.5;
+  margin-bottom: 1.5rem;
+}
+
+.no-selection-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #ff3333;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0 0 1rem 0;
+}
+
+.no-selection-text {
+  font-size: 0.95rem;
   color: #888;
-  letter-spacing: 0.3px;
+  line-height: 1.5;
+  max-width: 300px;
+}
+
+/* Contenido de detalles del log */
+.log-details-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
 /* Grid de detalles */
@@ -3023,22 +3139,6 @@ watch(currentUser, (newUser) => {
 }
 
 /* Responsive */
-@media (max-width: 1200px) {
-  .main-layout {
-    flex-direction: column;
-  }
-  
-  .details-column {
-    min-width: 100%;
-    max-width: 100%;
-  }
-  
-  .details-panel {
-    position: static;
-    margin-top: 2rem;
-  }
-}
-
 @media (max-width: 768px) {
   .audit-logs-header,
   .audit-logs-nav,
@@ -3095,6 +3195,20 @@ watch(currentUser, (newUser) => {
   
   .details-grid {
     grid-template-columns: 1fr;
+  }
+  
+  .pagination-info-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+  
+  .pagination-controls-row {
+    justify-content: center;
+  }
+  
+  .page-size-selector {
+    justify-content: center;
   }
 }
 
