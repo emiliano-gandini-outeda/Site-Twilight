@@ -133,6 +133,7 @@
           <span class="info-value operational">OPERATIVO</span>
         </div>
       </div>
+    </nav>
 
     <!-- Contenido Principal -->
     <main class="moderacion-global-main">
