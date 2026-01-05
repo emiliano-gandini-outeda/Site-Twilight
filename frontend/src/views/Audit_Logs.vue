@@ -1031,33 +1031,6 @@ const formatJsonDetails = (details) => {
   return JSON.stringify(details, null, 2)
 }
 
-const getActionDisplay = (actionType) => {
-  const actionMap = {
-    'user_login': 'Inicio de sesión',
-    'user_logout': 'Cierre de sesión',
-    'permissions_update': 'Actualización de permisos',
-    'role_assigned': 'Rol asignado',
-    'role_removed': 'Rol removido',
-    'warn_created': 'Advertencia creada',
-    'warn_updated': 'Advertencia actualizada',
-    'warn_removed': 'Advertencia eliminada',
-    'warn_appealed': 'Advertencia apelada',
-    'warn_appeal_responded': 'Respuesta a apelación',
-    'ban_created': 'Baneo creado',
-    'ban_revoked': 'Baneo revocado',
-    'ban_appealed': 'Baneo apelado',
-    'ban_appeal_responded': 'Respuesta a apelación de baneo',
-    'character_created': 'Personaje creado',
-    'character_updated': 'Personaje actualizado',
-    'character_deleted': 'Personaje eliminado',
-    'ssu_status_changed': 'Estado SSU cambiado',
-    'rp_file_edited': 'Archivo RP editado',
-    'faction_moderated': 'Facción moderada',
-    'actor_supervised': 'Actor supervisado'
-  }
-  return actionMap[actionType] || actionType
-}
-
 const getActionClass = (actionType) => {
   if (actionType.includes('warn') || actionType.includes('ban')) {
     return 'action-moderation'
