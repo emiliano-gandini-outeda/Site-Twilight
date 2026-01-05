@@ -13,6 +13,7 @@ import Moderacion_Global from "@/views/Moderacion_Global.vue"
 import Adminpermissions from "@/views/Adminpermissions.vue"
 import Appeals from "@/views/Appeals.vue"
 import Moderacion_SSU from "@/views/Moderacion_SSU.vue"
+import Audit_Logs from "@/views/Audit_Logs.vue"
 
 
 const routes = [
@@ -89,6 +90,12 @@ const routes = [
     path: "/moderation/ssu",
     name: "Moderacion_SSU",
     component: Moderacion_SSU,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/moderation/audit",
+    name: "Audit_Logs",
+    component: Audit_Logs,
     meta: { requiresAuth: true },
   },
   // IMPORTANTE: El catch-all debe ser la ÚLTIMA ruta
