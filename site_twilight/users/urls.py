@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import accounts, moderation, permissions
+from .views import accounts, moderation, permissions, audit
 from .views.permissions import (
     api_get_user_permissions,
     api_get_current_user,
@@ -52,18 +52,12 @@ urlpatterns = [
     # Permissions
     path("auth/user/permissions/", api_get_user_permissions, name="api_get_user_permissions"),
     path("auth/user/<int:user_id>/permissions/", api_update_user_permissions, name="api_update_user_permissions"),
-    path("auth/user/<int:user_id>/permissions/view/", api_get_user_permissions_admin, name="api_get_user_permissions_admin"),]
-"""     
-    path("api/staff/moderation/", views.api_moderation_dashboard),
-    path("api/staff/discord/", views.api_discord_moderation_panel),
-
-    path("api/staff/ssu/", views.api_change_ssu_status),
-
-    path("api/rp/doc/<int:doc_id>/", views.api_edit_rp_files_basic),
-    path("api/rp/doc/full/<int:doc_id>/", views.api_edit_rp_files_full),
-
-    path("api/rp/factions/", views.api_faction_moderation_basic),
-    path("api/rp/factions/full/", views.api_faction_moderation_full),
-
-    path("api/rp/actors/", views.api_supervise_actors_basic),
-    path("api/rp/actors/full/", views.api_supervise_actors_full), """
+    path("auth/user/<int:user_id>/permissions/view/", api_get_user_permissions_admin, name="api_get_user_permissions_admin"),
+    path('audit/logs/', audit.api_get_audit_logs, name='api_get_audit_logs'),
+    path('audit/logs/export/', audit.api_export_audit_logs, name='api_export_audit_logs'),
+    path('audit/logs/clean/', audit.api_clean_old_logs, name='api_clean_old_logs'),
+    path('audit/logs/<int:log_id>/delete/', audit.api_delete_audit_log, name='api_delete_audit_log'),
+    path('audit/users/', audit.api_get_audit_users, name='api_get_audit_users'),
+    path('audit/stats/', audit.api_get_audit_stats, name='api_get_audit_stats'),
+    
+]

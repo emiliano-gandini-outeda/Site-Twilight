@@ -685,3 +685,135 @@ class Ban(models.Model):
         self.save()
         
         return True
+    
+class AuditLog(models.Model):
+    class ActionType(models.TextChoices):
+        # Permisos y usuarios
+        USER_LOGIN = "user_login", "Inicio de sesión"
+        USER_LOGOUT = "user_logout", "Cierre de sesión"
+        PERMISSIONS_UPDATE = "permissions_update", "Actualización de permisos"
+        ROLE_ASSIGNED = "role_assigned", "Rol asignado"
+        ROLE_REMOVED = "role_removed", "Rol removido"
+        
+        # Moderación
+        WARN_CREATED = "warn_created", "Advertencia creada"
+        WARN_UPDATED = "warn_updated", "Advertencia actualizada"
+        WARN_REMOVED = "warn_removed", "Advertencia eliminada"
+        WARN_APPEALED = "warn_appealed", "Advertencia apelada"
+        WARN_APPEAL_RESPONDED = "warn_appeal_responded", "Respuesta a apelación"
+        
+        # Baneos
+        BAN_CREATED = "ban_created", "Baneo creado"
+        BAN_REVOKED = "ban_revoked", "Baneo revocado"
+        BAN_APPEALED = "ban_appealed", "Baneo apelado"
+        BAN_APPEAL_RESPONDED = "ban_appeal_responded", "Respuesta a apelación de baneo"
+        
+        # Personajes
+        CHARACTER_CREATED = "character_created", "Personaje creado"
+        CHARACTER_UPDATED = "character_updated", "Personaje actualizado"
+        CHARACTER_DELETED = "character_deleted", "Personaje eliminado"
+        
+        # Sistema
+        SSU_STATUS_CHANGED = "ssu_status_changed", "Estado SSU cambiado"
+        
+        # Archivos RP
+        RP_FILE_EDITED = "rp_file_edited", "Archivo RP editado"
+        FACTION_MODERATED = "faction_moderated", "Facción moderada"
+        ACTOR_SUPERVISED = "actor_supervised", "Actor supervisado"
+
+    user = models.ForeignKey(
+        "users.User",
+        on_delete=models.CASCADE,
+        related_name="audit_logs",
+        null=True,
+        blank=True
+    )
+    
+    action_user = models.ForeignKey(
+        "users.User",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="actions_performed",
+        help_text="Usuario que realizó la acción"
+    )
+    
+    action_type = models.CharField(
+        max_length=50,
+        choices=ActionType.choices
+    )
+    
+    target_user = models.ForeignKey(
+        "users.User",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="targeted_audit_logs",
+        help_text="Usuario afectado por la acción"
+    )
+    
+    # Para referencias a otros modelos
+    target_warn = models.ForeignKey(
+        "users.Warn",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
+    )
+    
+    target_ban = models.ForeignKey(
+        "users.Ban",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
+    )
+    
+    target_character = models.ForeignKey(
+        "characters.Character",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
+    )
+    
+    # Información detallada
+    details = models.JSONField(
+        default=dict,
+        help_text="Detalles adicionales en formato JSON"
+    )
+    
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
+    user_agent = models.TextField(blank=True)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['action_type', 'created_at']),
+            models.Index(fields=['action_user', 'created_at']),
+            models.Index(fields=['target_user', 'created_at']),
+        ]
+        verbose_name = "Log de Auditoría"
+        verbose_name_plural = "Logs de Auditoría"
+    
+    def __str__(self):
+        return f"{self.get_action_type_display()} - {self.created_at}"
+    
+    @classmethod
+    def log_action(cls, request, action_type, target_user=None, target_warn=None, 
+                   target_ban=None, target_character=None, details=None):
+        """Método helper para crear logs de auditoría"""
+        user = request.user if request.user.is_authenticated else None
+        
+        log_data = {
+            'action_user': user,
+            'action_type': action_type,
+            'target_user': target_user,
+            'target_warn': target_warn,
+            'target_ban': target_ban,
+            'target_character': target_character,
+            'details': details or {},
+            'ip_address': request.META.get('REMOTE_ADDR'),
+            'user_agent': request.META.get('HTTP_USER_AGENT', '')
+        }
+        
+        return cls.objects.create(**log_data)

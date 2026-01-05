@@ -4,9 +4,10 @@ from django.db.models import Q
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 import json
-from users.decorators import require_staff_permission
-from users.models import User, Warn, Ban
+from users.decorators import require_staff_permission, log_action
+from users.models import User, Warn, Ban, AuditLog
 from characters.models import Character
+from django.utils import timezone
 
 
 
@@ -138,6 +139,7 @@ def api_list_bans(request):
 @csrf_exempt
 @require_http_methods(["POST"])
 @require_staff_permission("create_warn")
+@log_action("warn_created")
 def api_create_warn(request):
     """Crea un nuevo warn"""
     try:
@@ -178,6 +180,21 @@ def api_create_warn(request):
         
         print(f"DEBUG: Warn created successfully with ID: {warn.id}")
         
+        # Registrar en audit log (también manejado por el decorador)
+        AuditLog.log_action(
+            request=request,
+            action_type="warn_created",
+            target_user=target,
+            target_warn=warn,
+            details={
+                "warn_id": warn.id,
+                "reason": reason,
+                "severity": severity,
+                "expires_after_days": expires_after_days,
+                "moderator": request.user.roblox_username
+            }
+        )
+        
         return JsonResponse({
             "success": True,
             "warn_id": warn.id,
@@ -201,11 +218,15 @@ def api_create_warn(request):
 @csrf_exempt
 @require_http_methods(["POST"])
 @require_staff_permission("manage_warns")
+@log_action("warn_updated")
 def api_update_warn(request, warn_id):
     """Actualiza un warn existente"""
     try:
         warn = get_object_or_404(Warn, id=warn_id)
         data = json.loads(request.body)
+        
+        old_reason = warn.reason
+        old_severity = warn.severity
         
         if 'reason' in data:
             warn.reason = data['reason']
@@ -217,6 +238,22 @@ def api_update_warn(request, warn_id):
             warn.expires_after_days = int(data['expires_after_days'])
         
         warn.save()
+        
+        # Registrar en audit log
+        AuditLog.log_action(
+            request=request,
+            action_type="warn_updated",
+            target_user=warn.target,
+            target_warn=warn,
+            details={
+                "warn_id": warn.id,
+                "old_reason": old_reason,
+                "new_reason": warn.reason,
+                "old_severity": old_severity,
+                "new_severity": warn.severity,
+                "moderator": request.user.roblox_username
+            }
+        )
         
         return JsonResponse({
             "success": True,
@@ -230,10 +267,26 @@ def api_update_warn(request, warn_id):
 @csrf_exempt
 @require_http_methods(["POST"])
 @require_staff_permission("manage_warns")
+@log_action("warn_removed")
 def api_remove_warn(request, warn_id):
     """Elimina un warn (marcar como removido)"""
     try:
         warn = get_object_or_404(Warn, id=warn_id)
+        
+        # Registrar antes de cambiar el estado
+        AuditLog.log_action(
+            request=request,
+            action_type="warn_removed",
+            target_user=warn.target,
+            target_warn=warn,
+            details={
+                "warn_id": warn.id,
+                "reason": warn.reason,
+                "severity": warn.severity,
+                "moderator": request.user.roblox_username
+            }
+        )
+        
         warn.status = Warn.WarnStatus.REMOVED
         warn.save()
         
@@ -252,6 +305,7 @@ def api_remove_warn(request, warn_id):
 
 @csrf_exempt
 @require_http_methods(["POST"])
+@log_action("warn_appealed")
 def api_appeal_warn(request, warn_id):
     """Usuario apela un warn con cooldown"""
     if not request.user.is_authenticated:
@@ -272,7 +326,21 @@ def api_appeal_warn(request, warn_id):
             warn.appeal(appealed_by=request.user, appeal_message=appeal_message)
         except ValueError as e:
             return JsonResponse({"error": str(e)}, status=400)
-                
+        
+        # Registrar en audit log
+        AuditLog.log_action(
+            request=request,
+            action_type="warn_appealed",
+            action_user=request.user,
+            target_user=warn.target,
+            target_warn=warn,
+            details={
+                "warn_id": warn.id,
+                "appeal_message": appeal_message,
+                "user": request.user.roblox_username
+            }
+        )
+        
         return JsonResponse({
             "success": True,
             "message": "Appeal submitted",
@@ -286,6 +354,7 @@ def api_appeal_warn(request, warn_id):
 @csrf_exempt
 @require_http_methods(["POST"])
 @require_staff_permission("manage_warns")
+@log_action("warn_appeal_responded")
 def api_respond_appeal(request, warn_id):
     """Moderador responde a una apelación"""
     try:
@@ -298,6 +367,20 @@ def api_respond_appeal(request, warn_id):
         response = data.get('response', '')
         
         warn.respond_to_appeal(response, request.user)
+        
+        # Registrar en audit log
+        AuditLog.log_action(
+            request=request,
+            action_type="warn_appeal_responded",
+            target_user=warn.target,
+            target_warn=warn,
+            details={
+                "warn_id": warn.id,
+                "appeal_response": response,
+                "moderator": request.user.roblox_username,
+                "appeal_accepted": "aceptado" in response.lower() or "aceptada" in response.lower()
+            }
+        )
         
         return JsonResponse({
             "success": True,
@@ -313,6 +396,7 @@ def api_respond_appeal(request, warn_id):
 @csrf_exempt
 @require_http_methods(["POST"])
 @require_staff_permission("register_ban")
+@log_action("ban_created")
 def api_create_ban(request):
     """Crea un nuevo ban"""
     try:
@@ -348,6 +432,21 @@ def api_create_ban(request):
             can_appeal=can_appeal
         )
         
+        # Registrar en audit log
+        AuditLog.log_action(
+            request=request,
+            action_type="ban_created",
+            target_user=target,
+            target_ban=ban,
+            details={
+                "ban_id": ban.id,
+                "reason": reason,
+                "ban_type": ban_type,
+                "duration_days": duration_days,
+                "moderator": request.user.roblox_username
+            }
+        )
+        
         return JsonResponse({
             "success": True,
             "ban_id": ban.id,
@@ -362,6 +461,7 @@ def api_create_ban(request):
 @csrf_exempt
 @require_http_methods(["POST"])
 @require_staff_permission("register_ban")
+@log_action("ban_revoked")
 def api_revoke_ban(request, ban_id):
     """Revoca un ban activo"""
     try:
@@ -374,6 +474,19 @@ def api_revoke_ban(request, ban_id):
         reason = data.get('reason', '')
         
         ban.revoke(request.user, reason)
+        
+        # Registrar en audit log
+        AuditLog.log_action(
+            request=request,
+            action_type="ban_revoked",
+            target_user=ban.target,
+            target_ban=ban,
+            details={
+                "ban_id": ban.id,
+                "revocation_reason": reason,
+                "moderator": request.user.roblox_username
+            }
+        )
         
         return JsonResponse({
             "success": True,
@@ -712,4 +825,93 @@ def api_get_user_appeals(request):
         print(f"ERROR en api_get_user_appeals: {str(e)}")
         import traceback
         print(f"Traceback: {traceback.format_exc()}")
+        return JsonResponse({"error": str(e)}, status=500)
+
+# ==================== BAN APPEAL SYSTEM ====================
+
+@csrf_exempt
+@require_http_methods(["POST"])
+@log_action("ban_appealed")
+def api_appeal_ban(request, ban_id):
+    """Usuario apela un ban"""
+    if not request.user.is_authenticated:
+        return JsonResponse({"error": "Authentication required"}, status=401)
+    
+    try:
+        ban = get_object_or_404(Ban, id=ban_id)
+        
+        # Verificar que el usuario es el dueño del ban
+        if ban.target != request.user:
+            return JsonResponse({"error": "Not your ban"}, status=403)
+        
+        data = json.loads(request.body)
+        appeal_message = data.get('message', '')
+        
+        # Intentar apelar
+        try:
+            ban.appeal(appealed_by=request.user, appeal_message=appeal_message)
+        except ValueError as e:
+            return JsonResponse({"error": str(e)}, status=400)
+        
+        # Registrar en audit log
+        AuditLog.log_action(
+            request=request,
+            action_type="ban_appealed",
+            action_user=request.user,
+            target_user=ban.target,
+            target_ban=ban,
+            details={
+                "ban_id": ban.id,
+                "appeal_message": appeal_message,
+                "user": request.user.roblox_username
+            }
+        )
+        
+        return JsonResponse({
+            "success": True,
+            "message": "Appeal submitted"
+        })
+    
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
+
+@csrf_exempt
+@require_http_methods(["POST"])
+@require_staff_permission("register_ban")
+@log_action("ban_appeal_responded")
+def api_respond_ban_appeal(request, ban_id):
+    """Moderador responde a una apelación de ban"""
+    try:
+        ban = get_object_or_404(Ban, id=ban_id)
+        
+        if not ban.appealed:
+            return JsonResponse({"error": "Ban not appealed"}, status=400)
+        
+        data = json.loads(request.body)
+        response = data.get('response', '')
+        
+        ban.appeal_response = response
+        ban.appeal_responded_by = request.user
+        ban.appeal_responded_at = timezone.now()
+        ban.save()
+        
+        # Registrar en audit log
+        AuditLog.log_action(
+            request=request,
+            action_type="ban_appeal_responded",
+            target_user=ban.target,
+            target_ban=ban,
+            details={
+                "ban_id": ban.id,
+                "appeal_response": response,
+                "moderator": request.user.roblox_username
+            }
+        )
+        
+        return JsonResponse({
+            "success": True,
+            "message": "Appeal response saved"
+        })
+    
+    except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)

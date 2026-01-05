@@ -1,10 +1,10 @@
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
-from users.models import User, StaffRole
+from users.models import User, StaffRole, AuditLog
 from users.permissions import STAFF_PERMISSIONS
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
-from users.decorators import require_staff_permission
+from users.decorators import require_staff_permission, log_action
 import json
 from django.shortcuts import get_object_or_404
 
@@ -66,6 +66,18 @@ def api_get_current_user(request):
     """Obtener información del usuario actual"""
     user = request.user
     
+    # Registrar login en audit log (solo si no es una solicitud frecuente)
+    if not request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
+        AuditLog.log_action(
+            request=request,
+            action_type="user_login",
+            target_user=user,
+            details={
+                "user": user.roblox_username,
+                "action": "get_current_user"
+            }
+        )
+    
     return JsonResponse({
         'id': user.id,
         'roblox_username': user.roblox_username,
@@ -82,6 +94,7 @@ def api_get_current_user(request):
 @csrf_exempt
 @require_http_methods(["POST"])
 @require_staff_permission("full_moderation_control")
+@log_action("permissions_update")
 def api_update_user_permissions(request, user_id):
     """Actualizar roles de staff de un usuario (solo admin)"""
     try:
@@ -89,6 +102,15 @@ def api_update_user_permissions(request, user_id):
         data = json.loads(request.body)
         roles = data.get('roles', [])
         individual_permissions = data.get('individual_permissions', [])
+        
+        # Obtener roles actuales antes de cambiar
+        old_roles = list(user.staff_roles.all())
+        old_roles_data = [{
+            'scope': role.scope,
+            'level': role.level,
+            'scope_display': role.get_scope_display(),
+            'level_display': role.get_level_display()
+        } for role in old_roles]
         
         # Crear un diccionario para manejar scopes únicos
         roles_dict = {}
@@ -127,6 +149,30 @@ def api_update_user_permissions(request, user_id):
         # Actualizar is_staff basado en roles
         user.is_staff = len(roles_dict) > 0
         user.save(update_fields=['is_staff'])
+        
+        # Obtener nuevos roles para el log
+        new_roles = list(user.staff_roles.all())
+        new_roles_data = [{
+            'scope': role.scope,
+            'level': role.level,
+            'scope_display': role.get_scope_display(),
+            'level_display': role.get_level_display()
+        } for role in new_roles]
+        
+        # Registrar en audit log (también manejado por decorador)
+        AuditLog.log_action(
+            request=request,
+            action_type="permissions_update",
+            target_user=user,
+            details={
+                "user_id": user.id,
+                "username": user.roblox_username,
+                "old_roles": old_roles_data,
+                "new_roles": new_roles_data,
+                "admin": request.user.roblox_username,
+                "individual_permissions": individual_permissions
+            }
+        )
         
         return JsonResponse({
             "success": True,
@@ -349,3 +395,115 @@ def get_level_display(scope, level):
     
     scope_levels = level_names.get(scope, {})
     return scope_levels.get(level, f"Nivel {level}")
+
+# ==================== FUNCIONES PARA MANEJO DE ROLES ====================
+
+@csrf_exempt
+@require_http_methods(["POST"])
+@require_staff_permission("full_moderation_control")
+@log_action("role_assigned")
+def api_assign_role(request):
+    """Asigna un rol específico a un usuario"""
+    try:
+        data = json.loads(request.body)
+        user_id = data.get('user_id')
+        scope = data.get('scope')
+        level = int(data.get('level', 1))
+        
+        user = get_object_or_404(User, id=user_id)
+        
+        # Verificar si el rol ya existe
+        existing_role = user.staff_roles.filter(scope=scope).first()
+        if existing_role:
+            existing_role.level = level
+            existing_role.save()
+            action = "updated"
+        else:
+            StaffRole.objects.create(
+                user=user,
+                scope=scope,
+                level=level
+            )
+            action = "assigned"
+        
+        # Actualizar is_staff si es necesario
+        user.is_staff = user.staff_roles.exists()
+        user.save(update_fields=['is_staff'])
+        
+        # Registrar en audit log
+        AuditLog.log_action(
+            request=request,
+            action_type="role_assigned",
+            target_user=user,
+            details={
+                "user_id": user.id,
+                "username": user.roblox_username,
+                "scope": scope,
+                "level": level,
+                "action": action,
+                "admin": request.user.roblox_username
+            }
+        )
+        
+        return JsonResponse({
+            "success": True,
+            "message": f"Role {action} for {user.roblox_username}",
+            "scope": scope,
+            "level": level
+        })
+    
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
+
+@csrf_exempt
+@require_http_methods(["POST"])
+@require_staff_permission("full_moderation_control")
+@log_action("role_removed")
+def api_remove_role(request):
+    """Elimina un rol específico de un usuario"""
+    try:
+        data = json.loads(request.body)
+        user_id = data.get('user_id')
+        scope = data.get('scope')
+        
+        user = get_object_or_404(User, id=user_id)
+        
+        # Buscar y eliminar el rol
+        role = user.staff_roles.filter(scope=scope).first()
+        if not role:
+            return JsonResponse({"error": "Role not found"}, status=404)
+        
+        role_data = {
+            "scope": role.scope,
+            "level": role.level,
+            "scope_display": role.get_scope_display(),
+            "level_display": role.get_level_display()
+        }
+        
+        role.delete()
+        
+        # Actualizar is_staff si es necesario
+        user.is_staff = user.staff_roles.exists()
+        user.save(update_fields=['is_staff'])
+        
+        # Registrar en audit log
+        AuditLog.log_action(
+            request=request,
+            action_type="role_removed",
+            target_user=user,
+            details={
+                "user_id": user.id,
+                "username": user.roblox_username,
+                "removed_role": role_data,
+                "admin": request.user.roblox_username
+            }
+        )
+        
+        return JsonResponse({
+            "success": True,
+            "message": f"Role removed from {user.roblox_username}",
+            "removed_role": role_data
+        })
+    
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)

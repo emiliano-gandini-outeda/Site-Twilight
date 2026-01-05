@@ -6,7 +6,8 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from django.utils import timezone
 from django.core.exceptions import ValidationError
-
+from users.models import AuditLog
+from users.decorators import log_action
 from .models import Character
 from .forms import CharacterForm
 
@@ -162,6 +163,7 @@ def character_detail(request, pk):
 
 @login_required
 @require_http_methods(["POST"])
+@log_action("character_created")
 def character_create(request):
     try:
         data = json.loads(request.body)
@@ -190,14 +192,25 @@ def character_create(request):
                 character = form.save(commit=False)
                 character.owner = request.user
                 
-                # CAMBIO: Ya no verificamos si el codename ya existe
-                # porque ahora pueden haber duplicados
-                
                 # Ejecutar validación completa del modelo
                 character.full_clean()
                 
                 # Guardar en la base de datos
                 character.save()
+                
+                # Registrar acción de auditoría con detalles adicionales
+                AuditLog.log_action(
+                    request=request,
+                    action_type="character_created",
+                    target_user=request.user,
+                    target_character=character,
+                    details={
+                        "character_id": character.id,
+                        "character_name": character.codename,
+                        "faction": character.faction,
+                        "details": "Personaje creado exitosamente"
+                    }
+                )
                 
                 return JsonResponse({
                     "success": True,
@@ -235,6 +248,7 @@ def character_create(request):
 
 @login_required
 @require_http_methods(["PUT"])
+@log_action("character_updated")
 def character_update(request, pk):
     try:
         character = get_object_or_404(Character, pk=pk)
@@ -307,6 +321,20 @@ def character_update(request, pk):
                 # Guardar en la base de datos
                 character.save()
                 
+                # Registrar acción de auditoría
+                AuditLog.log_action(
+                    request=request,
+                    action_type="character_updated",
+                    target_user=request.user,
+                    target_character=character,
+                    details={
+                        "character_id": character.id,
+                        "character_name": character.codename,
+                        "faction": character.faction,
+                        "changes": data  # Guardar los cambios realizados
+                    }
+                )
+                
                 return JsonResponse({
                     "success": True,
                     "id": character.id,
@@ -343,6 +371,7 @@ def character_update(request, pk):
 
 @login_required
 @require_http_methods(["DELETE"])
+@log_action("character_deleted")
 def character_delete(request, pk):
     try:
         character = get_object_or_404(Character, pk=pk)
@@ -351,7 +380,23 @@ def character_delete(request, pk):
         if character.owner != request.user:
             return JsonResponse({"error": "No tienes permiso para eliminar este personaje"}, status=403)
         
+        # Guardar información antes de eliminar para el log
+        character_info = {
+            "character_id": character.id,
+            "character_name": character.codename,
+            "faction": character.faction,
+            "owner_username": character.owner.roblox_username
+        }
+        
         character.delete()
+        
+        # Registrar acción de auditoría
+        AuditLog.log_action(
+            request=request,
+            action_type="character_deleted",
+            target_user=request.user,
+            details=character_info
+        )
         
         return JsonResponse({"success": True})
         
