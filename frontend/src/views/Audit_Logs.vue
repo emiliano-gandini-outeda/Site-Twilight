@@ -1168,25 +1168,6 @@ const getDetailsPreview = (log) => {
   return 'Ver detalles...'
 }
 
-const formatJsonDetails = (details) => {
-  if (!details || Object.keys(details).length === 0) {
-    return '{}'
-  }
-  
-  // Si los detalles son una cadena, intentar formatearlos como JSON
-  if (typeof details === 'string') {
-    try {
-      const parsedDetails = JSON.parse(details)
-      return JSON.stringify(parsedDetails, null, 2)
-    } catch {
-      return details
-    }
-  }
-  
-  // Si ya es un objeto, formatearlo
-  return JSON.stringify(details, null, 2)
-}
-
 const getSeverityText = (severity) => {
   switch(severity) {
     case 1: return 'BAJA'
