@@ -117,15 +117,22 @@
           <span class="info-value">{{ currentUser?.roblox_username || 'INVITADO' }}</span>
         </div>
         <div class="info-item">
-          <span class="info-label">PERMISOS:</span>
-          <span class="info-value">{{ getUserPermissionLevel() }}</span>
+          <span class="info-label">NIVEL:</span>
+          <span class="info-value" :class="{
+            'junior-mod': getUserPermissionLevel() === 'MOD_JUNIOR',
+            'official-mod': getUserPermissionLevel() === 'MOD_OFFICIAL',
+            'qualified-mod': getUserPermissionLevel() === 'MOD_QUALIFIED',
+            'senior-mod': getUserPermissionLevel() === 'MOD_SENIOR',
+            'admin': getUserPermissionLevel() === 'ADMIN'
+          }">
+            {{ getUserPermissionLevel() }}
+          </span>
         </div>
         <div class="info-item">
           <span class="info-label">SISTEMA:</span>
           <span class="info-value operational">OPERATIVO</span>
         </div>
       </div>
-    </nav>
 
     <!-- Contenido Principal -->
     <main class="moderacion-global-main">
@@ -192,7 +199,8 @@
               <button 
                 class="action-button primary"
                 @click="openCreateWarnModal"
-                :disabled="!hasPermission('create_warn')"
+                :disabled="!canCreateWarn()"
+                :title="!canCreateWarn() ? 'Requiere al menos nivel Junior Mod' : ''"
               >
                 <div class="action-icon">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -480,7 +488,8 @@
               <button 
                 class="action-button primary"
                 @click="openCreateBanModal"
-                :disabled="!hasPermission('register_ban')"
+                :disabled="!canCreateBan()"
+                :title="!canCreateBan() ? 'Requiere al menos nivel Official Mod' : ''"
               >
                 <div class="action-icon">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1243,6 +1252,8 @@
               v-if="selectedWarn.appealed && !selectedWarn.appeal_response"
               class="action-button primary"
               @click="respondToAppeal(selectedWarn)"
+              :disabled="!canRespondAppeals()"
+              :title="!canRespondAppeals() ? 'Requiere nivel Qualified Mod o superior' : ''"
             >
               RESPONDER A APELACIÓN
             </button>
@@ -1424,6 +1435,7 @@ const submittingBan = ref(false)
 const showAppealResponseModal = ref(false)
 const selectedAppeal = ref(null)
 const appealResponse = ref('')
+const userPermissions = ref([])
 
 // Búsqueda y filtros
 const searchQueryWarns = ref('')
@@ -1518,45 +1530,99 @@ const displayedBans = computed(() => {
 const totalWarns = computed(() => displayedWarns.value.length)
 const totalBans = computed(() => displayedBans.value.length)
 
+const fetchUserPermissions = async () => {
+  try {
+    const response = await fetch('/api/auth/user/permissions/')
+    if (response.ok) {
+      const data = await response.json()
+      userPermissions.value = data.permissions || []
+      
+      // También podemos guardarlos en currentUser para compatibilidad
+      if (currentUser.value) {
+        currentUser.value.permissions = data.permissions || []
+      }
+    }
+  } catch (error) {
+    console.error('Error cargando permisos:', error)
+  }
+}
+
 // Métodos de autenticación y permisos
 const hasModerationPermission = () => {
-  if (!currentUser.value) return false;
+  if (!currentUser.value || !currentUser.value.is_authenticated) return false
   
-  // First check superuser/staff flags
+  // Superusuarios y staff siempre tienen acceso
   if (currentUser.value.is_superuser || currentUser.value.is_staff) {
-    return true;
+    return true
   }
   
-  // Then check if permissions array exists and contains the required permission
-  if (currentUser.value.permissions) {
-    return currentUser.value.permissions.includes('access_moderation_dashboard');
-  }
+  // Verificar si tiene permisos de moderación desde cualquier scope
+  const hasModerationAccess = userPermissions.value.some(permission => 
+    permission.includes('moderation') || 
+    permission.includes('warn') || 
+    permission.includes('ban') ||
+    permission === 'access_moderation_dashboard'
+  )
   
-  return false;
+  ret
+
+const hasPermission = (permissionKey) => {
+  if (!currentUser.value) return false
+  
+  // Superuser tiene todos los permisos
+  if (currentUser.value.is_superuser) return true
+  
+  // Verificar en los permisos del usuario
+  return userPermissions.value.includes(permissionKey)
 }
 
-const hasPermission = (permission) => {
-  if (!currentUser.value) return false;
-  
-  // Superuser has all permissions
-  if (currentUser.value.is_superuser) return true;
-  
-  // Check permissions array
-  if (currentUser.value.permissions) {
-    return currentUser.value.permissions.includes(permission);
-  }
-  
-  return false;
-}
-
+// Método para obtener nivel de permiso con los 4 niveles de mod
 const getUserPermissionLevel = () => {
   if (!currentUser.value) return 'INVITADO'
+  
+  // Superusuarios siempre son admin
   if (currentUser.value.is_superuser) return 'ADMIN'
-  if (currentUser.value.is_staff) return 'STAFF'
-  if (hasPermission('full_moderation_control')) return 'LÍDER_MOD'
-  if (hasPermission('register_ban')) return 'MOD_SENIOR'
-  if (hasPermission('create_warn')) return 'MOD_JUNIOR'
-  return 'OBSERVADOR'
+  
+  // Si es staff pero no tiene permisos específicos
+  if (currentUser.value.is_staff && userPermissions.value.length === 0) {
+    return 'STAFF'
+  }
+  
+  // Verificar nivel basado en permisos jerárquicos
+  const permissions = userPermissions.value || []
+  
+  // Nivel 4: Senior - Permisos avanzados y liderazgo
+  if (permissions.includes('full_moderation_control') || 
+      permissions.includes('full_discord_moderation')) {
+    return 'MOD_SENIOR'
+  }
+  
+  // Nivel 3: Qualified - Gestiona warns y puede responder apelaciones
+  if (permissions.includes('manage_warns')) {
+    return 'MOD_QUALIFIED'
+  }
+  
+  // Nivel 2: Official - Puede crear warns y bans
+  if (permissions.includes('register_ban')) {
+    return 'MOD_OFFICIAL'
+  }
+  
+  // Nivel 1: Junior - Solo puede crear warns básicos
+  if (permissions.includes('create_warn')) {
+    return 'MOD_JUNIOR'
+  }
+  
+  // Tiene acceso al dashboard pero no a acciones específicas
+  if (permissions.includes('access_moderation_dashboard')) {
+    return 'OBSERVADOR'
+  }
+  
+  // Staff sin permisos específicos
+  if (currentUser.value.is_staff) {
+    return 'STAFF'
+  }
+  
+  return 'INVITADO'
 }
 
 // Navegación
@@ -1613,6 +1679,33 @@ const loadBans = async () => {
     loadingBans.value = false
   }
 }
+
+// Método para obtener el nivel numérico de moderación
+const getModerationLevel = () => {
+  const permissionLevel = getUserPermissionLevel()
+  
+  switch(permissionLevel) {
+    case 'MOD_SENIOR': return 4
+    case 'MOD_QUALIFIED': return 3
+    case 'MOD_OFFICIAL': return 2
+    case 'MOD_JUNIOR': return 1
+    case 'ADMIN': return 5 // Admin es nivel superior
+    default: return 0 // No es moderador
+  }
+}
+
+// Método para verificar si tiene al menos un nivel específico
+const hasMinModLevel = (requiredLevel) => {
+  const userLevel = getModerationLevel()
+  return userLevel >= requiredLevel
+}
+
+// Métodos específicos por nivel
+const isJuniorMod = () => hasMinModLevel(1)
+const isOfficialMod = () => hasMinModLevel(2)
+const isQualifiedMod = () => hasMinModLevel(3)
+const isSeniorMod = () => hasMinModLevel(4)
+const isAdmin = () => getUserPermissionLevel() === 'ADMIN'
 
 const loadAppeals = async () => {
   if (!hasModerationPermission()) return
@@ -1862,6 +1955,16 @@ const closeCreateBanModal = () => {
     duration_days: '7',
     can_appeal: true
   })
+}
+
+const canRespondAppeals = () => {
+  if (!currentUser.value) return false
+  
+  // Superuser y Admin siempre pueden
+  if (currentUser.value.is_superuser || isAdmin()) return true
+  
+  // Qualified Mods (nivel 3+) y Senior Mods (nivel 4) pueden responder
+  return isQualifiedMod() || isSeniorMod()
 }
 
 const submitNewBan = async () => {
@@ -2177,6 +2280,16 @@ onMounted(() => {
   const timeInterval = setInterval(updateTime, 1000)
   
   fetchCurrentUser()
+  
+  // Después de cargar el usuario, cargar los permisos
+  setTimeout(() => {
+    if (currentUser.value?.is_authenticated) {
+      fetchUserPermissions()
+      if (hasModerationPermission()) {
+        loadWarns()
+      }
+    }
+  }, 100)
   
   return () => {
     clearInterval(timeInterval)
@@ -4361,5 +4474,31 @@ onMounted(() => {
   .moderacion-global-main {
     padding: 1.5rem;
   }
+}
+
+.junior-mod {
+  color: #4CAF50;
+  font-weight: bold;
+}
+
+.official-mod {
+  color: #2196F3;
+  font-weight: bold;
+}
+
+.qualified-mod {
+  color: #FF9800;
+  font-weight: bold;
+}
+
+.senior-mod {
+  color: #9C27B0;
+  font-weight: bold;
+}
+
+.admin {
+  color: #ff3333;
+  font-weight: bold;
+  text-shadow: 0 0 5px rgba(255, 51, 51, 0.3);
 }
 </style>
