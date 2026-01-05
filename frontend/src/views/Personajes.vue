@@ -721,7 +721,7 @@
               </div>
             </div>
             
-            <div class="detail-section">
+            <div class="detail-section" v-if="isCharacterOwner || isModerator">
               <h3 class="section-title">DATOS MORPH</h3>
               <div class="morph-grid">
                 <div class="morph-item" v-if="selectedCharacter.morph">
@@ -799,7 +799,7 @@
               </div>
             </div>
             
-            <div class="detail-section">
+            <div class="detail-section" v-if="isCharacterOwner || isModerator">
               <h3 class="section-title">COMANDO MORPH</h3>
               <div class="morph-command-container">
                 <div class="command-preview">
@@ -814,6 +814,25 @@
                 </button>
               </div>
             </div>
+
+                <div v-if="!isCharacterOwner && !isModerator" class="detail-section">
+                  <h3 class="section-title">INFORMACIÓN RESTRINGIDA</h3>
+                  <div class="restricted-info">
+                    <div class="restricted-icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="#aa2222" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        <line x1="4.93" y1="19.07" x2="19.07" y2="4.93"></line>
+                      </svg>
+                    </div>
+                    <p class="restricted-text">
+                      La información de morph está restringida. Solo el propietario del personaje o moderadores pueden ver estos datos.
+                    </p>
+                    <div class="restricted-meta">
+                      <span class="meta-label">ACCESO:</span>
+                      <span class="meta-value restricted">RESTRINGIDO</span>
+                    </div>
+                  </div>
+                </div>
           </div>
         </div>
 
@@ -938,7 +957,9 @@ const pagination = reactive({
 })
 const formErrors = ref({})
 
-// Nuevos estados para fuzzy search
+const userPermissions = ref([])
+
+// estados para fuzzy search
 const fuseAllCharacters = ref(null)
 const fuseMyCharacters = ref(null)
 const searchResults = ref([])
@@ -1718,6 +1739,17 @@ const deleteCharacter = async () => {
 }
 
 const copyMorphCommand = async () => {
+  // Verificar permisos antes de copiar
+  if (!isCharacterOwner.value && !isModerator.value) {
+    showNotification(
+      'ACCESO DENEGADO',
+      'No tienes permiso para copiar este comando',
+      'error',
+      3000
+    )
+    return
+  }
+  
   if (selectedCharacter.value?.morph_command) {
     try {
       await navigator.clipboard.writeText(selectedCharacter.value.morph_command)
@@ -1729,6 +1761,12 @@ const copyMorphCommand = async () => {
       )
     } catch (error) {
       console.error('Error copying to clipboard:', error)
+      showNotification(
+        'ERROR',
+        'No se pudo copiar el comando',
+        'error',
+        3000
+      )
     }
   }
 }
@@ -1751,6 +1789,16 @@ const formatDateShort = (dateString) => {
   return `${day}/${month}/${year}`
 }
 
+const isModerator = computed(() => {
+  if (!currentUser.value?.is_authenticated) return false
+  
+  // Verificar si es superusuario
+  if (currentUser.value.is_superuser) return true
+  
+  // Verificar permisos de moderador (usando el mismo método que en Dashboard.vue)
+  return userPermissions.value.includes('access_moderation_dashboard')
+})
+
 const updateTime = () => {
   const now = new Date()
   const day = now.getDate().toString().padStart(2, '0')
@@ -1769,12 +1817,26 @@ const fetchCurrentUser = async () => {
       const data = await response.json()
       currentUser.value = data
       if (data.is_authenticated) {
+        // Obtener permisos del usuario
+        await fetchUserPermissions()
         loadCharacters()
       }
     }
   } catch (error) {
     console.error('Error fetching user:', error)
     loading.value = false
+  }
+}
+
+const fetchUserPermissions = async () => {
+  try {
+    const response = await fetch('/api/auth/user/permissions/')
+    if (response.ok) {
+      const data = await response.json()
+      userPermissions.value = data.permissions || []
+    }
+  } catch (error) {
+    console.error('Error fetching permissions:', error)
   }
 }
 
@@ -4617,6 +4679,57 @@ onMounted(() => {
 .edit-button svg, .delete-button svg {
   width: 16px;
   height: 16px;
+}
+
+/* Estilos para información restringida */
+.restricted-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 2rem;
+  background: rgba(40, 20, 20, 0.3);
+  border: 1px solid rgba(170, 34, 34, 0.3);
+  border-radius: 4px;
+}
+
+.restricted-icon {
+  width: 50px;
+  height: 50px;
+  color: #aa2222;
+  margin-bottom: 1rem;
+}
+
+.restricted-text {
+  font-size: 1rem;
+  color: #ccc;
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+  max-width: 400px;
+}
+
+.restricted-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.8rem 1.5rem;
+  background: rgba(170, 34, 34, 0.1);
+  border: 1px solid rgba(170, 34, 34, 0.3);
+}
+
+.meta-label {
+  font-size: 0.8rem;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  font-family: 'Consolas', monospace;
+}
+
+.meta-value.restricted {
+  font-size: 0.9rem;
+  color: #aa2222;
+  font-weight: 700;
+  font-family: 'Consolas', monospace;
 }
 
 </style>
