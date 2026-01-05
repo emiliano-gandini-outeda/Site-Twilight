@@ -123,7 +123,9 @@
             'official-mod': getUserPermissionLevel() === 'MOD_OFFICIAL',
             'qualified-mod': getUserPermissionLevel() === 'MOD_QUALIFIED',
             'senior-mod': getUserPermissionLevel() === 'MOD_SENIOR',
-            'admin': getUserPermissionLevel() === 'ADMIN'
+            'admin': getUserPermissionLevel() === 'ADMIN',
+            'staff': getUserPermissionLevel() === 'STAFF',
+            'observador': getUserPermissionLevel() === 'OBSERVADOR'
           }">
             {{ getUserPermissionLevel() }}
           </span>
@@ -201,7 +203,7 @@
                 class="action-button primary"
                 @click="openCreateWarnModal"
                 :disabled="!canCreateWarn()"
-                :title="!canCreateWarn() ? 'Requiere al menos nivel Junior Mod' : ''"
+                :title="!canCreateWarn() ? 'Requiere al menos nivel MOD_JUNIOR' : ''"
               >
                 <div class="action-icon">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -362,10 +364,12 @@
                         </svg>
                       </button>
                       <button 
-                        v-if="hasPermission('manage_warns') && warn.status === 'active'"
+                        v-if="canManageWarns() && warn.status === 'active'"
                         class="table-action edit" 
                         @click="editWarn(warn)"
                         title="Editar Advertencia"
+                        :disabled="!canManageWarns()"
+                        :title="!canManageWarns() ? 'Requiere nivel MOD_QUALIFIED o superior' : ''"
                       >
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                           <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
@@ -373,10 +377,12 @@
                         </svg>
                       </button>
                       <button 
-                        v-if="hasPermission('manage_warns') && warn.status === 'active' && !warn.appealed"
+                        v-if="canManageWarns() && warn.status === 'active' && !warn.appealed"
                         class="table-action remove" 
                         @click="removeWarn(warn)"
                         title="Eliminar Advertencia"
+                        :disabled="!canManageWarns()"
+                        :title="!canManageWarns() ? 'Requiere nivel MOD_QUALIFIED o superior' : ''"
                       >
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                           <polyline points="3 6 5 6 21 6"></polyline>
@@ -490,7 +496,7 @@
                 class="action-button primary"
                 @click="openCreateBanModal"
                 :disabled="!canCreateBan()"
-                :title="!canCreateBan() ? 'Requiere al menos nivel Official Mod' : ''"
+                :title="!canCreateBan() ? 'Requiere al menos nivel MOD_OFFICIAL' : ''"
               >
                 <div class="action-icon">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -638,10 +644,12 @@
                         </svg>
                       </button>
                       <button 
-                        v-if="hasPermission('register_ban') && ban.is_active"
+                        v-if="canCreateBan() && ban.is_active"
                         class="table-action revoke" 
                         @click="revokeBan(ban)"
                         title="Revocar Baneo"
+                        :disabled="!canCreateBan()"
+                        :title="!canCreateBan() ? 'Requiere nivel MOD_OFFICIAL o superior' : ''"
                       >
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                           <path d="M18 6L6 18"></path>
@@ -817,7 +825,7 @@
                   v-model="userSearchQuery"
                   @keyup.enter="searchUser"
                   type="text"
-                  placeholder="Ingresa ID de Roblox"
+                  placeholder="Ingresa ID de Roblox o nombre de usuario"
                   class="user-search-input"
                 />
                 <button class="search-button" @click="searchUser">
@@ -834,7 +842,7 @@
                   <line x1="12" y1="16" x2="12" y2="12"></line>
                   <line x1="12" y1="8" x2="12.01" y2="8"></line>
                 </svg>
-                <span>Buscar por ID de Roblox (ej: 123456789)</span>
+                <span>Buscar por ID de Roblox (ej: 123456789) o nombre de usuario</span>
               </div>
             </div>
 
@@ -880,7 +888,8 @@
                 <button 
                     class="profile-action warn"
                     @click="warnSearchedUser"
-                    :disabled="!hasPermission('create_warn')"
+                    :disabled="!canCreateWarn()"
+                    :title="!canCreateWarn() ? 'Requiere al menos nivel MOD_JUNIOR' : ''"
                 >
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="12" cy="12" r="10"></circle>
@@ -892,7 +901,8 @@
                 <button 
                     class="profile-action ban"
                     @click="banSearchedUser"
-                    :disabled="!hasPermission('register_ban')"
+                    :disabled="!canCreateBan()"
+                    :title="!canCreateBan() ? 'Requiere al menos nivel MOD_OFFICIAL' : ''"
                 >
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
@@ -991,7 +1001,7 @@
                 </svg>
             </div>
             <h4 class="no-results-title">Usuario no encontrado</h4>
-            <p class="no-results-text">No se encontró usuario con ese ID de Roblox</p>
+            <p class="no-results-text">No se encontró usuario con ese ID de Roblox o nombre de usuario</p>
             </div>
           </div>
         </div>
@@ -1248,13 +1258,13 @@
             </div>
           </div>
           
-          <div class="modal-actions" v-if="hasPermission('manage_warns')">
+          <div class="modal-actions" v-if="hasPermission('manage_warns') || canManageWarns()">
             <button 
               v-if="selectedWarn.appealed && !selectedWarn.appeal_response"
               class="action-button primary"
               @click="respondToAppeal(selectedWarn)"
               :disabled="!canRespondAppeals()"
-              :title="!canRespondAppeals() ? 'Requiere nivel Qualified Mod o superior' : ''"
+              :title="!canRespondAppeals() ? 'Requiere nivel MOD_QUALIFIED o superior' : ''"
             >
               RESPONDER A APELACIÓN
             </button>
@@ -1262,6 +1272,8 @@
               v-if="selectedWarn.status === 'active'"
               class="action-button secondary"
               @click="removeSelectedWarn"
+              :disabled="!canManageWarns()"
+              :title="!canManageWarns() ? 'Requiere nivel MOD_QUALIFIED o superior' : ''"
             >
               ELIMINAR ADVERTENCIA
             </button>
@@ -1400,7 +1412,7 @@
                 <button type="button" class="cancel-button" @click="closeAppealResponseModal">
                     CANCELAR
                 </button>
-                <button type="button" class="submit-button" @click="respondToAppeal">
+                <button type="button" class="submit-button" @click="respondToAppeal" :disabled="!canRespondAppeals()" :title="!canRespondAppeals() ? 'Requiere nivel MOD_QUALIFIED o superior' : ''">
                     ENVIAR RESPUESTA
                 </button>
                 </div>
@@ -1422,6 +1434,7 @@ const router = useRouter()
 // Estado principal
 const activeTab = ref('warns')
 const currentUser = ref(null)
+const userPermissions = ref([])
 const currentTime = ref('')
 const loadingWarns = ref(false)
 const loadingBans = ref(false)
@@ -1436,7 +1449,6 @@ const submittingBan = ref(false)
 const showAppealResponseModal = ref(false)
 const selectedAppeal = ref(null)
 const appealResponse = ref('')
-const userPermissions = ref([])
 
 // Búsqueda y filtros
 const searchQueryWarns = ref('')
@@ -1531,6 +1543,8 @@ const displayedBans = computed(() => {
 const totalWarns = computed(() => displayedWarns.value.length)
 const totalBans = computed(() => displayedBans.value.length)
 
+// ========== MÉTODOS DE PERMISOS ==========
+// Método para cargar permisos del usuario
 const fetchUserPermissions = async () => {
   try {
     const response = await fetch('/api/auth/user/permissions/')
@@ -1538,17 +1552,20 @@ const fetchUserPermissions = async () => {
       const data = await response.json()
       userPermissions.value = data.permissions || []
       
-      // También podemos guardarlos en currentUser para compatibilidad
+      // También guardar en currentUser para compatibilidad
       if (currentUser.value) {
         currentUser.value.permissions = data.permissions || []
       }
+      
+      showNotification('INFO', 'Permisos cargados correctamente', 'info', 3000)
     }
   } catch (error) {
     console.error('Error cargando permisos:', error)
+    showNotification('ERROR', 'Error al cargar permisos', 'error', 4000)
   }
 }
 
-// Métodos de autenticación y permisos
+// Método para verificar acceso al panel de moderación
 const hasModerationPermission = () => {
   if (!currentUser.value || !currentUser.value.is_authenticated) return false
   
@@ -1557,7 +1574,7 @@ const hasModerationPermission = () => {
     return true
   }
   
-  // Verificar si tiene permisos de moderación desde cualquier scope
+  // Verificar si tiene permisos de moderación
   const hasModerationAccess = userPermissions.value.some(permission => 
     permission.includes('moderation') || 
     permission.includes('warn') || 
@@ -1566,9 +1583,9 @@ const hasModerationPermission = () => {
   )
   
   return hasModerationAccess
-
 }
 
+// Método para verificar permisos específicos
 const hasPermission = (permissionKey) => {
   if (!currentUser.value) return false
   
@@ -1628,61 +1645,6 @@ const getUserPermissionLevel = () => {
   return 'INVITADO'
 }
 
-// Navegación
-const setActiveTab = (tab) => {
-  activeTab.value = tab
-  switch(tab) {
-    case 'warns':
-      loadWarns()
-      break
-    case 'bans':
-      loadBans()
-      break
-    case 'appeals':
-      loadAppeals()
-      break
-  }
-}
-
-// Carga de datos
-const loadWarns = async () => {
-  if (!hasModerationPermission()) return
-  
-  loadingWarns.value = true
-  try {
-    const response = await fetch('/api/moderation/warns/')
-    if (response.ok) {
-      const data = await response.json()
-      warns.value = data.warns || []
-      updatePaginationWarns(warns.value.length)
-    }
-  } catch (error) {
-    console.error('Error cargando advertencias:', error)
-    showNotification('ERROR', 'Error al cargar advertencias', 'error', 4000)
-  } finally {
-    loadingWarns.value = false
-  }
-}
-
-const loadBans = async () => {
-  if (!hasModerationPermission()) return
-  
-  loadingBans.value = true
-  try {
-    const response = await fetch('/api/moderation/bans/')
-    if (response.ok) {
-      const data = await response.json()
-      bans.value = data.bans || []
-      updatePaginationBans(bans.value.length)
-    }
-  } catch (error) {
-    console.error('Error cargando baneos:', error)
-    showNotification('ERROR', 'Error al cargar baneos', 'error', 4000)
-  } finally {
-    loadingBans.value = false
-  }
-}
-
 // Método para obtener el nivel numérico de moderación
 const getModerationLevel = () => {
   const permissionLevel = getUserPermissionLevel()
@@ -1710,8 +1672,95 @@ const isQualifiedMod = () => hasMinModLevel(3)
 const isSeniorMod = () => hasMinModLevel(4)
 const isAdmin = () => getUserPermissionLevel() === 'ADMIN'
 
+// Método para verificar si puede responder apelaciones (Qualified+ o Senior)
+const canRespondAppeals = () => {
+  if (!currentUser.value) return false
+  
+  // Superuser y Admin siempre pueden
+  if (currentUser.value.is_superuser || isAdmin()) return true
+  
+  // Qualified Mods (nivel 3+) y Senior Mods (nivel 4) pueden responder
+  return isQualifiedMod() || isSeniorMod()
+}
+
+// Verificar acciones según nivel de permiso
+const canCreateWarn = () => hasPermission('create_warn') || isJuniorMod() || isOfficialMod() || isQualifiedMod() || isSeniorMod()
+const canCreateBan = () => hasPermission('register_ban') || isOfficialMod() || isQualifiedMod() || isSeniorMod()
+const canManageWarns = () => hasPermission('manage_warns') || isQualifiedMod() || isSeniorMod()
+const canAccessDashboard = () => hasPermission('access_moderation_dashboard') || isJuniorMod() || isOfficialMod() || isQualifiedMod() || isSeniorMod()
+
+// ========== FIN MÉTODOS DE PERMISOS ==========
+
+// Navegación
+const setActiveTab = (tab) => {
+  activeTab.value = tab
+  switch(tab) {
+    case 'warns':
+      loadWarns()
+      break
+    case 'bans':
+      loadBans()
+      break
+    case 'appeals':
+      loadAppeals()
+      break
+  }
+}
+
+// Carga de datos
+const loadWarns = async () => {
+  if (!hasModerationPermission()) {
+    showNotification('ACCESO DENEGADO', 'No tienes acceso al panel de moderación', 'error', 4000)
+    return
+  }
+  
+  loadingWarns.value = true
+  try {
+    const response = await fetch('/api/moderation/warns/')
+    if (response.ok) {
+      const data = await response.json()
+      warns.value = data.warns || []
+      updatePaginationWarns(warns.value.length)
+    } else if (response.status === 403) {
+      showNotification('ACCESO DENEGADO', 'No tienes permisos para ver advertencias', 'error', 4000)
+    }
+  } catch (error) {
+    console.error('Error cargando advertencias:', error)
+    showNotification('ERROR', 'Error al cargar advertencias', 'error', 4000)
+  } finally {
+    loadingWarns.value = false
+  }
+}
+
+const loadBans = async () => {
+  if (!hasModerationPermission()) {
+    showNotification('ACCESO DENEGADO', 'No tienes acceso al panel de moderación', 'error', 4000)
+    return
+  }
+  
+  loadingBans.value = true
+  try {
+    const response = await fetch('/api/moderation/bans/')
+    if (response.ok) {
+      const data = await response.json()
+      bans.value = data.bans || []
+      updatePaginationBans(bans.value.length)
+    } else if (response.status === 403) {
+      showNotification('ACCESO DENEGADO', 'No tienes permisos para ver baneos', 'error', 4000)
+    }
+  } catch (error) {
+    console.error('Error cargando baneos:', error)
+    showNotification('ERROR', 'Error al cargar baneos', 'error', 4000)
+  } finally {
+    loadingBans.value = false
+  }
+}
+
 const loadAppeals = async () => {
-  if (!hasModerationPermission()) return
+  if (!hasModerationPermission()) {
+    showNotification('ACCESO DENEGADO', 'No tienes acceso al panel de moderación', 'error', 4000)
+    return
+  }
   
   loadingAppeals.value = true
   try {
@@ -1722,6 +1771,8 @@ const loadAppeals = async () => {
       pendingAppeals.value = (data.warns || []).filter(w => 
         w.appealed && !w.appeal_response
       )
+    } else if (response.status === 403) {
+      showNotification('ACCESO DENEGADO', 'No tienes permisos para ver apelaciones', 'error', 4000)
     }
   } catch (error) {
     console.error('Error cargando apelaciones:', error)
@@ -1794,8 +1845,8 @@ const goToModerationPanel = () => {
 
 // Acciones de Warn
 const openCreateWarnModal = () => { 
-  if (!hasPermission('create_warn')) {
-    showNotification('ACCESO DENEGADO', 'Necesitas permiso create_warn', 'error', 4000)
+  if (!canCreateWarn()) {
+    showNotification('ACCESO DENEGADO', 'Necesitas al menos nivel MOD_JUNIOR para crear advertencias', 'error', 4000)
     return
   }
   showCreateWarnModal.value = true
@@ -1813,7 +1864,10 @@ const closeCreateWarnModal = () => {
 }
 
 const submitNewWarn = async () => {
-  if (!hasPermission('create_warn')) return
+  if (!canCreateWarn()) {
+    showNotification('ACCESO DENEGADO', 'No tienes permiso para crear advertencias', 'error', 4000)
+    return
+  }
   
   submittingWarn.value = true
   try {
@@ -1855,7 +1909,12 @@ const editWarn = (warn) => {
 }
 
 const removeWarn = async (warn) => {
-  if (!hasPermission('manage_warns') || !confirm(`¿Eliminar advertencia #${warn.id}?`)) return
+  if (!canManageWarns() || !confirm(`¿Eliminar advertencia #${warn.id}?`)) {
+    if (!canManageWarns()) {
+      showNotification('ACCESO DENEGADO', 'Requieres nivel MOD_QUALIFIED o superior para eliminar advertencias', 'error', 4000)
+    }
+    return
+  }
   
   try {
     const csrfToken = getCSRFToken()
@@ -1905,6 +1964,11 @@ const closeAppealResponseModal = () => {
 }
 
 const respondToAppeal = async () => {
+  if (!canRespondAppeals()) {
+    showNotification('ACCESO DENEGADO', 'Requieres nivel MOD_QUALIFIED o superior para responder apelaciones', 'error', 4000)
+    return
+  }
+  
   if (!selectedAppeal.value || !appealResponse.value.trim()) {
     showNotification('ERROR', 'Debes escribir una respuesta', 'error', 4000)
     return
@@ -1941,8 +2005,8 @@ const respondToAppeal = async () => {
 
 // Acciones de Ban 
 const openCreateBanModal = () => { 
-  if (!hasPermission('register_ban')) {
-    showNotification('ACCESO DENEGADO', 'Necesitas permiso register_ban', 'error', 4000)
+  if (!canCreateBan()) {
+    showNotification('ACCESO DENEGADO', 'Necesitas al menos nivel MOD_OFFICIAL para crear baneos', 'error', 4000)
     return
   }
   showCreateBanModal.value = true
@@ -1960,18 +2024,11 @@ const closeCreateBanModal = () => {
   })
 }
 
-const canRespondAppeals = () => {
-  if (!currentUser.value) return false
-  
-  // Superuser y Admin siempre pueden
-  if (currentUser.value.is_superuser || isAdmin()) return true
-  
-  // Qualified Mods (nivel 3+) y Senior Mods (nivel 4) pueden responder
-  return isQualifiedMod() || isSeniorMod()
-}
-
 const submitNewBan = async () => {
-  if (!hasPermission('register_ban')) return
+  if (!canCreateBan()) {
+    showNotification('ACCESO DENEGADO', 'No tienes permiso para crear baneos', 'error', 4000)
+    return
+  }
   
   submittingBan.value = true
   try {
@@ -2016,7 +2073,12 @@ const viewBanDetails = (ban) => {
 }
 
 const revokeBan = async (ban) => {
-  if (!hasPermission('register_ban') || !confirm(`¿Revocar baneo #${ban.id}?`)) return
+  if (!canCreateBan() || !confirm(`¿Revocar baneo #${ban.id}?`)) {
+    if (!canCreateBan()) {
+      showNotification('ACCESO DENEGADO', 'Requieres nivel MOD_OFFICIAL o superior para revocar baneos', 'error', 4000)
+    }
+    return
+  }
   
   try {
     const csrfToken = getCSRFToken()
@@ -2045,7 +2107,7 @@ const revokeBan = async (ban) => {
 // Búsqueda de usuario
 const searchUser = async () => {
   if (!userSearchQuery.value.trim()) {
-    showNotification('INFO', 'Ingresa un ID o nombre de usuario', 'info', 3000)
+    showNotification('INFO', 'Ingresa un ID de Roblox o nombre de usuario', 'info', 3000)
     return
   }
   
@@ -2054,35 +2116,34 @@ const searchUser = async () => {
   userHistory.value = null
   
   try {
-    // Buscar usuarios (devuelve array)
+    // Usar la ruta correcta para búsqueda de usuarios
     const response = await fetch(`/api/moderation/users/search/${encodeURIComponent(userSearchQuery.value)}/`)
     if (response.ok) {
       const data = await response.json()
-      console.log('Search results:', data)  // Debug
       
       if (data.results && data.results.length > 0) {
         // Tomar el primer resultado
         searchedUser.value = data.results[0]
         
-        // Cargar historial del usuario usando el endpoint correcto
+        // Cargar historial del usuario
         try {
           const historyResponse = await fetch(`/api/moderation/user/${searchedUser.value.roblox_id}/`)
           if (historyResponse.ok) {
             userHistory.value = await historyResponse.json()
-            console.log('User history:', userHistory.value)  // Debug
           } else {
-            console.error('Error loading user history:', historyResponse.status)
-            showNotification('ERROR', 'Error al cargar historial del usuario', 'error', 4000)
+            // Si no hay historial específico, crear uno vacío
+            userHistory.value = { active_warns: [], active_bans: [] }
           }
         } catch (historyError) {
-          console.error('Error fetching user history:', historyError)
-          showNotification('ERROR', 'Error al obtener historial', 'error', 4000)
+          console.error('Error cargando historial:', historyError)
+          userHistory.value = { active_warns: [], active_bans: [] }
         }
       } else {
         showNotification('INFO', 'No se encontraron usuarios', 'info', 3000)
       }
+    } else if (response.status === 404) {
+      showNotification('INFO', 'Usuario no encontrado', 'info', 3000)
     } else {
-      console.error('Search failed:', response.status)
       showNotification('ERROR', 'Error en la búsqueda', 'error', 4000)
     }
   } catch (error) {
@@ -2094,16 +2155,20 @@ const searchUser = async () => {
 }
 
 const warnSearchedUser = () => {
-  if (searchedUser.value && hasPermission('create_warn')) {
+  if (searchedUser.value && canCreateWarn()) {
     newWarn.target_id = searchedUser.value.roblox_id.toString() 
     openCreateWarnModal()
+  } else if (!canCreateWarn()) {
+    showNotification('ACCESO DENEGADO', 'Requieres nivel MOD_JUNIOR o superior para crear advertencias', 'error', 4000)
   }
 }
 
 const banSearchedUser = () => {
-  if (searchedUser.value && hasPermission('register_ban')) {
+  if (searchedUser.value && canCreateBan()) {
     newBan.target_id = searchedUser.value.roblox_id.toString() 
     openCreateBanModal()
+  } else if (!canCreateBan()) {
+    showNotification('ACCESO DENEGADO', 'Requieres nivel MOD_OFFICIAL o superior para crear baneos', 'error', 4000)
   }
 }
 
@@ -2268,8 +2333,10 @@ const fetchCurrentUser = async () => {
     if (response.ok) {
       const data = await response.json()
       currentUser.value = data
-      if (data.is_authenticated && hasModerationPermission()) {
-        loadWarns()
+      
+      // Después de cargar el usuario, cargar sus permisos
+      if (data.is_authenticated) {
+        fetchUserPermissions()
       }
     }
   } catch (error) {
@@ -2284,21 +2351,10 @@ onMounted(() => {
   
   fetchCurrentUser()
   
-  // Después de cargar el usuario, cargar los permisos
-  setTimeout(() => {
-    if (currentUser.value?.is_authenticated) {
-      fetchUserPermissions()
-      if (hasModerationPermission()) {
-        loadWarns()
-      }
-    }
-  }, 100)
-  
   return () => {
     clearInterval(timeInterval)
   }
 })
-
 </script>
 
 <style scoped>
@@ -2619,6 +2675,47 @@ onMounted(() => {
   font-family: 'Consolas', monospace;
 }
 
+/* Estilos para diferentes niveles de permiso */
+.junior-mod {
+  color: #4CAF50;
+  font-weight: bold;
+  text-shadow: 0 0 3px rgba(76, 175, 80, 0.3);
+}
+
+.official-mod {
+  color: #2196F3;
+  font-weight: bold;
+  text-shadow: 0 0 3px rgba(33, 150, 243, 0.3);
+}
+
+.qualified-mod {
+  color: #FF9800;
+  font-weight: bold;
+  text-shadow: 0 0 3px rgba(255, 152, 0, 0.3);
+}
+
+.senior-mod {
+  color: #9C27B0;
+  font-weight: bold;
+  text-shadow: 0 0 3px rgba(156, 39, 176, 0.3);
+}
+
+.admin {
+  color: #ff3333;
+  font-weight: bold;
+  text-shadow: 0 0 5px rgba(255, 51, 51, 0.3);
+}
+
+.staff {
+  color: #607D8B;
+  font-weight: bold;
+}
+
+.observador {
+  color: #9E9E9E;
+  font-style: italic;
+}
+
 .info-value.operational {
   color: #4CAF50;
 }
@@ -2853,6 +2950,25 @@ onMounted(() => {
   transition: border-color 0.3s ease;
 }
 
+.filter-select:hover,
+.filter-date:hover {
+  border-color: #555;
+}
+
+.filter-select:focus,
+.filter-date:focus {
+  border-color: #ff3333;
+}
+
+.filter-date {
+  min-width: 120px;
+}
+
+.date-separator {
+  color: #666;
+  margin: 0 0.5rem;
+}
+
 /* Modal de respuesta a apelación */
 .appeal-response-modal {
   max-width: 800px;
@@ -3006,25 +3122,6 @@ onMounted(() => {
   gap: 1rem;
   padding-top: 2rem;
   border-top: 1px solid #444;
-}
-
-.filter-select:hover,
-.filter-date:hover {
-  border-color: #555;
-}
-
-.filter-select:focus,
-.filter-date:focus {
-  border-color: #ff3333;
-}
-
-.filter-date {
-  min-width: 120px;
-}
-
-.date-separator {
-  color: #666;
-  margin: 0 0.5rem;
 }
 
 /* Contenedor de tabla */
@@ -3335,22 +3432,27 @@ onMounted(() => {
   padding: 0;
 }
 
-.table-action:hover {
+.table-action:hover:not(:disabled) {
   background: rgba(50, 50, 50, 0.8);
   border-color: #555;
 }
 
-.table-action.view:hover {
+.table-action.view:hover:not(:disabled) {
   color: #2196F3;
 }
 
-.table-action.edit:hover {
+.table-action.edit:hover:not(:disabled) {
   color: #FF9800;
 }
 
-.table-action.remove:hover,
-.table-action.revoke:hover {
+.table-action.remove:hover:not(:disabled),
+.table-action.revoke:hover:not(:disabled) {
   color: #f44336;
+}
+
+.table-action:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .table-action svg {
@@ -4207,7 +4309,7 @@ onMounted(() => {
   color: #2196F3;
 }
 
-.modal-actions .action-button.primary:hover {
+.modal-actions .action-button.primary:hover:not(:disabled) {
   background: rgba(33, 150, 243, 0.2);
   border-color: rgba(33, 150, 243, 0.5);
 }
@@ -4218,9 +4320,14 @@ onMounted(() => {
   color: #f44336;
 }
 
-.modal-actions .action-button.secondary:hover {
+.modal-actions .action-button.secondary:hover:not(:disabled) {
   background: rgba(244, 67, 54, 0.2);
   border-color: rgba(244, 67, 54, 0.5);
+}
+
+.modal-actions .action-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 /* Sistema de notificaciones SCP */
@@ -4478,31 +4585,5 @@ onMounted(() => {
   .moderacion-global-main {
     padding: 1.5rem;
   }
-}
-
-.junior-mod {
-  color: #4CAF50;
-  font-weight: bold;
-}
-
-.official-mod {
-  color: #2196F3;
-  font-weight: bold;
-}
-
-.qualified-mod {
-  color: #FF9800;
-  font-weight: bold;
-}
-
-.senior-mod {
-  color: #9C27B0;
-  font-weight: bold;
-}
-
-.admin {
-  color: #ff3333;
-  font-weight: bold;
-  text-shadow: 0 0 5px rgba(255, 51, 51, 0.3);
 }
 </style>
