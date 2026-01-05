@@ -1168,15 +1168,6 @@ const getDetailsPreview = (log) => {
   return 'Ver detalles...'
 }
 
-const getSeverityText = (severity) => {
-  switch(severity) {
-    case 1: return 'BAJA'
-    case 2: return 'MEDIA'
-    case 3: return 'ALTA'
-    default: return 'DESCONOCIDA'
-  }
-}
-
 const copyToClipboard = async (text) => {
   try {
     await navigator.clipboard.writeText(text)
