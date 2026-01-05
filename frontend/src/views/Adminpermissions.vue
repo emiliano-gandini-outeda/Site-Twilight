@@ -848,7 +848,7 @@ const getLevelDisplay = (scope, level) => {
     'ingame': {
       1: 'Junior',
       2: 'Official',
-      3: 'Qualified'
+      3: 'Qualified+'
     },
     'discord': {
       1: 'Junior',
