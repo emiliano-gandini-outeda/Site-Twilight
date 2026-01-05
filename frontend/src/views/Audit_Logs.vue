@@ -485,132 +485,145 @@
 
     <!-- Modal: Detalles del Log -->
     <div v-if="selectedLog" class="modal-overlay" @click.self="selectedLog = null">
-      <div class="modal-content log-details-modal">
+    <div class="modal-content log-details-modal">
         <div class="modal-header">
-          <h3 class="modal-title">DETALLES DEL REGISTRO DE AUDITORÍA</h3>
-          <button class="modal-close" @click="selectedLog = null">
+        <h3 class="modal-title">DETALLES COMPLETOS DEL REGISTRO #{{ selectedLog.id }}</h3>
+        <button class="modal-close" @click="selectedLog = null">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
             </svg>
-          </button>
+        </button>
         </div>
         
         <div class="modal-body">
-          <div class="details-grid">
+        <div class="details-grid">
             <div class="detail-item">
-              <span class="detail-label">ID del Registro:</span>
-              <span class="detail-value">#{{ selectedLog.id }}</span>
+            <span class="detail-label">ID del Registro:</span>
+            <span class="detail-value">#{{ selectedLog.id }}</span>
             </div>
             <div class="detail-item">
-              <span class="detail-label">Acción:</span>
-              <span class="detail-value action-badge" :class="getActionClass(selectedLog.action_type)">
+            <span class="detail-label">Acción:</span>
+            <span class="detail-value action-badge" :class="getActionClass(selectedLog.action_type)">
                 {{ getActionDisplay(selectedLog.action_type) }}
-              </span>
+                <span class="action-code">({{ selectedLog.action_type }})</span>
+            </span>
             </div>
             <div class="detail-item">
-              <span class="detail-label">Realizado por:</span>
-              <span class="detail-value" v-if="selectedLog.action_user">
-                {{ selectedLog.action_user.roblox_username }} (ID: {{ selectedLog.action_user.roblox_id }})
-              </span>
-              <span v-else class="unknown">Sistema</span>
+            <span class="detail-label">Realizado por:</span>
+            <span class="detail-value" v-if="selectedLog.action_user">
+                <strong>{{ selectedLog.action_user.roblox_username }}</strong> (ID: {{ selectedLog.action_user.roblox_id }})
+            </span>
+            <span v-else class="unknown">Sistema</span>
             </div>
             <div class="detail-item">
-              <span class="detail-label">Usuario afectado:</span>
-              <span class="detail-value" v-if="selectedLog.target_user">
-                {{ selectedLog.target_user.roblox_username }} (ID: {{ selectedLog.target_user.roblox_id }})
-              </span>
-              <span v-else class="no-target">Ninguno</span>
+            <span class="detail-label">Usuario afectado:</span>
+            <span class="detail-value" v-if="selectedLog.target_user">
+                <strong>{{ selectedLog.target_user.roblox_username }}</strong> (ID: {{ selectedLog.target_user.roblox_id }})
+            </span>
+            <span v-else class="no-target">Ninguno</span>
             </div>
             <div class="detail-item">
-              <span class="detail-label">Fecha y Hora:</span>
-              <span class="detail-value">{{ formatDateFull(selectedLog.created_at) }}</span>
+            <span class="detail-label">Fecha y Hora:</span>
+            <span class="detail-value">{{ formatDateFull(selectedLog.created_at) }}</span>
             </div>
             <div class="detail-item">
-              <span class="detail-label">Dirección IP:</span>
-              <span class="detail-value">{{ selectedLog.ip_address || 'N/A' }}</span>
+            <span class="detail-label">Dirección IP:</span>
+            <span class="detail-value">{{ selectedLog.ip_address || 'N/A' }}</span>
             </div>
             <div class="detail-item">
-              <span class="detail-label">User Agent:</span>
-              <span class="detail-value user-agent">{{ selectedLog.user_agent || 'N/A' }}</span>
+            <span class="detail-label">User Agent:</span>
+            <span class="detail-value user-agent">{{ selectedLog.user_agent || 'N/A' }}</span>
             </div>
-          </div>
-          
-          <div v-if="selectedLog.target_warn" class="details-section">
-            <h4 class="section-title">Advertencia Relacionada</h4>
-            <div class="section-content">
-              <div class="related-item">
+        </div>
+        
+        <!-- Sección de advertencias -->
+        <div v-if="selectedLog.target_warn" class="details-section">
+            <h4 class="section-title">📝 ADVERTENCIA RELACIONADA</h4>
+            <div class="section-content warning-section">
+            <div class="related-item">
                 <span class="item-label">ID de Advertencia:</span>
                 <span class="item-value">#{{ selectedLog.target_warn.id }}</span>
-              </div>
-              <div class="related-item">
+            </div>
+            <div class="related-item">
                 <span class="item-label">Razón:</span>
-                <span class="item-value">{{ selectedLog.target_warn.reason }}</span>
-              </div>
-              <div class="related-item">
+                <span class="item-value reason-text">{{ selectedLog.target_warn.reason }}</span>
+            </div>
+            <div class="related-item">
                 <span class="item-label">Severidad:</span>
                 <span class="item-value severity-badge" :class="`severity-${selectedLog.target_warn.severity}`">
-                  {{ getSeverityText(selectedLog.target_warn.severity) }}
+                {{ getSeverityText(selectedLog.target_warn.severity) }}
                 </span>
-              </div>
             </div>
-          </div>
-          
-          <div v-if="selectedLog.target_ban" class="details-section">
-            <h4 class="section-title">Baneo Relacionado</h4>
-            <div class="section-content">
-              <div class="related-item">
+            </div>
+        </div>
+        
+        <!-- Sección de baneos -->
+        <div v-if="selectedLog.target_ban" class="details-section">
+            <h4 class="section-title">🔒 BANEO RELACIONADO</h4>
+            <div class="section-content ban-section">
+            <div class="related-item">
                 <span class="item-label">ID de Baneo:</span>
                 <span class="item-value">#{{ selectedLog.target_ban.id }}</span>
-              </div>
-              <div class="related-item">
+            </div>
+            <div class="related-item">
                 <span class="item-label">Razón:</span>
-                <span class="item-value">{{ selectedLog.target_ban.reason }}</span>
-              </div>
-              <div class="related-item">
+                <span class="item-value reason-text">{{ selectedLog.target_ban.reason }}</span>
+            </div>
+            <div class="related-item">
                 <span class="item-label">Tipo:</span>
                 <span class="item-value type-badge" :class="`type-${selectedLog.target_ban.ban_type}`">
-                  {{ selectedLog.target_ban.ban_type === 'temporary' ? 'Temporal' : 'Permanente' }}
+                {{ selectedLog.target_ban.ban_type === 'temporary' ? 'TEMPORAL' : 'PERMANENTE' }}
                 </span>
-              </div>
             </div>
-          </div>
-          
-          <div v-if="selectedLog.target_character" class="details-section">
-            <h4 class="section-title">Personaje Relacionado</h4>
-            <div class="section-content">
-              <div class="related-item">
+            </div>
+        </div>
+        
+        <!-- Sección de personajes -->
+        <div v-if="selectedLog.target_character" class="details-section">
+            <h4 class="section-title">🎭 PERSONAJE RELACIONADO</h4>
+            <div class="section-content character-section">
+            <div class="related-item">
                 <span class="item-label">ID de Personaje:</span>
                 <span class="item-value">#{{ selectedLog.target_character.id }}</span>
-              </div>
-              <div class="related-item">
-                <span class="item-label">Nombre:</span>
-                <span class="item-value">{{ selectedLog.target_character.codename }}</span>
-              </div>
-              <div class="related-item">
+            </div>
+            <div class="related-item">
+                <span class="item-label">Nombre en clave:</span>
+                <span class="item-value codename">{{ selectedLog.target_character.codename }}</span>
+            </div>
+            <div class="related-item">
                 <span class="item-label">Facción:</span>
-                <span class="item-value">{{ selectedLog.target_character.faction }}</span>
-              </div>
+                <span class="item-value faction">{{ selectedLog.target_character.faction || 'No especificada' }}</span>
             </div>
-          </div>
-          
-          <div class="details-section">
-            <h4 class="section-title">Detalles Adicionales</h4>
-            <div class="section-content">
-              <pre class="json-details">{{ formatJsonDetails(selectedLog.details) }}</pre>
             </div>
-          </div>
-          
-          <div class="modal-actions" v-if="hasAdminPermission()">
-            <button 
-              class="action-button danger"
-              @click="deleteSelectedLog"
-            >
-              ELIMINAR REGISTRO
-            </button>
-          </div>
         </div>
-      </div>
+        
+        <!-- Sección de detalles JSON -->
+        <div class="details-section">
+            <h4 class="section-title">📄 DETALLES ADICIONALES (JSON)</h4>
+            <div class="section-content">
+            <div class="json-container">
+                <pre class="json-details">{{ formatJsonDetails(selectedLog.details) }}</pre>
+                <div class="json-actions" v-if="hasAdminPermission()">
+                <button class="copy-json" @click="copyToClipboard(formatJsonDetails(selectedLog.details))">
+                    📋 Copiar JSON
+                </button>
+                </div>
+            </div>
+            </div>
+        </div>
+        
+        <!-- Acciones administrativas -->
+        <div class="modal-actions" v-if="hasAdminPermission()">
+            <button 
+            class="action-button danger"
+            @click="deleteSelectedLog"
+            >
+            🗑️ ELIMINAR REGISTRO
+            </button>
+        </div>
+        </div>
+    </div>
     </div>
 
     <!-- Sistema de notificaciones -->
@@ -989,6 +1002,74 @@ const exportLogs = async () => {
   }
 }
 
+const getSeverityText = (severity) => {
+  switch(severity) {
+    case 1: return 'BAJA'
+    case 2: return 'MEDIA'
+    case 3: return 'ALTA'
+    case 4: return 'CRÍTICA'
+    default: return 'DESCONOCIDA'
+  }
+}
+
+const formatJsonDetails = (details) => {
+  if (!details || Object.keys(details).length === 0) {
+    return '{}'
+  }
+  
+  // Si los detalles son una cadena, intentar formatearlos como JSON
+  if (typeof details === 'string') {
+    try {
+      const parsedDetails = JSON.parse(details)
+      return JSON.stringify(parsedDetails, null, 2)
+    } catch {
+      return details
+    }
+  }
+  
+  // Si ya es un objeto, formatearlo
+  return JSON.stringify(details, null, 2)
+}
+
+const getActionDisplay = (actionType) => {
+  const actionMap = {
+    'user_login': 'Inicio de sesión',
+    'user_logout': 'Cierre de sesión',
+    'permissions_update': 'Actualización de permisos',
+    'role_assigned': 'Rol asignado',
+    'role_removed': 'Rol removido',
+    'warn_created': 'Advertencia creada',
+    'warn_updated': 'Advertencia actualizada',
+    'warn_removed': 'Advertencia eliminada',
+    'warn_appealed': 'Advertencia apelada',
+    'warn_appeal_responded': 'Respuesta a apelación',
+    'ban_created': 'Baneo creado',
+    'ban_revoked': 'Baneo revocado',
+    'ban_appealed': 'Baneo apelado',
+    'ban_appeal_responded': 'Respuesta a apelación de baneo',
+    'character_created': 'Personaje creado',
+    'character_updated': 'Personaje actualizado',
+    'character_deleted': 'Personaje eliminado',
+    'ssu_status_changed': 'Estado SSU cambiado',
+    'rp_file_edited': 'Archivo RP editado',
+    'faction_moderated': 'Facción moderada',
+    'actor_supervised': 'Actor supervisado'
+  }
+  return actionMap[actionType] || actionType
+}
+
+const getActionClass = (actionType) => {
+  if (actionType.includes('warn') || actionType.includes('ban')) {
+    return 'action-moderation'
+  } else if (actionType.includes('permission') || actionType.includes('role') || actionType.includes('user_')) {
+    return 'action-permission'
+  } else if (actionType.includes('character')) {
+    return 'action-character'
+  } else {
+    return 'action-system'
+  }
+}
+
 const cleanOldLogs = async () => {
   if (!confirm('¿Eliminar registros de auditoría antiguos (más de 30 días)? Esta acción no se puede deshacer.')) {
     return
@@ -1104,7 +1185,7 @@ const getDetailsPreview = (log) => {
   
   const details = log.details
   
-  // Extraer información de detalles si está disponible
+  // Intentar extraer información útil
   if (typeof details === 'string') {
     try {
       const parsedDetails = JSON.parse(details)
@@ -1151,6 +1232,23 @@ const getSeverityText = (severity) => {
     case 2: return 'MEDIA'
     case 3: return 'ALTA'
     default: return 'DESCONOCIDA'
+  }
+}
+
+const copyToClipboard = async (text) => {
+  try {
+    await navigator.clipboard.writeText(text)
+    showNotification('ÉXITO', 'JSON copiado al portapapeles', 'success', 2000)
+  } catch (err) {
+    console.error('Error al copiar:', err)
+    // Fallback para navegadores antiguos
+    const textArea = document.createElement('textarea')
+    textArea.value = text
+    document.body.appendChild(textArea)
+    textArea.select()
+    document.execCommand('copy')
+    document.body.removeChild(textArea)
+    showNotification('ÉXITO', 'JSON copiado al portapapeles', 'success', 2000)
   }
 }
 
@@ -2363,6 +2461,108 @@ watch(currentUser, (newUser) => {
   background: rgba(244, 67, 54, 0.2);
   border-color: rgba(244, 67, 54, 0.5);
 }
+
+/* Estilos adicionales para el modal mejorado */
+.action-code {
+  font-size: 0.8rem;
+  opacity: 0.7;
+  margin-left: 0.5rem;
+  font-weight: normal;
+}
+
+.warning-section {
+  border-left: 3px solid #FF9800;
+  padding-left: 1rem;
+  background: rgba(255, 152, 0, 0.05);
+}
+
+.ban-section {
+  border-left: 3px solid #f44336;
+  padding-left: 1rem;
+  background: rgba(244, 67, 54, 0.05);
+}
+
+.character-section {
+  border-left: 3px solid #9C27B0;
+  padding-left: 1rem;
+  background: rgba(156, 39, 176, 0.05);
+}
+
+.reason-text {
+  color: #ddd;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.5rem;
+  border-radius: 2px;
+  display: block;
+  margin-top: 0.3rem;
+}
+
+.codename {
+  color: #ffcc00;
+  font-weight: bold;
+  font-family: 'Consolas', monospace;
+}
+
+.faction {
+  color: #4CAF50;
+  font-weight: 500;
+}
+
+.json-container {
+  position: relative;
+  margin-top: 0.5rem;
+}
+
+.json-actions {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+}
+
+.copy-json {
+  background: rgba(33, 150, 243, 0.2);
+  border: 1px solid rgba(33, 150, 243, 0.3);
+  color: #2196F3;
+  padding: 0.3rem 0.8rem;
+  font-size: 0.8rem;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Consolas', monospace;
+}
+
+.copy-json:hover {
+  background: rgba(33, 150, 243, 0.3);
+  border-color: rgba(33, 150, 243, 0.5);
+}
+
+.severity-badge {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 2px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.severity-1 { background: rgba(76, 175, 80, 0.2); color: #4CAF50; border: 1px solid rgba(76, 175, 80, 0.3); }
+.severity-2 { background: rgba(255, 152, 0, 0.2); color: #FF9800; border: 1px solid rgba(255, 152, 0, 0.3); }
+.severity-3 { background: rgba(244, 67, 54, 0.2); color: #f44336; border: 1px solid rgba(244, 67, 54, 0.3); }
+.severity-4 { background: rgba(156, 39, 176, 0.2); color: #9C27B0; border: 1px solid rgba(156, 39, 176, 0.3); }
+
+.type-badge {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 2px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.type-temporary { background: rgba(255, 152, 0, 0.2); color: #FF9800; border: 1px solid rgba(255, 152, 0, 0.3); }
+.type-permanent { background: rgba(244, 67, 54, 0.2); color: #f44336; border: 1px solid rgba(244, 67, 54, 0.3); }
 
 /* Sistema de notificaciones SCP */
 .scp-notifications {
