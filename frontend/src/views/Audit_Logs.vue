@@ -1139,18 +1139,6 @@ const getActionDisplay = (actionType) => {
   return actionMap[actionType] || actionType
 }
 
-const getActionClass = (actionType) => {
-  if (actionType.includes('warn') || actionType.includes('ban')) {
-    return 'action-moderation'
-  } else if (actionType.includes('permission') || actionType.includes('role') || actionType.includes('user_')) {
-    return 'action-permission'
-  } else if (actionType.includes('character')) {
-    return 'action-character'
-  } else {
-    return 'action-system'
-  }
-}
-
 const getDetailsPreview = (log) => {
   if (!log.details || Object.keys(log.details).length === 0) {
     return 'Sin detalles adicionales'
