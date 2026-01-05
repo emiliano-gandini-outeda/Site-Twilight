@@ -1565,7 +1565,9 @@ const hasModerationPermission = () => {
     permission === 'access_moderation_dashboard'
   )
   
-  ret
+  return hasModerationAccess
+
+}
 
 const hasPermission = (permissionKey) => {
   if (!currentUser.value) return false
@@ -2296,6 +2298,7 @@ onMounted(() => {
     clearInterval(timeInterval)
   }
 })
+
 </script>
 
 <style scoped>
